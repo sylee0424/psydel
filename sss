@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+struct solder {
+char *name;
+char platoon;
+char status;
+char stress;
+char rank;
+char leader;
+long date;
+};
+
+void removestructsolder(struct solder* p,long num);
+struct solder* getname(long *num);
+
+int main(int argc,char** argv[])
+{
+    
+    return 0;
+}
+
+void removestructsolder(struct solder* p,long num) {
+    long i;
+    for (i=0;i<num;i++) {
+        free(p[i].name);
+    }
+    free(p);
+}
+
+struct solder* getname(long *num) {
+    long a,b,c;
+    FILE *fp;
+    struct solder *p;
+    fp=fopen("list","rb+");
+    if (fp) {
+        b=0;
+        fseek(fp,0,SEEK_END);
+        a=ftell(fp);
+        fseek(fp,0,SEEK_SET);
+        while (a>ftell(fp)) {
+            b++;
+            fscanf (fp,"%*s");
+        }
+        *num=b;
+        fseek(fp,0,SEEK_SET);
+        p=malloc(sizeof(struct solder)*b);
+        while (b--) {
+            a=ftell(fp);
+            fscanf (fp,"%*s:%c,%c,%c,%d\n",p[*num-b].platoon,p[*num-b].rank,p[*num-b].leader,p[*num-b].date);
+            c=ftell(fp);
+            p[*num-b].name=malloc(sizeof(char)*(c-16-a+1));
+            fseek(fp,a,SEEK_SET);
+            fscanf (fp,"%s:%*c,%*c,%*c,%*d\n",p[*num-b].name);
+            fseek(fp,c,SEEK_SET);
+        }
+    }
+    return p;
+}

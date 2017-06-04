@@ -11,6 +11,11 @@ i = scripts.length;
 while (i--) {
 scripts[i].parentNode.removeChild(scripts[i]);
 }
+scripts = document.getElementsByTagName('iframe');
+i = scripts.length;
+while (i--) {
+scripts[i].parentNode.removeChild(scripts[i]);
+}
 var scr = document.createElement('script');
 scr.src='https://hitomi.la/galleries/' + galleryId + '.js';
 document.body.appendChild(scr);

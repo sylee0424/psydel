@@ -27,7 +27,7 @@ hrf.name="hrf";
 document.body.appendChild(hrf);
 hrf = document.getElementsByName("hrf")[0];
 hrf.href = "https://"+document.getElementsByTagName("img")[0].src.split(".hitomi.la/")[0].split("//")[1]+".hitomi.la/galleries/"+galleryId+"/"+ galleryinfo[i].name;
-hrf.download = "hitomi+"+ galleryId + "+" + m + (i + 1) + ".jpg";
+hrf.download = "hitomi/"+ galleryId + "/" + m + (i + 1) + ".jpg";
 hrf.name = "href";
 hrf.click();
 }

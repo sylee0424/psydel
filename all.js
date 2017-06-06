@@ -68,7 +68,6 @@ function hab() {
     scr.type = "text/javascript";
     scr.appendChild(inn);
     document.body.appendChild(scr);
-    hab2();
     document.ontouchstart = "event.stopImmediatePropagation();";
     document.body.ontouchstart = "event.stopImmediatePropagation();";
     document.body.onmousedown = "event.stopImmediatePropagation();";

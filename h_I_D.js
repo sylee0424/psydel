@@ -29,7 +29,15 @@ hrf = document.getElementsByName("hrf")[0];
 hrf.href = "https://"+document.getElementsByTagName("img")[0].src.split(".hitomi.la/")[0].split("//")[1]+".hitomi.la/galleries/"+galleryId+"/"+ galleryinfo[i].name;
 hrf.download = "hitomi_"+ galleryId + "_" + m + (i + 1) + ".jpg";
 hrf.name = "href";
-hrf.click();
+if(hrf.click) {
+      hrf.click();
+}
+else if(document.createEvent)
+{
+    var eventObj = document.createEvent('MouseEvents');
+    eventObj.initEvent('click',true,true);
+    hrf.dispatchEvent(eventObj);
+}
 }
 }
 }

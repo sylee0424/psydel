@@ -68,6 +68,7 @@ function hab() {
     scr.type = "text/javascript";
     scr.appendChild(inn);
     document.body.appendChild(scr);
+    hab2();
     document.ontouchstart = "event.stopImmediatePropagation();";
     document.body.ontouchstart = "event.stopImmediatePropagation();";
     document.body.onmousedown = "event.stopImmediatePropagation();";
@@ -122,4 +123,63 @@ function fde() {
     document.body.removeAttribute("ondragstart");
     document.body.removeAttribute("onselectstart");
     document.body.removeAttribute("oncontextmenu");
+}
+
+function hab2() {
+var d = 0;
+var divs = document.getElementsByTagName('a');
+var i = divs.length;
+while (i--) {
+    var k=divs[i].getAttribute("href");
+    if (k &&divs[i].id != "dl-button"&&divs[i].parentNode.parentNode.getAttribute("class")!= "simplePagerNav") {
+        divs[i].setAttribute("onclick", "tss("+i+",0,'"+k+"');" );
+        if ( divs[i].parentNode.parentNode.parentNode.getAttribute("class")== "page-container") {
+            divs[i].setAttribute("onclick", "location.href = 'https://hitomi.la"+k+"';" );
+        }
+        if (divs[i].parentNode.parentNode.parentNode.getAttribute("class")!= "page-container"&&divs[i].parentNode.tagName!="DIV"&&divs[i].href!="/")
+        {
+            if (k.indexOf("galleries")!=-1) {
+                var b=k.split("galleries");
+                divs[i].insertBefore( document.createElement("span"),divs[i].firstChild);
+                j=divs[i].firstChild;
+                j.innerHTML="(R) ";
+                j.setAttribute("onclick","tss("+i+",2,'"+k+"'); event.stopPropagation();");
+            }
+            if (k.indexOf("-all-")!=-1) {
+                b =k.split("-all-");
+                divs[i].insertBefore( document.createElement("span"),divs[i].firstChild);
+                j=divs[i].firstChild;
+                j.innerHTML="(K) ";
+                j.setAttribute("onclick","tss("+i+",1,'"+k+"'); event.stopPropagation();");
+             }
+             d=0;
+        }
+        else
+        {
+             d=1;
+divs[i].outerHTML="<span"+divs[i].outerHTML.substring(2,divs[i].outerHTML.length-2)+"span>";
+         }
+    var inp = document.createElement("input");
+    var inq = document.createElement("label");
+    var tx = document.createTextNode("N");
+    inp.type = "checkbox";
+    inq.setAttribute("style","display:inline");
+    if (d==1||divs[i].parentNode.parentNode.parentNode.parentNode.class== "page-content") {
+         inq.setAttribute("style","display:none");
+    }
+    inp.name = "input-"+i;
+    inp.setAttribute("onclick","event.stopPropagation();");
+    inp.setAttribute("style","vertical-align:middle");
+    inq.setAttribute("onclick","kxx("+i+"); event.stopPropagation();");
+    inq.appendChild(tx);
+    inq.appendChild(inp);
+    divs[i].insertBefore(inq,divs[i].firstChild);
+    divs[i].removeAttribute("href");
+    }
+}
+divs=document.getElementsByClassName( "page-content")[0].getElementsByTagName("label");
+i=divs.length;
+while (i--) {
+divs[i].setAttribute("style","display:none");
+}
 }

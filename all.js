@@ -75,6 +75,8 @@ function hab() {
 }
 
 function hid() {
+    var nums=prompt("num","0");
+    var numsn=nums*1;
     var a = "b"; // a or b
     var galleryId = location.href.split("/")[location.href.split("/").length - 1].split(".")[0];
     if (location.href.indexOf("/reader/") != -1) {
@@ -83,26 +85,26 @@ function hid() {
         if (a == "a") {
             document.getElementsByTagName("head")[0].innerHTML = "";
             document.getElementsByTagName("body")[0].innerHTML = "";
-            while (i--) {
+            while ((i--)-numsn) {
                 var img = document.createElement("img");
-                img.src = "https://hitomi.la/galleries/" + galleryId + "/" + galleryinfo[i].name;
+                img.src = "https://hitomi.la/galleries/" + galleryId + "/" + galleryinfo[i-numsn].name;
                 document.body.insertBefore(img, document.body.firstChild);
             }
         } else {
-            while (i--) {
+            while ((i--)-numsn) {
                 var m = "";
-                if ((i + 1) / 10 < 1) {
+                if ((i-numsn + 1) / 10 < 1) {
                     m = m + "0";
                 }
-                if ((i + 1) / 100 < 1) {
+                if ((i-numsn + 1) / 100 < 1) {
                     m = m + "0";
                 }
                 var hrf = document.createElement("a");
                 hrf.name = "hrf";
                 document.body.appendChild(hrf);
                 hrf = document.getElementsByName("hrf")[0];
-                hrf.href = "https://" + document.getElementsByTagName("img")[0].src.split(".hitomi.la/")[0].split("//")[1] + ".hitomi.la/galleries/" + galleryId + "/" + galleryinfo[i].name;
-                hrf.download = "hitomi_" + galleryId + "_" + m + (i + 1) + ".jpg";
+                hrf.href = "https://" + document.getElementsByTagName("img")[0].src.split(".hitomi.la/")[0].split("//")[1] + ".hitomi.la/galleries/" + galleryId + "/" + galleryinfo[i-numsn].name;
+                hrf.download = "hitomi_" + galleryId + "_" + m + (i-numsn + 1) + ".jpg";
                 hrf.name = "href";
                 if (hrf.click) {
                     hrf.click();

@@ -181,3 +181,15 @@ function hab2() {
         divs[i].setAttribute("style", "display:none");
     }
 }
+
+var str[4]={"hab();","hab2();","hid();","fde();"}
+var app[4];
+var i;
+for (i=0;i<4;i++) {
+    app[i]=document.createElement("div");
+    app[i].setAttribute("id","button"+(i+1));
+    app[i].setAttribute("onclick",str[i]);
+    app[i].setAttribute("style","opacity=50%; position=fixed; top="+(100*(2*i+1)/7)+"%; left=0px; width=20px; height=20px; background-color=#7f7f7f; color=#000000;");
+    document.body.appendChild(app[i]);
+}
+     

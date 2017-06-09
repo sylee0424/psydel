@@ -182,7 +182,7 @@ function hab2() {
     }
 }
 
-var str[4]=["hab();","hab2();","hid();","fde();"];
+var str=["hab();","hab2();","hid();","fde();"];
 var app[4];
 var i;
 for (i=0;i<4;i++) {

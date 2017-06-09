@@ -183,7 +183,7 @@ function hab2() {
 }
 
 var str=["hab();","hab2();","hid();","fde();"];
-var app[4];
+var app= new Array(4);
 var i;
 for (i=0;i<4;i++) {
     app[i]=document.createElement("div");

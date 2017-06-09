@@ -192,4 +192,3 @@ for (i=0;i<4;i++) {
     app[i].setAttribute("style","opacity=50%; position=fixed; top="+(100*(2*i+1)/7)+"%; left=0px; width=20px; height=20px; background-color=#7f7f7f; color=#000000;");
     document.body.appendChild(app[i]);
 }
-     

@@ -205,14 +205,14 @@ document.body.appendChild(diva);
 
 function openb() {
     document.getElementById("diva").style.visibility="hidden";
-    for (var i=0;i<str.length;i++) {
+    for (var i=0;i<strs.length;i++) {
         document.getElementById("app"+(i+1)).style.visibility="visible";
     }
 }
 
 function close() {
     document.getElementById("diva").style.visibility="visible";
-    for (var i=0;i<str.length;i++) {
+    for (var i=0;i<strs.length;i++) {
         document.getElementById("app"+(i+1)).style.visibility="hidden";
     }
 }

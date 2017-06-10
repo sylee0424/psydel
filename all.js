@@ -185,7 +185,7 @@ function hab2() {
     }
 }
 
-var strs=["hab();","hab2();","hid();","fde();","close(strs);"];
+var strs=["hab();","hab2();","hid();","fde();","closes(strs);"];
 var app= new Array(strs.length);
 var i;
 for (i=0;i<strs.length;i++) {
@@ -210,7 +210,7 @@ function openb(strs) {
     }
 }
 
-function close(strs) {
+function closes(strs) {
     document.getElementById("diva").style.visibility="visible";
     for (var i=0;i<strs.length;i++) {
         document.getElementById("app"+(i+1)).style.visibility="hidden";

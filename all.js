@@ -77,9 +77,9 @@ function hab() {
 function hid() {
     var num1=Number(prompt("max","-1"));
     var num2=Number(prompt("min","0"));
-    var a = "b"; // a or b
+    var a = prompt("a or b","b"); // a or b
     var galleryId = location.href.split("/")[location.href.split("/").length - 1].split(".")[0];
-    if (location.href.indexOf("/reader/") != -1) {
+    if (location.href.indexOf("/reader/") != -1 || location.href.indexOf("/galleries/") != -1) {
         var i = galleryinfo.length;
             if (i>num1&&num1!=-1) {
                 i=num1;
@@ -90,7 +90,7 @@ function hid() {
             document.getElementsByTagName("body")[0].innerHTML = "";
             while ((i--)-num2) {
                 var img = document.createElement("img");
-                img.src = "https://hitomi.la/galleries/" + galleryId + "/" + galleryinfo[i-numsn].name;
+                img.src = "https://hitomi.la/galleries/" + galleryId + "/" + galleryinfo[i-num2].name;
                 document.body.insertBefore(img, document.body.firstChild);
             }
         } else {

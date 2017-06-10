@@ -185,7 +185,7 @@ function hab2() {
     }
 }
 
-var strs=["hab();","hab2();","hid();","fde();","close();"];
+var strs=["hab();","hab2();","hid();","fde();","close(strs);"];
 var app= new Array(strs.length);
 var i;
 for (i=0;i<strs.length;i++) {
@@ -198,19 +198,19 @@ for (i=0;i<strs.length;i++) {
 }
 
 var diva=document.createElement("div");
-diva.setAttribute("onclick","openb();");
+diva.setAttribute("onclick","openb(strs);");
 diva.setAttribute("id","diva");
 diva.setAttribute("style","opacity:0.5; visibility:visible; position:fixed; top:75%; left:0px; width:80px; height:80px; background-color:#7f7f7f; color:#000000;");
 document.body.appendChild(diva);
 
-function openb() {
+function openb(strs) {
     document.getElementById("diva").style.visibility="hidden";
     for (var i=0;i<strs.length;i++) {
         document.getElementById("app"+(i+1)).style.visibility="visible";
     }
 }
 
-function close() {
+function close(strs) {
     document.getElementById("diva").style.visibility="visible";
     for (var i=0;i<strs.length;i++) {
         document.getElementById("app"+(i+1)).style.visibility="hidden";

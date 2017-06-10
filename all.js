@@ -192,7 +192,7 @@ for (i=0;i<strs.length;i++) {
     app[i]=document.createElement("div");
     app[i].setAttribute("onclick",strs[i]);
     app[i].setAttribute("id","app"+(i+1));
-    app[i].setAttribute("style","visibility:hidden; position:fixed; top:"+(100*(2*i)/strs.length*2+1)+"%; left:0px; width:80px; height:80px; background-color:#7f7f7f; color:#000000;");
+    app[i].setAttribute("style","visibility:hidden; position:fixed; top:"+(100*(2*i)/(((strs.length)*2)+1))+"%; left:0px; width:80px; height:80px; background-color:#7f7f7f; color:#000000;");
     app[i].appendChild(document.createTextNode(strs[i]));
     document.body.appendChild(app[i]);
 }

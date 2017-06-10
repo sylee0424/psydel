@@ -188,6 +188,7 @@ var i;
 for (i=0;i<4;i++) {
     app[i]=document.createElement("div");
     app[i].setAttribute("onclick",str[i]);
-    app[i].setAttribute("style","opacity=50%; position=fixed; top="+(100*(2*i+1)/7)+"%; left=0px; width=20px; height=20px; background-color=#7f7f7f; color=#000000;");
+    app[i].setAttribute("style","opacity:0.5; position:fixed; top:"+(100*(2*i+1)/7)+"%; left:0px; width:20px; height:20px; background-color:#7f7f7f; color:#000000;");
+    app[i].appendChild(documet.createTextNode(str[i]));
     document.body.appendChild(app[i]);
 }

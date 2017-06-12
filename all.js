@@ -35,7 +35,24 @@ function hab() {
         }
     }
 
-    function tss(i, j, k) {
+    var scr = document.createElement("script");
+    var inn = document.createTextNode(tss.valueOf());
+    scr.type = "text/javascript";
+    scr.appendChild(inn);
+    document.body.appendChild(scr);
+    
+    scr = document.createElement("script");
+    inn = document.createTextNode(kxx.valueOf());
+    scr.type = "text/javascript";
+    scr.appendChild(inn);
+    document.body.appendChild(scr);
+    document.ontouchstart = "event.stopImmediatePropagation();";
+    document.body.ontouchstart = "event.stopImmediatePropagation();";
+    document.body.onmousedown = "event.stopImmediatePropagation();";
+    window.onbeforeunload = "event.stopImmediatePropagation();";
+}
+
+function tss(i, j, k) {
         var url;
         if (j == 0) {
             url = "https://hitomi.la" + k;
@@ -50,11 +67,6 @@ function hab() {
             location.href = url;
         }
     }
-    var scr = document.createElement("script");
-    var inn = document.createTextNode(tss.valueOf());
-    scr.type = "text/javascript";
-    scr.appendChild(inn);
-    document.body.appendChild(scr);
 
     function kxx(i) {
         if (document.getElementsByName("input-" + i)[0].getAttribute('checked') == '1') {
@@ -63,16 +75,6 @@ function hab() {
             document.getElementsByName("input-" + i)[0].setAttribute('checked', '1');
         }
     }
-    scr = document.createElement("script");
-    inn = document.createTextNode(kxx.valueOf());
-    scr.type = "text/javascript";
-    scr.appendChild(inn);
-    document.body.appendChild(scr);
-    document.ontouchstart = "event.stopImmediatePropagation();";
-    document.body.ontouchstart = "event.stopImmediatePropagation();";
-    document.body.onmousedown = "event.stopImmediatePropagation();";
-    window.onbeforeunload = "event.stopImmediatePropagation();";
-}
 
 function hid() {
     var num1=Number(prompt("max","-1"));

@@ -53,28 +53,28 @@ function hab() {
 }
 
 function tss(i, j, k) {
-        var url;
-        if (j == 0) {
-            url = "https://hitomi.la" + k;
-        } else if (j == 1) {
-            url = "https://hitomi.la" + k.split("-all-")[0] + "-korean-" + k.split("-all-")[1];
-        } else {
-            url = "https://hitomi.la" + k.split("galleries")[0] + "reader" + k.split("galleries")[1] + "#1";
-        }
-        if (document.getElementsByName("input-" + i)[0].checked == "1") {
-            window.open(url)
-        } else {
-            location.href = url;
-        }
+    var url;
+    if (j == 0) {
+        url = "https://hitomi.la" + k;
+    } else if (j == 1) {
+        url = "https://hitomi.la" + k.split("-all-")[0] + "-korean-" + k.split("-all-")[1];
+    } else {
+        url = "https://hitomi.la" + k.split("galleries")[0] + "reader" + k.split("galleries")[1] + "#1";
     }
+    if (document.getElementsByName("input-" + i)[0].checked == "1") {
+        window.open(url)
+    } else {
+        location.href = url;
+    }
+}
 
-    function kxx(i) {
-        if (document.getElementsByName("input-" + i)[0].getAttribute('checked') == '1') {
-            document.getElementsByName("input-" + i)[0].setAttribute('checked', '0');
-        } else {
-            document.getElementsByName("input-" + i)[0].setAttribute('checked', '1');
-        }
+function kxx(i) {
+    if (document.getElementsByName("input-" + i)[0].getAttribute('checked') == '1') {
+        document.getElementsByName("input-" + i)[0].setAttribute('checked', '0');
+    } else {
+        document.getElementsByName("input-" + i)[0].setAttribute('checked', '1');
     }
+}
 
 function hid() {
     var num1=Number(prompt("max","-1"));

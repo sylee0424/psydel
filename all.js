@@ -188,7 +188,7 @@ function hab2() {
 }
 
 var strs=["hab();","hab2();","hid();","fde();"];
-var acts=["next();","previous();","closes();" "openb();"];
+var acts=["next();","previous();","closes();","openb();"];
 var app= new Array(strs.length);
 var i,k;
 for (i=0;i<strs.length;i++) {

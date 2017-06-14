@@ -284,14 +284,14 @@ function previous() {
 
 function openb() {
     document.getElementById("diva").style.visibility="hidden";
-    for (var i=0;i<strs.length+1;i++) {
+    for (var i=0;i<strs.length+3;i++) {
         document.getElementById("app"+(i+1)).style.visibility="visible";
     }
 }
 
 function closes() {
     document.getElementById("diva").style.visibility="visible";
-    for (var i=0;i<strs.length+1;i++) {
+    for (var i=0;i<strs.length+3;i++) {
         document.getElementById("app"+(i+1)).style.visibility="hidden";
     }
 }

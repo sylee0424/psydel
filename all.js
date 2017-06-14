@@ -233,7 +233,7 @@ else {
         document.body.appendChild(app[i]);
     }
     var asd=document.createElement("div");
-    asd.setAttribute("onclick",strs[i]);
+    asd.setAttribute("onclick",acts[2]);
     asd.setAttribute("id","app"+(strs.length+1));
     asd.setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(strs.length*2)/(strs.length*2+1))+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
     asd.appendChild(document.createTextNode(acts[2]));

@@ -191,14 +191,15 @@ var strs=["hab();","hab2();","hid();","fde();"];
 var acts=["next();","previous();","closes();","openb();"];
 var app= new Array(strs.length);
 var i,k,l;
-l="a";
+l="b";
 
-if (l="b") {
+if (l=="b") {
 
     for (i=0;i<strs.length;i++) {
         app[i]=document.createElement("div");
         app[i].setAttribute("onclick",strs[i]);
         app[i].setAttribute("id","app"+(i+1));
+        app[i].setAttribute("class","pages"+parseInt(i/3) );
         app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
         app[i].appendChild(document.createTextNode(strs[i]));
         document.body.appendChild(app[i]);
@@ -249,36 +250,28 @@ document.body.appendChild(diva);
 var pages=0;
 
 function next() {
+    var app=document.getElementsByClassName("pages"+pages);
     pages++;
-    for (var i=(pages*3);i<(pages*3)+3;i++) {
-        if (i-2>0) {
-            document.getElementById("app"+(i-2)).style.visibility="hidden";
-            document.getElementById("app"+(i+1)).style.visibility="visible";
-        }
-        else {
-            document.getElementById("app"+(strs.length+i-2)).style.visibility="hidden";
-            document.getElementById("app"+(i+1)).style.visibility="visible";
-        }
-    }
-    if (pages*3>strs.length+3) {
+    if (((strs.length-1)/3)<pages) {
         pages=0;
+    }
+    var app2=document.getElementsByClassName("pages"+pages);
+    for (var i=0;i<3;i++) {
+        app[i].style.visibility="hidden";
+        app2[i].style.visibility="visible";
     }
 }
 
 function previous() {
-    for (var i=(pages*3);i<(pages*3)+3;i++) {
-        if (i+1<strs.length) {
-            document.getElementById("app"+(i-2)).style.visibility="visible";
-            document.getElementById("app"+(i+1)).style.visibility="hidden";
-        }
-        else {
-            document.getElementById("app"+(i-2)).style.visibility="visible";
-            document.getElementById("app"+(i-(pages*3)+1)).style.visibility="hidden";
-        }
-    }
+    var app=document.getElementsByClassName("pages"+pages);
     pages--;
-    if (pages<0) {
-        pages=parseInt(str.length/3)
+    if (0>pages) {
+        pages=parseInt((strs.length-1)/3);
+    }
+    var app2=document.getElementsByClassName("pages"+pages);
+    for (var i=0;i<3;i++) {
+        app[i].style.visibility="visible";
+        app2[i].style.visibility="hidden";
     }
 }
 

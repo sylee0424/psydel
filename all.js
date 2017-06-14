@@ -264,7 +264,7 @@ function next() {
 
 function previous() {
     var app=document.getElementsByClassName("pages"+pages);
-    pages--;
+    pages=pages-1;
     if (0>pages) {
         pages=parseInt((strs.length-1)/3);
     }

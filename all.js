@@ -281,13 +281,6 @@ function previous() {
 
 function openb() {
     document.getElementById("diva").style.visibility="hidden";
-    var asdf;
-    if (l=="b") {
-        asdf=3;
-    }
-    else {
-        asdf=strs.length+3;
-    }
     for (var i=0;i<strs.length+3;i++) {
         document.getElementById("app"+(i+1)).style.visibility="visible";
     }

@@ -256,8 +256,10 @@ function next() {
         pages=0;
     }
     var app2=document.getElementsByClassName("pages"+pages);
-    for (var i=0;i<3;i++) {
+    for (var i=0;i<app.length;i++) {
         app[i].style.visibility="hidden";
+    }
+    for (var i=0;i<app2.length;i++) {
         app2[i].style.visibility="visible";
     }
 }
@@ -269,8 +271,10 @@ function previous() {
         pages=parseInt((strs.length-1)/3);
     }
     var app2=document.getElementsByClassName("pages"+pages);
-    for (var i=0;i<3;i++) {
+    for (var i=0;i<app.length;i++) {
         app[i].style.visibility="visible";
+    }
+    for (var i=0;i<app2.length;i++) {
         app2[i].style.visibility="hidden";
     }
 }

@@ -199,7 +199,7 @@ if (l=="b") {
         app[i]=document.createElement("div");
         app[i].setAttribute("onclick",strs[i]);
         app[i].setAttribute("id","app"+(i+1));
-        app[i].setAttribute("class","pages"+parseInt(i/3) );
+        app[i].className="pages"+parseInt(i/3);
         app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
         app[i].appendChild(document.createTextNode(strs[i]));
         document.body.appendChild(app[i]);

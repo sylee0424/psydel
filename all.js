@@ -190,32 +190,53 @@ function hab2() {
 var strs=["hab();","hab2();","hid();","fde();"];
 var acts=["next();","previous();","closes();","openb();"];
 var app= new Array(strs.length);
-var i,k;
-for (i=0;i<strs.length;i++) {
-    app[i]=document.createElement("div");
-    app[i].setAttribute("onclick",strs[i]);
-    app[i].setAttribute("id","app"+(i+1));
-    app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
-    app[i].appendChild(document.createTextNode(strs[i]));
-    document.body.appendChild(app[i]);
+var i,k,l;
+l="a";
+
+if (l="b") {
+
+    for (i=0;i<strs.length;i++) {
+        app[i]=document.createElement("div");
+        app[i].setAttribute("onclick",strs[i]);
+        app[i].setAttribute("id","app"+(i+1));
+        app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
+        app[i].appendChild(document.createTextNode(strs[i]));
+        document.body.appendChild(app[i]);
+    }
+
+    for (i=0;i<acts.length-1;i++) {
+        app[i]=document.createElement("div");
+        app[i].setAttribute("onclick",acts[i]);
+        app[i].setAttribute("id","app"+(i+1+strs.length));
+        if (i==0) {
+            k=0;
+        }
+        else if (i==1) {
+            k=4;
+        }
+        else {
+            k=5;
+        }
+        app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*k)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
+        app[i].appendChild(document.createTextNode(acts[i]));
+        document.body.appendChild(app[i]);
+    }
 }
 
-for (i=0;i<acts.length-1;i++) {
-    app[i]=document.createElement("div");
-    app[i].setAttribute("onclick",acts[i]);
-    app[i].setAttribute("id","app"+(i+1));
-    if (i==0) {
-        k=0;
+else {
+    for (i=0;i<strs.length;i++) {
+        app[i]=document.createElement("div");
+        app[i].setAttribute("onclick",strs[i]);
+        app[i].setAttribute("id","app"+(i+1));
+        app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*i)/(strs.length*2+1))+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
+        app[i].appendChild(document.createTextNode(strs[i]));
+        document.body.appendChild(app[i]);
     }
-    else if (i==1) {
-        k=4;
-    }
-    else {
-        k=5;
-    }
-    app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*k)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
-    app[i].appendChild(document.createTextNode(acts[i]));
-    document.body.appendChild(app[i]);
+    var asd=document.createElement("div");
+    asd.setAttribute("onclick",strs[i]);
+    asd.setAttribute("id","app"+(strs.length+1));
+    asd.setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(strs.length*2)/(strs.length*2+1))+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
+    asd.appendChild(document.createTextNode(acts[2]));
 }
 
 var diva=document.createElement("div");
@@ -228,6 +249,7 @@ document.body.appendChild(diva);
 var pages=0;
 
 function next() {
+    pages++;
     for (var i=(pages*3);i<(pages*3)+3;i++) {
         if (i-2>0) {
             document.getElementById("app"+(i-2)).style.visibility="hidden";
@@ -237,6 +259,9 @@ function next() {
             document.getElementById("app"+(strs.length+i-2)).style.visibility="hidden";
             document.getElementById("app"+(i+1)).style.visibility="visible";
         }
+    }
+    if (pages*3>strs.length+3) {
+        pages=0;
     }
 }
 
@@ -251,18 +276,32 @@ function previous() {
             document.getElementById("app"+(i-(pages*3)+1)).style.visibility="hidden";
         }
     }
+    pages--;
+    if (pages<0) {
+        pages=parseInt(str.length/3)
+    }
 }
 
 function openb() {
     document.getElementById("diva").style.visibility="hidden";
-    for (var i=0;i<3;i++) {
+    for (var i=0;i<strs.length+1;i++) {
         document.getElementById("app"+(i+1)).style.visibility="visible";
     }
 }
 
 function closes() {
     document.getElementById("diva").style.visibility="visible";
-    for (var i=0;i<strs.length;i++) {
+    for (var i=0;i<strs.length+1;i++) {
         document.getElementById("app"+(i+1)).style.visibility="hidden";
     }
+}
+
+function toggle() {
+    if (l=="a") {
+        l="b";
+    }
+    else {
+        l="a";
+    }
+    l="b";
 }

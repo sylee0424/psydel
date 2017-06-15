@@ -190,41 +190,35 @@ function hab2() {
 var strs=["hab();","hab2();","hid();","fde();"];
 var acts=["next();","previous();","closes();","openb();"];
 var app= new Array(strs.length);
-var i,k,l;
-l="b";
-
-if (l=="b") {
-
-    for (i=0;i<strs.length;i++) {
-        app[i]=document.createElement("div");
-        app[i].setAttribute("onclick",strs[i]);
-        app[i].setAttribute("id","app"+(i+1));
-        app[i].className="pages"+parseInt(i/3);
-        app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
-        app[i].appendChild(document.createTextNode(strs[i]));
-        document.body.appendChild(app[i]);
-    }
-
-    for (i=0;i<acts.length-1;i++) {
-        app[i]=document.createElement("div");
-        app[i].setAttribute("onclick",acts[i]);
-        app[i].setAttribute("id","app"+(i+1+strs.length));
-        if (i==0) {
-            k=0;
-        }
-        else if (i==1) {
-            k=4;
-        }
-        else {
-            k=5;
-        }
-        app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*k)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
-        app[i].appendChild(document.createTextNode(acts[i]));
-        document.body.appendChild(app[i]);
-    }
+for (i=0;i<strs.length;i++) {
+    app[i]=document.createElement("div");
+    app[i].setAttribute("onclick",strs[i]);
+    app[i].setAttribute("id","app"+(i+1));
+    app[i].className="pages"+parseInt(i/3);
+    app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
+    app[i].appendChild(document.createTextNode(strs[i]));
+    document.body.appendChild(app[i]);
 }
 
-else {
+for (i=0;i<acts.length-1;i++) {
+    app[i]=document.createElement("div");
+    app[i].setAttribute("onclick",acts[i]);
+    app[i].setAttribute("id","app"+(i+1+strs.length));
+    if (i==0) {
+        k=0;
+    }
+    else if (i==1) {
+        k=4;
+    }
+    else {
+        k=5;
+    }
+    app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*k)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
+    app[i].appendChild(document.createTextNode(acts[i]));
+    document.body.appendChild(app[i]);
+}
+
+/*
     for (i=0;i<strs.length;i++) {
         app[i]=document.createElement("div");
         app[i].setAttribute("onclick",strs[i]);
@@ -238,7 +232,7 @@ else {
     asd.setAttribute("id","app"+(strs.length+1));
     asd.setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(strs.length*2)/(strs.length*2+1))+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
     asd.appendChild(document.createTextNode(acts[2]));
-}
+*/
 
 var diva=document.createElement("div");
 diva.setAttribute("onclick",acts[3]);
@@ -281,8 +275,8 @@ function previous() {
 
 function openb() {
     document.getElementById("diva").style.visibility="hidden";
-    for (var i=0;i<strs.length+3;i++) {
-        document.getElementById("app"+(i+1)).style.visibility="visible";
+    for (var i=0;i<document.getElementsByclass("pages0").length;i++) {
+        document.getElementsByclass("pages0")[i].style.visibility="visible";
     }
 }
 
@@ -291,14 +285,4 @@ function closes() {
     for (var i=0;i<strs.length+3;i++) {
         document.getElementById("app"+(i+1)).style.visibility="hidden";
     }
-}
-
-function toggle() {
-    if (l=="a") {
-        l="b";
-    }
-    else {
-        l="a";
-    }
-    l="b";
 }

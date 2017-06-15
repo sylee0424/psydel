@@ -245,8 +245,8 @@ var pages=0;
 
 function next() {
     var app=document.getElementsByClassName("pages"+pages);
-    pages++;
-    if (((strs.length-1)/3)<pages) {
+    pages=pages+1;
+    if (parseInt((strs.length-1)/3)<pages) {
         pages=0;
     }
     var app2=document.getElementsByClassName("pages"+pages);

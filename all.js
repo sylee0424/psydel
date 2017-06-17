@@ -292,7 +292,7 @@ function closes() {
 }
 
 function led() {
-    var br = documemt.getElementById("view_content").getElementsByTagName("div");
+    var br = document.getElementById("view_content").getElementsByTagName("div");
     for (var i=0;i<br.length;i++) {
         br[i].style.display="inline"
     }

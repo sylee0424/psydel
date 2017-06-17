@@ -292,11 +292,9 @@ function closes() {
 }
 
 function led() {
-    var br = documemt.getElementById("view_content").getElementsByTagName("br");
+    var br = documemt.getElementById("view_content").getElementsByTagName("div");
     for (var i=0;i<br.length;i++) {
-        if (br[i].nextSibling.nextSibling.tagName=="div") {
-            br[i].parentNode.removeChild(br[i]);
-        }
+        br[i].style.display="inline"
     }
 }
 

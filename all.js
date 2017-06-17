@@ -267,10 +267,10 @@ function previous() {
     }
     var app2=document.getElementsByClassName("pages"+pages);
     for (var i=0;i<app.length;i++) {
-        app[i].style.visibility="visible";
+        app[i].style.visibility="hidden";
     }
     for (var i=0;i<app2.length;i++) {
-        app2[i].style.visibility="hidden";
+        app2[i].style.visibility="visible";
     }
 }
 

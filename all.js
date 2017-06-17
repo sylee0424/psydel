@@ -187,7 +187,7 @@ function hab2() {
     }
 }
 
-var strs=["hab();","hab2();","hid();","fde();"];
+var strs=["hab();","hab2();","hid();","fde();","lef();"];
 var acts=["next();","previous();","closes();","openb();"];
 var app= new Array(strs.length);
 for (i=0;i<strs.length;i++) {
@@ -289,4 +289,14 @@ function closes() {
     for (var i=0;i<strs.length+3;i++) {
         document.getElementById("app"+(i+1)).style.visibility="hidden";
     }
+}
+
+function lef() {
+    var br = documemt.getElementById("view_content").getElementsByTagName("br");
+    for (var i=0;i<br.length;i++) {
+        if (br[i].nextSibling.nextSibling.tagName=="div") {
+            br[i].parentNode.removeChild(br[i]);
+        }
+    }
+}
 }

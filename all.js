@@ -299,3 +299,7 @@ function led() {
         }
     }
 }
+
+function alts() {
+    alert("test")
+}

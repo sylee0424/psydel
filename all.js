@@ -187,7 +187,7 @@ function hab2() {
     }
 }
 
-var strs=["hab();","hab2();","hid();","fde();","led();"];
+var strs=["hab();","hab2();","hid();","fde();","led();","alts();"];
 var acts=["next();","previous();","closes();","openb();"];
 var app= new Array(strs.length);
 for (i=0;i<strs.length;i++) {

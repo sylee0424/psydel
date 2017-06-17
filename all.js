@@ -275,7 +275,7 @@ function previous() {
 
 function openb() {
     document.getElementById("diva").style.visibility="hidden";
-    for (var i=0;i<document.getElementsByclass("pages0").length;i++) {
+    for (var i=0;i<document.getElementsByClassName("pages0").length;i++) {
         document.getElementsByclass("pages0")[i].style.visibility="visible";
     }
 }

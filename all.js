@@ -204,6 +204,7 @@ for (i=0;i<acts.length-1;i++) {
     app[i]=document.createElement("div");
     app[i].setAttribute("onclick",acts[i]);
     app[i].setAttribute("id","app"+(i+1+strs.length));
+    app[i].className="acts";
     if (i==0) {
         k=0;
     }
@@ -235,10 +236,10 @@ for (i=0;i<acts.length-1;i++) {
 */
 
 var diva=document.createElement("div");
-diva.setAttribute("onclick",acts[3]);
+diva.setAttribute("onclick",acts[acts.length-1]);
 diva.setAttribute("id","diva");
 diva.setAttribute("style","opacity:0.5; visibility:visible; position:fixed; top:75%; left:0px; width:80px; border-width:1px; border-color:#000000; height:80px; background-color:#ffffff; color:#000000; display:inline");
-diva.appendChild(document.createTextNode(acts[3]));
+diva.appendChild(document.createTextNode(acts[acts.length-1]));
 document.body.appendChild(diva);
 
 var pages=0;
@@ -277,6 +278,9 @@ function openb() {
     document.getElementById("diva").style.visibility="hidden";
     for (var i=0;i<document.getElementsByClassName("pages0").length;i++) {
         document.getElementsByClassName("pages0")[i].style.visibility="visible";
+    }
+    for (i=0;i<document.getElementsByClassName("acts").length;i++) {
+        document.getElementsByClassName("acts")[i].style.visibility="visible";
     }
 }
 

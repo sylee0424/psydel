@@ -187,7 +187,7 @@ function hab2() {
     }
 }
 
-var strs=["hab();","hab2();","hid();","fde();","lef();"];
+var strs=["hab();","hab2();","hid();","fde();","led();"];
 var acts=["next();","previous();","closes();","openb();"];
 var app= new Array(strs.length);
 for (i=0;i<strs.length;i++) {
@@ -291,12 +291,11 @@ function closes() {
     }
 }
 
-function lef() {
+function led() {
     var br = documemt.getElementById("view_content").getElementsByTagName("br");
     for (var i=0;i<br.length;i++) {
         if (br[i].nextSibling.nextSibling.tagName=="div") {
             br[i].parentNode.removeChild(br[i]);
         }
     }
-}
 }

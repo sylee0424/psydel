@@ -194,7 +194,7 @@ for (i=0;i<strs.length;i++) {
     app[i]=document.createElement("div");
     app[i].setAttribute("onclick",strs[i]);
     app[i].setAttribute("id","app"+(i+1));
-    app[i].className="pages"+parseInt(i/3);
+    app[i].className="pages"+parseInt(i/3)+" button";
     app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
     app[i].appendChild(document.createTextNode(strs[i]));
     document.body.appendChild(app[i]);
@@ -204,7 +204,7 @@ for (i=0;i<acts.length-1;i++) {
     app[i]=document.createElement("div");
     app[i].setAttribute("onclick",acts[i]);
     app[i].setAttribute("id","app"+(i+1+strs.length));
-    app[i].className="acts";
+    app[i].className="acts button";
     if (i==0) {
         k=0;
     }
@@ -238,6 +238,7 @@ for (i=0;i<acts.length-1;i++) {
 var diva=document.createElement("div");
 diva.setAttribute("onclick",acts[acts.length-1]);
 diva.setAttribute("id","diva");
+diva.className="offbutton";
 diva.setAttribute("style","opacity:0.5; visibility:visible; position:fixed; top:75%; left:0px; width:80px; border-width:1px; border-color:#000000; height:80px; background-color:#ffffff; color:#000000; display:inline");
 diva.appendChild(document.createTextNode(acts[acts.length-1]));
 document.body.appendChild(diva);
@@ -275,7 +276,7 @@ function previous() {
 }
 
 function openb() {
-    document.getElementById("diva").style.visibility="hidden";
+    document.getElementsByClassName("offbutton")[0].style.visibility="hidden";
     for (var i=0;i<document.getElementsByClassName("pages0").length;i++) {
         document.getElementsByClassName("pages0")[i].style.visibility="visible";
     }
@@ -285,9 +286,9 @@ function openb() {
 }
 
 function closes() {
-    document.getElementById("diva").style.visibility="visible";
-    for (var i=0;i<strs.length+3;i++) {
-        document.getElementById("app"+(i+1)).style.visibility="hidden";
+    document.getElementsByClassName("offbutton")[0].style.visibility="visible";
+    for (var i=0;i<document.getElementsByClassName("button").length;i++) {
+        document.getElementsByClassName("button")[i].style.visibility="hidden";
     }
 }
 

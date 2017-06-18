@@ -194,7 +194,7 @@ for (i=0;i<strs.length;i++) {
     app[i]=document.createElement("div");
     app[i].setAttribute("onclick",strs[i]+"();");
     app[i].className="pages"+parseInt(i/3)+" button";
-    app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
+    app[i].setAttribute("style","visibility:hidden; border:5px solid #000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
     app[i].appendChild(document.createTextNode(strs[i]));
     document.body.appendChild(app[i]);
 }
@@ -212,7 +212,7 @@ for (i=0;i<acts.length-1;i++) {
     else {
         k=5;
     }
-    app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*k)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
+    app[i].setAttribute("style","visibility:hidden; border:5px solid #000000; position:fixed; top:"+(100*(2*k)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
     app[i].appendChild(document.createTextNode(acts[i]));
     document.body.appendChild(app[i]);
 }
@@ -236,7 +236,7 @@ for (i=0;i<acts.length-1;i++) {
 var diva=document.createElement("div");
 diva.setAttribute("onclick",acts[acts.length-1]+"();");
 diva.className="offbutton";
-diva.setAttribute("style","opacity:0.5; visibility:visible; position:fixed; top:75%; left:0px; width:80px; border-width:1px; border-color:#000000; height:80px; background-color:#ffffff; color:#000000; display:inline");
+diva.setAttribute("style","opacity:0.5; visibility:visible; position:fixed; top:75%; left:0px; width:80px; border:5px solid #000000; height:80px; background-color:#ffffff; color:#000000; display:inline");
 diva.appendChild(document.createTextNode(acts[acts.length-1]));
 document.body.appendChild(diva);
 

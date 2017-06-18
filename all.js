@@ -193,6 +193,8 @@ var app= new Array(strs.length);
 for (i=0;i<strs.length;i++) {
     app[i]=document.createElement("div");
     app[i].setAttribute("onclick",strs[i]+"();");
+    app[i].setAttribute("onmousedown","this.style.background-color='gold'");
+    app[i].setAttribute("onmouseup","this.style.background-color='#000000'");
     app[i].className="pages"+parseInt(i/3)+" button";
     app[i].setAttribute("style","visibility:hidden; border:5px solid #000000; position:fixed; top:"+(100*(2*(i%3)+2)/11)+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
     app[i].appendChild(document.createTextNode(strs[i]));
@@ -201,6 +203,8 @@ for (i=0;i<strs.length;i++) {
 
 for (i=0;i<acts.length-1;i++) {
     app[i]=document.createElement("div");
+    app[i].setAttribute("onmousedown","this.style.background-color='gold'");
+    app[i].setAttribute("onmouseup","this.style.background-color='#000000'");
     app[i].setAttribute("onclick",acts[i]+"();");
     app[i].className="acts button";
     if (i==0) {

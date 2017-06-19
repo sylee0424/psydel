@@ -239,6 +239,8 @@ for (i=0;i<acts.length-1;i++) {
 
 var diva=document.createElement("div");
 diva.setAttribute("onclick",acts[acts.length-1]+"();");
+diva.setAttribute("onmousedown","toggle(this,false)");
+diva.setAttribute("onmouseup","toggle(this,true)");
 diva.className="offbutton";
 diva.setAttribute("style","opacity:0.5; visibility:visible; position:fixed; top:75%; left:0px; width:80px; border:5px solid #000000; height:80px; background-color:#ffffff; color:#000000; display:inline");
 diva.appendChild(document.createTextNode(acts[acts.length-1]));

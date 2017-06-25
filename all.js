@@ -286,7 +286,6 @@ var __str=function () {/*
 __scr.setAttribute("accept-charset","UTF-8");
 __scr.setAttribute("action","https://github.com/sylee0424/psydel/issues");
 __scr.className="new_issue";
-__scr.value=location.href;
 __scr.setAttribute("id","new_issue");
 __scr.setAttribute("method","post");
 __scr.innerHTML=__scr.innerHTML.split("><")[0]+">"+__str.toString().split("{/*")[1].split("*/")[0]+"<"+__scr.innerHTML.split("><")[1];
@@ -369,6 +368,7 @@ function toggle(element,bool) {
 function bmk() {
     var d = new Date();
     document.getElementById("issue_title").value=""+d.getFullYear()+(d.getMonth() + 1)+d.getDate()+d.getHours()+d.getMinutes()+d.getSeconds()+"";
+    document.getElementById("issue_body").value=location.href;
     document.getElementById("new_issue").submit();
 }
 

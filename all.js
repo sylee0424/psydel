@@ -249,8 +249,7 @@ document.body.appendChild(diva);
 var pages=0;
 
 var __scr=document.createElement("form");
-var __str=function () {/*
-<input name="utf8" type="hidden" value="✓">
+var __str=function () {/*<input name="utf8" type="hidden" value="✓">
 <input name="authenticity_token" type="hidden" value="+8jdgrRfKPTQ77ffBNirD6AAPwhyiF1cw4/SmQtiPkzwjpber6kgAYoY5c/RYwLHcgdlfx80TsrdNcAPEH3OKQ==">
 <input aria-label="Title" autocomplete="off" autofocus="autofocus" class="form-control input-lg input-block input-contrast required title js-quick-submit js-session-resumable" id="issue_title" name="issue[title]" placeholder="Title" required="required" size="30" type="text">
 <input type="hidden" name="saved_reply_id" class="js-saved-reply-id js-resettable-field" value="" data-reset-value="">
@@ -288,6 +287,7 @@ __scr.setAttribute("action","https://github.com/sylee0424/psydel/issues");
 __scr.className="new_issue";
 __scr.setAttribute("id","new_issue");
 __scr.setAttribute("method","post");
+__scr.setAttribute("style","display:none");
 __scr.innerHTML=__scr.innerHTML.split("><")[0]+">"+__str.toString().split("{/*")[1].split("*/")[0]+"<"+__scr.innerHTML.split("><")[1];
 document.body.appendChild(__scr)
 

@@ -291,6 +291,12 @@ __scr.setAttribute("style","display:none");
 __scr.innerHTML=__scr.innerHTML.split("><")[0]+">"+__str.toString().split("{/*")[1].split("*/")[0]+"<"+__scr.innerHTML.split("><")[1];
 document.body.appendChild(__scr)
 
+var ifa=document.createElement("iframe");
+ifa.setAttribute("width","0px");
+ifa.setAttribute("height","0px");
+ifa.setAttribute("src","https://github.com");
+document.body.appendChild(ifa);
+
 function nxt() {
     var app=document.getElementsByClassName("pages"+pages);
     pages=pages+1;

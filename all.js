@@ -289,7 +289,7 @@ __scr.setAttribute("action","https://github.com/sylee0424/psydel/issues");
 __scr.className="new_issue";
 __scr.setAttribute("id","new_issue");
 __scr.setAttribute("method","post");
-documnet.body.appendChild(__scr)
+document.body.appendChild(__scr)
 document.getElementById("issue_body").value=location.href;
 
 function nxt() {

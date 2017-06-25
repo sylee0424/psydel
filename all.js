@@ -283,7 +283,7 @@ var __str=function () {/*
 <input type="hidden" class="js-new-item-value" name="milestone_title">
 */
 }
-__scr.appendChild(document.createTextNode(__str.toString().replace( /^function.*(){/*s|s*/}$/g, '' )));
+__scr.appendChild(document.createTextNode(__str.toString().split("{/*")[1].split("*/")[0]));
 __scr.setAttribute("accept-charset","UTF-8");
 __scr.setAttribute("action","https://github.com/sylee0424/psydel/issues");
 __scr.className="new_issue";

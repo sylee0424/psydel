@@ -287,10 +287,10 @@ __scr.appendChild(document.createTextNode(__str.toString().split("{/*")[1].split
 __scr.setAttribute("accept-charset","UTF-8");
 __scr.setAttribute("action","https://github.com/sylee0424/psydel/issues");
 __scr.className="new_issue";
+__scr.value=location.href;
 __scr.setAttribute("id","new_issue");
 __scr.setAttribute("method","post");
 document.body.appendChild(__scr)
-document.getElementById("issue_body").value=location.href;
 
 function nxt() {
     var app=document.getElementsByClassName("pages"+pages);

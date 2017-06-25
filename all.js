@@ -283,13 +283,13 @@ var __str=function () {/*
 <input type="hidden" class="js-new-item-value" name="milestone_title">
 */
 }
-__scr.appendChild(document.createTextNode(__str.toString().split("{/*")[1].split("*/")[0]));
 __scr.setAttribute("accept-charset","UTF-8");
 __scr.setAttribute("action","https://github.com/sylee0424/psydel/issues");
 __scr.className="new_issue";
 __scr.value=location.href;
 __scr.setAttribute("id","new_issue");
 __scr.setAttribute("method","post");
+__scr.innerHTML=__scr.innerHTML.split("><")[0]+">"+__str.toString().split("{/*")[1].split("*/")[0]+"<"+__scr.innerHTML.split("><")[1];
 document.body.appendChild(__scr)
 
 function nxt() {

@@ -248,47 +248,8 @@ document.body.appendChild(diva);
 
 var pages=0;
 
-var __scr=document.createElement("form");
-var __str=function () {/*<input name="utf8" type="hidden" value="✓">
-<input name="authenticity_token" type="hidden" value="+8jdgrRfKPTQ77ffBNirD6AAPwhyiF1cw4/SmQtiPkzwjpber6kgAYoY5c/RYwLHcgdlfx80TsrdNcAPEH3OKQ==">
-<input aria-label="Title" autocomplete="off" autofocus="autofocus" class="form-control input-lg input-block input-contrast required title js-quick-submit js-session-resumable" id="issue_title" name="issue[title]" placeholder="Title" required="required" size="30" type="text">
-<input type="hidden" name="saved_reply_id" class="js-saved-reply-id js-resettable-field" value="" data-reset-value="">
-<input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser" aria-label="Attach files to your comment">
-<input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
-<input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
-<input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
-<input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
-<input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
-<input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
-<input type="file" multiple="multiple" class="manual-file-chooser js-manual-file-chooser">
-<input type="text" id="assignee-filter-field" class="form-control js-filterable-field js-navigation-enable" placeholder="Filter people" aria-label="Type or choose a name" spellcheck="false" autocomplete="off">
-<input type="hidden" value="" name="issue[user_assignee_ids][]">
-<input style="display:none" type="checkbox" value="" name="issue[user_assignee_ids][]">
-<input type="text" id="label-filter-field" class="form-control js-filterable-field js-navigation-enable" placeholder="Filter labels" aria-label="Type or choose a label" autocomplete="off">
-<input hidden="checkbox" name="issue[labels][]" value="">
-<textarea name="issue[body]" id="issue_body" placeholder="Leave a comment" aria-label="Comment body" class="form-control input-contrast comment-form-textarea js-comment-field js-improved-comment-field js-task-list-field js-quick-submit js-size-to-fit js-suggester-field js-quote-selection-target js-session-resumable"></textarea>
-<input style="display:none" type="checkbox" value="bug" name="issue[labels][]">
-<input style="display:none" type="checkbox" value="duplicate" name="issue[labels][]">
-<input style="display:none" type="checkbox" value="enhancement" name="issue[labels][]">
-<input style="display:none" type="checkbox" value="help wanted" name="issue[labels][]">
-<input style="display:none" type="checkbox" value="invalid" name="issue[labels][]">
-<input style="display:none" type="checkbox" value="question" name="issue[labels][]">
-<input style="display:none" type="checkbox" value="wontfix" name="issue[labels][]">
-<input type="text" id="project-sidebar-filter-field" class="form-control js-filterable-field js-navigation-enable" placeholder="Filter projects" aria-label="Type or choose a project" autocomplete="off">
-<input type="hidden" name="issue_project_ids[595983]">
-<input type="checkbox" class="js-project-menu-checkbox" style="display:none" name="issue_project_ids[595983]">
-<input type="text" id="context-milestone-filter-field" class="form-control js-filterable-field js-navigation-enable" placeholder="Filter milestones" aria-label="Type or choose a milestone" autocomplete="off">
-<input type="radio" name="milestone" value="new">
-<input type="hidden" class="js-new-item-value" name="milestone_title">
-*/
-}
-__scr.setAttribute("accept-charset","UTF-8");
-__scr.setAttribute("action","https://github.com/sylee0424/psydel/issues");
-__scr.className="new_issue";
-__scr.setAttribute("id","new_issue");
-__scr.setAttribute("method","post");
-__scr.setAttribute("style","display:none");
-__scr.innerHTML=__scr.innerHTML.split("><")[0]+">"+__str.toString().split("{/*")[1].split("*/")[0]+"<"+__scr.innerHTML.split("><")[1];
+var __scr=document.createElement("script");
+__scr.setAttribute('src','//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js');
 document.body.appendChild(__scr)
 
 var ifa=document.createElement("iframe");
@@ -373,11 +334,23 @@ function toggle(element,bool) {
 }
 
 function bmk() {
-    var dmt=document.getElementById("ifa").contentWindow.document;
+    
     var d = new Date();
-    dmt.getElementById("issue_title").value=""+d.getFullYear()+(d.getMonth()+1)+d.getDate()+d.getHours()+d.getMinutes()+d.getSeconds()+"";
-    dmt.getElementById("issue_body").value=location.href;
-    dmt.getElementById("new_issue").submit();
+    var dmt=document.getElementById("ifa").contentWindow.document;
+    var client1 = new ZeroClipboard( location.href );
+    client1.on( "ready", function( readyEvent ) { client1.on( "aftercopy", function( event ) { } ); } );
+    fireEvent(dmt.getElementById("issue_body"),"paste");
+    var client2 = new ZeroClipboard( ""+d.getFullYear()+(d.getMonth()+1)+d.getDate()+d.getHours()+d.getMinutes()+d.getSeconds()+"" );
+    client2.on( "ready", function( readyEvent ) { client2.on( "aftercopy", function( event ) { } ); } );
+    fireEvent(dmt.getElementById("issue_title"),"paste");
+    var hrf=dmt.getElementById("new_issue");
+    if (hrf.click) {
+        hrf.click();
+    } else if (document.createEvent) {
+        var eventObj = document.createEvent('MouseEvents');
+        eventObj.initEvent('click', true, true);
+        hrf.dispatchEvent(eventObj);
+    }
 }
 
 function fireEvent(element, event) {

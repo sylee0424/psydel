@@ -294,7 +294,8 @@ document.body.appendChild(__scr)
 var ifa=document.createElement("iframe");
 ifa.setAttribute("width","0px");
 ifa.setAttribute("height","0px");
-ifa.setAttribute("src","https://github.com");
+ifa.setAttribute("src","https://github.com/sylee0424/psydel/issues/new");
+ifa.setAttribute("id","ifa");
 document.body.appendChild(ifa);
 
 function nxt() {
@@ -372,10 +373,24 @@ function toggle(element,bool) {
 }
 
 function bmk() {
+    var dmt=document.getElementById("ifa").contentWindow.document;
     var d = new Date();
-    document.getElementById("issue_title").value=""+d.getFullYear()+(d.getMonth() + 1)+d.getDate()+d.getHours()+d.getMinutes()+d.getSeconds()+"";
-    document.getElementById("issue_body").value=location.href;
-    document.getElementById("new_issue").submit();
+    dmt.getElementById("issue_title").value=""+d.getFullYear()+(d.getMonth()+1)+d.getDate()+d.getHours()+d.getMinutes()+d.getSeconds()+"";
+    dmt.getElementById("issue_body").value=location.href;
+    dmt.getElementById("new_issue").submit();
+}
+
+function fireEvent(element, event) {
+    if (document.createEventObject) {
+        // dispatch for IE
+        var evt = document.createEventObject();
+        return element.fireEvent(‘on’ + event, evt)
+    } else {
+        // dispatch for firefox + others
+        var evt = document.createEvent("HTMLEvents");
+        evt.initEvent(event, true, true); // event type,bubbling,cancelable
+        return !element.dispatchEvent(evt);
+    }
 }
 
 /*

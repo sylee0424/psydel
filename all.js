@@ -355,13 +355,12 @@ function bmk() {
 
 function fireEvent(element, event) {
     if (document.createEventObject) {
-        // dispatch for IE
         var evt = document.createEventObject();
-        return element.fireEvent(‘on’ + event, evt);
-    } else {
-        // dispatch for firefox + others
+        return element.fireEvent('on' + event, evt);
+    }
+    else {
         var evt = document.createEvent("HTMLEvents");
-        evt.initEvent(event, true, true); // event type,bubbling,cancelable
+        evt.initEvent(event, true, true);
         return !element.dispatchEvent(evt);
     }
 }

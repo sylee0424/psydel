@@ -361,6 +361,6 @@ function fireEvent(element, event) {
     else {
         var evt = document.createEvent("HTMLEvents");
         evt.initEvent(event, true, true);
-        return !element.dispatchEvent(evt);
+        return !(element.dispatchEvent(evt));
     }
 }

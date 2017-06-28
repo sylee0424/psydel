@@ -253,11 +253,12 @@ __scr.setAttribute('src','//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/Z
 document.body.appendChild(__scr)
 
 var ifa=document.createElement("iframe");
-ifa.setAttribute("width","0px");
-ifa.setAttribute("height","0px");
+ifa.setAttribute("width","500px");
+ifa.setAttribute("height","500px");
 ifa.setAttribute("src","https://github.com/sylee0424/psydel/issues/new");
 ifa.setAttribute("id","ifa");
 document.body.appendChild(ifa);
+document.getElementById("ifa").setAttribute("src","https://github.com/sylee0424/psydel/issues/new");
 
 function nxt() {
     var app=document.getElementsByClassName("pages"+pages);

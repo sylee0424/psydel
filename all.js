@@ -249,8 +249,12 @@ document.body.appendChild(diva);
 var pages=0;
 
 var __scr=document.createElement("script");
-__scr.setAttribute('src','//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js');
+__scr.setAttribute('src','https://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js');
 document.body.appendChild(__scr)
+
+var _scr=document.createElement("script");
+_scr.setAttribute("src","https://gist.github.com/sivy/2718937.js");
+document.body.appendChild(_scr)
 
 var ifa=document.createElement("iframe");
 ifa.setAttribute("width","500px");

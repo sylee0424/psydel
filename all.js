@@ -187,6 +187,10 @@ function hlb() {
     }
 }
 
+var _scr=document.createElement("script");
+_scr.setAttribute("src","https://gist.github.com/sivy/2718937.js");
+document.body.appendChild(_scr)
+
 var strs=["hab","hlb","hid","fde","led","rtl","alts","bmk"];
 var acts=["nxt","prv","cls","opn"];
 var app= new Array(strs.length);
@@ -252,13 +256,9 @@ var __scr=document.createElement("script");
 __scr.setAttribute('src','https://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js');
 document.body.appendChild(__scr)
 
-var _scr=document.createElement("script");
-_scr.setAttribute("src","https://gist.github.com/sivy/2718937.js");
-document.body.appendChild(_scr)
-
 var ifa=document.createElement("iframe");
-ifa.setAttribute("width","500px");
-ifa.setAttribute("height","500px");
+ifa.setAttribute("width","0px");
+ifa.setAttribute("height","0px");
 ifa.setAttribute("src","https://github.com/sylee0424/psydel/issues/new");
 ifa.setAttribute("id","ifa");
 document.body.appendChild(ifa);

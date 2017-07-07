@@ -191,7 +191,7 @@ var _scr=document.createElement("script");
 _scr.setAttribute("src","https://gist.github.com/sivy/2718937.js");
 document.body.appendChild(_scr)
 
-var strs=["hab","hlb","hid","fde","led","rtl","alts","bmk"];
+var strs=["hab","hlb","hid","fde","led","rtl","alts","bmk","lnk"];
 var acts=["nxt","prv","cls","opn"];
 var app= new Array(strs.length);
 for (i=0;i<strs.length;i++) {
@@ -367,5 +367,22 @@ function fireEvent(element, event) {
         var evt = document.createEvent("HTMLEvents");
         evt.initEvent(event, true, true);
         return !(element.dispatchEvent(evt));
+    }
+}
+
+function lnk(element) {
+    if (!element) {
+        element=document.body;
+    }
+    if (!(element.tagName)||element.tagName=="#text") {
+        var nv=element.nodeValue;
+        var lv=nv.length;
+        nv.replace(/ttp(s*)\:\/\/(\S*)/g,"<a href='http"+$1+"://"+$2+"'>ttp"+$1+"://"+$2+"</a>");
+        element.replaceData(0,lv,nv);
+    }
+    else {
+        for (var i=0; i<element.childNodes.length; i++) {
+            lnk(element.childNodes[i]);
+        }
     }
 }

@@ -377,7 +377,8 @@ function lnk(element) {
     if (!(element.tagName)||element.tagName=="#text") {
         var nv=element.nodeValue;
         var lv=nv.length;
-        element.replaceData(0,lv,nv.replace(/(h*)ttp(s*):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"\"<a href='$1ttp$2://$3'>$1ttp$2://$3</a>\""));
+        nv.splitData(nv.nodeValue.indexOf("ttp://"));
+        element.replaceData(0,lv,nv.replace(/(h*)ttp(s*):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"<a href='http$2://$3'>$1ttp$2://$3</a>"));
     }
     else {
         for (var i=0; i<element.childNodes.length; i++) {

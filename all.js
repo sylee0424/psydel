@@ -386,7 +386,7 @@ function lnk(element) {
             aq[i].parentNode.removeChild(aq[i].splitText(nv.indexOf(ss[i])-nv.indexOf(at[i])));
             var a=document.createElement("a");
             a.setAttribute("href",ss[i].replace(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"http$2://$3"));
-            a.appendChild(document.createElement(ss[i]));
+            a.appendChild(document.createTextNode(ss[i]));
             element.parentNode.insertBefore(aq[i+1],a);
         }
         //element.replaceData(0,lv,nv.replace(/(h*)ttp(s*):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"<a href='http$2://$3'>$1ttp$2://$3</a>"));

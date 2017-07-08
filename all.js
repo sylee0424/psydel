@@ -191,7 +191,7 @@ var _scr=document.createElement("script");
 _scr.setAttribute("src","https://gist.github.com/sivy/2718937.js");
 document.body.appendChild(_scr)
 
-var strs=["hab","hlb","hid","fde","led","rtl","alts","bmk","lnk"];
+var strs=["hab","hlb","hid","fde","led","rtl","alts","bmk","lnk","tst"];
 var acts=["nxt","prv","cls","opn"];
 var app= new Array(strs.length);
 for (i=0;i<strs.length;i++) {
@@ -326,7 +326,7 @@ function rtl() {
 }
 
 function alts() {
-    alert("test")
+    alert(c)
 }
 
 function toggle(element,bool) {
@@ -385,4 +385,16 @@ function lnk(element) {
             lnk(element.childNodes[i]);
         }
     }
+}
+var c=0;
+function tst(e) {
+    if (!e) {
+        e=document.body;
+    }
+    if (e.tagName&&e.tagName!="#text") {
+        for (var i=0;i<e.childNodes.length;i++) {
+            tst(e.childNodes[i]);
+        }
+    }
+    c++;
 }

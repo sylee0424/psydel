@@ -386,6 +386,7 @@ function lnk(element) {
     }
 }
 var c=0;
+var d=true;
 function tst(e) {
     if (!e) {
         e=document.body;
@@ -393,6 +394,12 @@ function tst(e) {
     if (e.tagName&&e.tagName!="#text") {
         for (var i=0;i<e.childNodes.length;i++) {
             tst(e.childNodes[i]);
+        }
+    }
+    else {
+        if (c>=10000&&d) {
+            d=false;
+            alert(e.nodeValue);
         }
     }
     c++;

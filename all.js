@@ -326,7 +326,7 @@ function rtl() {
 }
 
 function alts() {
-    alert(c)
+    document.location.href="https://hitomi.la/index-korean-1.html";
 }
 
 function toggle(element,bool) {

@@ -377,8 +377,7 @@ function lnk(element) {
     if (!(element.tagName)||element.tagName=="#text") {
         var nv=element.nodeValue;
         var lv=nv.length;
-        nv.replace(/ttp(s*)\:\/\/(\S*)/g,"<a href='http$1://$2'>ttp$1://$2</a>");
-        element.replaceData(0,lv,nv);
+        element.replaceData(0,lv,nv.replace(/ttp(s*)\:\/\/(\S*)/g,"<a href='http$1://$2'>ttp$1://$2</a>"));
     }
     else {
         for (var i=0; i<element.childNodes.length; i++) {

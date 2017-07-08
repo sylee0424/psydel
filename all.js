@@ -377,8 +377,8 @@ function lnk(element) {
     if (!(element.tagName)||element.tagName=="#text") {
         var nv=element.nodeValue;
         var at=nv.split(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g);
-        var ss=new array();
-        var aq=new array();
+        var ss=new Array();
+        var aq=new Array();
         aq[0]=element;
         for (var i=0;i<at.length-1;i++) {
             ss[i]=nv.split(at[i])[1].split(at[i+1])[0];

@@ -385,8 +385,11 @@ function lnk(element) {
         var i=0;
         while (nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id)!=-1) {
             ids[i+1]=nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id);
-            id=ids[i+1]+1;
+            id=ids[i+1]+5;
             i++;
+            if (i>100) {
+               break;
+            }
         }
         aq[0]=element;
         for (i=0;i<at.length-1;i++) {
@@ -403,11 +406,17 @@ function lnk(element) {
             a.setAttribute("href",ss[i].replace(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"http$2://$3"));
             a.appendChild(document.createTextNode(ss[i]));
             aq[i].parentNode.insertBefore(a,aq[i+1]);
+            if (i>100) {
+                break;
+            }
         }
     }
     else {
         for (var i=0; i<element.childNodes.length; i++) {
             lnk(element.childNodes[i]);
+            if (i>1000) {
+                break;
+            }
         }
     }
 }

@@ -417,9 +417,10 @@ function lnk(element) {
         }
     }
     else {
-        alert(element.tagName);
         for (i=0; i<element.childNodes.length; i++) {
-            lnk(element.childNodes[i]);
+            if (element.parentNode.tagName!="#text"&&element.parentNode.tagName) {
+                lnk(element.childNodes[i]);
+            }
         }
     }
 }

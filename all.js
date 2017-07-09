@@ -417,6 +417,10 @@ function lnk(element) {
         }
     }
     else {
+        if (element.childNodes.length==1) {
+            console.log(element.childNodes);
+            alert(element.valueOf());
+        }
         for (i=0; i<element.childNodes.length; i++) {
             if (element.parentNode.tagName!="#text"&&element.parentNode.tagName&&element.parentNode.tagName!="iframe") {
                 lnk(element.childNodes[i]);

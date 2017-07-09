@@ -419,7 +419,7 @@ function lnk(element) {
         for (var i=0; i<element.childNodes.length; i++) {
             lnk(element.childNodes[i]);
             if (i%1000==0&&i!=0) {
-                console.log(i+000);
+                console.log(i+"000");
             }
         }
     }

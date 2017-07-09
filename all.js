@@ -418,7 +418,7 @@ function lnk(element) {
     }
     else {
         for (i=0; i<element.childNodes.length; i++) {
-            if (element.parentNode.tagName!="#text"&&element.parentNode.tagName) {
+            if (element.parentNode.tagName!="#text"&&element.parentNode.tagName&&element.parentNode.tagName!="iframe") {
                 lnk(element.childNodes[i]);
             }
         }

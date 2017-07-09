@@ -393,32 +393,33 @@ function lnk(element) {
             }
         }
         aq[0]=element;
-        for (i=0;i<at.length-1;i++) {
-            ss[i]=nv.substring(ids[i],ids[i+1]-at[i+1].length);
-            if (i==0) {
-                aq[1]=aq[0].splitText(ids[0]);
-            }
-            else {
-                aq[i+1]=aq[i].splitText(ids[i]-ids[i-1]);
-                aq[i]=aq[i].splitText(ss[i-1].length);
-                aq[i].parentNode.removeChild(aq[i].previousSibling);
-            }
-            var a=document.createElement("a");
-            a.setAttribute("href",ss[i].replace(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"http$2://$3"));
-            a.appendChild(document.createTextNode(ss[i]));
-            aq[i].parentNode.insertBefore(a,aq[i+1]);
-            if (i>100) {
-                console.log("a");
-                break;
+        if (element.parentNode.tagName!="script") {
+            for (i=0;i<at.length-1;i++) {
+                ss[i]=nv.substring(ids[i],ids[i+1]-at[i+1].length);
+                if (i==0) {
+                    aq[1]=aq[0].splitText(ids[0]);
+                }
+                else {
+                    aq[i+1]=aq[i].splitText(ids[i]-ids[i-1]);
+                    aq[i]=aq[i].splitText(ss[i-1].length);
+                    aq[i].parentNode.removeChild(aq[i].previousSibling);
+                }
+                var a=document.createElement("a");
+                a.setAttribute("href",ss[i].replace(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"http$2://$3"));
+                a.appendChild(document.createTextNode(ss[i]));
+                aq[i].parentNode.insertBefore(a,aq[i+1]);
+                if (i>100) {
+                    console.log("a");
+                    break;
+                }
             }
         }
     }
     else {
         for (var i=0; i<element.childNodes.length; i++) {
             lnk(element.childNodes[i]);
-            if (i>1000) {
-                console.log("b");
-                break;
+            if (i%1000==0&&i!=0) {
+                console.log(i+000);
             }
         }
     }

@@ -376,18 +376,33 @@ function lnk(element) {
     }
     if (!(element.tagName)||element.tagName=="#text") {
         var nv=element.nodeValue;
+        var ids=new Array();
         var at=nv.split(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g);
         var ss=new Array();
         var aq=new Array();
+        var id=0;
+        ids[0]=0;
+        var i=0;
+        while (nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id)!=-1) {
+            ids[i+1]=nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id);
+            id=ids[i+1]+1;
+            i++;
+        }
         aq[0]=element;
-        for (var i=0;i<at.length-1;i++) {
-            ss[i]=nv.split(at[i])[1].split(at[i+1])[0];
-            aq[i+1]=element.splitText(nv.indexOf(at[i+1])-nv.indexOf(at[i]));
-            aq[i].parentNode.removeChild(aq[i].splitText(nv.indexOf(ss[i])-nv.indexOf(at[i])));
+        for (i=0;i<at.length-1;i++) {
+            ss[i]=nv.substring(ids[i],ids[i+1]-at[i+1].length);
+            if (i==0) {
+                aq[1]=aq[0].splitText(ids[0]);
+            }
+            else {
+                aq[i+1]=aq[i].splitText(ids[i]-ids[i-1]);
+                aq[i]=aq[i].splitText(ss[i-1].length);
+                aq[i].parentNode.removeChild(aq[i].previousSibling);
+            }
             var a=document.createElement("a");
             a.setAttribute("href",ss[i].replace(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"http$2://$3"));
             a.appendChild(document.createTextNode(ss[i]));
-            element.parentNode.insertBefore(a,aq[i+1]);
+            aq[i].parentNode.insertBefore(a,aq[i+1]);
         }
     }
     else {

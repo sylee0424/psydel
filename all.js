@@ -388,7 +388,7 @@ function lnk(element) {
             id=ids[i+1]+5;
             i++;
             if (i>100) {
-                colsole.log("c");
+                console.log("c");
                 break;
             }
         }
@@ -408,7 +408,7 @@ function lnk(element) {
             a.appendChild(document.createTextNode(ss[i]));
             aq[i].parentNode.insertBefore(a,aq[i+1]);
             if (i>100) {
-                colsole.log("a");
+                console.log("a");
                 break;
             }
         }
@@ -417,7 +417,7 @@ function lnk(element) {
         for (var i=0; i<element.childNodes.length; i++) {
             lnk(element.childNodes[i]);
             if (i>1000) {
-                colsole.log("b");
+                console.log("b");
                 break;
             }
         }

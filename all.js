@@ -387,7 +387,7 @@ function lnk(element) {
             var a=document.createElement("a");
             a.setAttribute("href",ss[i].replace(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"http$2://$3"));
             a.appendChild(document.createTextNode(ss[i]));
-            element.parentNode.insertBefore(aq[i+1],a);
+            element.parentNode.insertBefore(a,aq[i+1]);
         }
     }
     else {

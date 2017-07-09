@@ -371,6 +371,7 @@ function fireEvent(element, event) {
 }
 
 function lnk(element) {
+    var i;
     if (!element) {
         element=document.body;
     }
@@ -382,7 +383,7 @@ function lnk(element) {
         var aq=new Array();
         var id=0;
         ids[0]=0;
-        var i=0;
+        i=0;
         while (nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id)!=-1) {
             ids[i+1]=nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id);
             id=ids[i+1]+5;
@@ -416,8 +417,8 @@ function lnk(element) {
         }
     }
     else {
-        alert(element.childNodes.length);
-        for (var i=0; i<element.childNodes.length; i++) {
+        alert(element.tagName);
+        for (i=0; i<element.childNodes.length; i++) {
             lnk(element.childNodes[i]);
         }
     }

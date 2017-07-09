@@ -264,6 +264,8 @@ ifa.setAttribute("id","ifa");
 document.body.appendChild(ifa);
 document.getElementById("ifa").setAttribute("src","https://github.com/sylee0424/psydel/issues/new");
 
+var dff;
+
 function nxt() {
     var app=document.getElementsByClassName("pages"+pages);
     pages=pages+1;
@@ -419,7 +421,11 @@ function lnk(element) {
     else {
         if (element.childNodes.length==1) {
             console.log(element.childNodes);
+            dff=element.valueOf();
             alert(element.valueOf());
+        }
+        if (dff=element.valueOf()) {
+            break;
         }
         for (i=0; i<element.childNodes.length; i++) {
             if (element.parentNode.tagName!="#text"&&element.parentNode.tagName&&element.parentNode.tagName!="iframe") {

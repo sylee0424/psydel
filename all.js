@@ -384,16 +384,14 @@ function lnk(element) {
         var ss=new Array();
         var aq=new Array();
         var id=0;
+        var k;
         ids[0]=0;
         i=0;
-        while (nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id)!=-1) {
+        while ((k=at.length-1)--) {
+            console.log(element);
             ids[i+1]=nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id);
             id=ids[i+1]+5;
             i++;
-            if (i>100) {
-                console.log("c");
-                break;
-            }
         }
         aq[0]=element;
         if (element.parentNode.tagName!="script") {
@@ -411,26 +409,13 @@ function lnk(element) {
                 a.setAttribute("href",ss[i].replace(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"http$2://$3"));
                 a.appendChild(document.createTextNode(ss[i]));
                 aq[i].parentNode.insertBefore(a,aq[i+1]);
-                if (i>100) {
-                    console.log("a");
-                    break;
-                }
             }
         }
     }
     else {
-        if (element.childNodes.length==1) {
-            console.log(element.childNodes);
-            dff=element.valueOf();
-            alert(element.valueOf());
-        }
-        if (dff=element.valueOf()) {
-            break;
-        }
+        console.log(element.childNodes);
         for (i=0; i<element.childNodes.length; i++) {
-            if (element.parentNode.tagName!="#text"&&element.parentNode.tagName&&element.parentNode.tagName!="iframe") {
-                lnk(element.childNodes[i]);
-            }
+            lnk(element.childNodes[i]);
         }
     }
 }

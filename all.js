@@ -384,10 +384,10 @@ function lnk(element) {
         var ss=new Array();
         var aq=new Array();
         var id=0;
-        var k;
+        var k=at.length-1;
         ids[0]=0;
         i=0;
-        while ((k=at.length-1)--) {
+        while (k--) {
             console.log(element);
             ids[i+1]=nv.indexOf(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,id);
             id=ids[i+1]+5;

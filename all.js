@@ -396,11 +396,6 @@ function lnk(element) {
         aq[0]=element;
         if (element.parentNode.tagName!="script") {
             for (i=0;i<at.length-1;i++) {
-                if (ids[i]-ids[i-1]>=10000000) {
-                    console.log(element);
-                    console.log(ids);
-                    alert(element);
-                }
                 ss[i]=nv.substring(ids[i],ids[i+1]-at[i+1].length);
                 if (i==0) {
                     aq[1]=aq[0].splitText(ids[0]);

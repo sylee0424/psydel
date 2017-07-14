@@ -377,7 +377,7 @@ function lnk(element) {
     if (!element) {
         element=document.body;
     }
-    if (!(element.tagName)||element.tagName=="#text") {
+    if ((!(element.tagName)||element.tagName=="#text")&&element.length!=0) {
         var nv=element.nodeValue;
         var ids=new Array();
         var at=nv.split(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g);

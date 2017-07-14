@@ -401,6 +401,11 @@ function lnk(element) {
                     aq[1]=aq[0].splitText(ids[0]);
                 }
                 else {
+                    if (aq[i].nodeValue.length<(ids[i]-ids[i-1])||(ids[i]-ids[i-1])<-1) {
+                        console.log(aq[i]);
+                        console.log(element);
+                        alert(aq[i]);
+                    }
                     aq[i+1]=aq[i].splitText(ids[i]-ids[i-1]);
                     aq[i]=aq[i].splitText(ss[i-1].length);
                     aq[i].parentNode.removeChild(aq[i].previousSibling);

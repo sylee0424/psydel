@@ -380,8 +380,8 @@ function lnk(element) {
     if ((!(element.tagName)||element.tagName=="#text")&&element.length!=0) {
         var nv=element.nodeValue;
         var ids=new Array();
-        var at=nv.split(/h?ttps?:\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]*)/g);
-        var ss=nv.match(/h?ttps?:\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]*)/g);
+        var at=nv.split(/h{0,1}ttps{0,1}:\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]*)/g);
+        var ss=nv.match(/h{0,1}ttps{0,1}:\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]*)/g);
         var aq=new Array();
         var id=0;
         ids[0]=at[0].length;

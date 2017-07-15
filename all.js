@@ -386,10 +386,12 @@ function lnk(element) {
         var id=0;
         ids[0]=at[0].length;
         aq[0]=element;
-        for (var i=0;i<ss.length;i++) {
-            ids[i+1]=ids[i]+ss[i].length+at[i+1].length;
+        if (ss) {
+            for (var i=0;i<ss.length;i++) {
+                ids[i+1]=ids[i]+ss[i].length+at[i+1].length;
+            }
         }
-        if (element.parentNode.tagName!="script") {
+        if (element.parentNode.tagName!="script"&&ss) {
             for (i=0;i<at.length-1;i++) {
                 if (i==0) {
                     aq[1]=aq[0].splitText(ids[0]);

@@ -401,6 +401,10 @@ function lnk(element) {
             for (i=0;i<at.length-1;i++) {
                 if (i==0) {
                     aq[1]=aq[0].splitText(ids[0]);
+                    if (at.length-1==1) {
+                        aq[1]=aq[1].splitText(ss[0].length);
+                        aq[1].parentNode.removeChild(aq[1].previousSibling);
+                    }
                 }
                 else {
                     aq[i+1]=aq[i].splitText(ids[i]-ids[i-1]);

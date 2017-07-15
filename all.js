@@ -416,8 +416,8 @@ function lnk(element) {
         }
     }
     else {
-        console.log(element.childNodes);
-        for (i=0; i<element.childNodes.length; i++) {
+        var chd=parseInt(element.childNodes.length);
+        for (i=0; i<chd; i++) {
             lnk(element.childNodes[i]);
         }
     }

@@ -373,6 +373,12 @@ function fireEvent(element, event) {
 }
 
 function lnk(element) {
+    /*
+    at[0]ss[0]at[1]ss[1]at[2]ss[2]at[3]ss[3]at[4]ss[4]at[5]
+    -----aaaaa-----aaaaa-----aaaaa-----aaaaa-----aaaaa-----
+         ids[0]    ids[1]    ids[2]    ids[3]    ids[4]
+    └───────────────────────element───────────────────────┘
+    */
     var i;
     if (!element) {
         element=document.body;

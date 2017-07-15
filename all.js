@@ -411,12 +411,12 @@ function lnk(element) {
                     aq[i+1]=aq[i].splitText(ids[i]-ids[i-1]);
                     if (i!=0) {
                         aq[i]=aq[i].splitText(ss[i-1].length);
-                        aq[i].parentNode.removeChild(aq[i].previousSibling);
+                        ///aq[i].parentNode.removeChild(aq[i].previousSibling);
                     }
                 }
                 var a=document.createElement("a");
                 a.setAttribute("href",ss[i].replace(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g,"http$2://$3"));
-                a.appendChild(document.createTextNode(ss[i]));
+                a.appendChild(aq[i].previousSibling);
                 aq[i].parentNode.insertBefore(a,aq[i+1]);
             }
         }

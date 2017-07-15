@@ -377,11 +377,11 @@ function lnk(element) {
     if (!element) {
         element=document.body;
     }
-    if ((!(element.tagName)||element.tagName=="#text")&&element.length!=0) {
+    if (element.nodeName=="#text"&&!(element.nodeName=="#commet"||element.tagName)) {
         var nv=element.nodeValue;
         var ids=new Array();
-        var at=nv.split(/h{0,1}ttps{0,1}:\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]*)/g);
-        var ss=nv.match(/h{0,1}ttps{0,1}:\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]*)/g);
+        var at=nv.split(/h{0,1}ttps{0,1}:\/\/[a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]+/g);
+        var ss=nv.match(/h{0,1}ttps{0,1}:\/\/[a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]+/g);
         var aq=new Array();
         var id=0;
         ids[0]=at[0].length;

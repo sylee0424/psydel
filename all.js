@@ -377,7 +377,7 @@ function lnk(element) {
     if (!element) {
         element=document.body;
     }
-    if (element.nodeName=="#text"&&!(element.nodeName=="#commet"||element.tagName)) {
+    if (element.nodeName=="#text"&&!(element.nodeName=="#comment"||element.tagName)) {
         var nv=element.nodeValue;
         var ids=new Array();
         var at=nv.split(/h{0,1}ttps{0,1}:\/\/[a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]+/g);

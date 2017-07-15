@@ -416,11 +416,12 @@ function lnk(element) {
         }
     }
     else {
-        var chd=parseInt(element.childNodes.length);
-        for (i=0; i<chd; i++) {
-            lnk(element.childNodes[i]);
+        console.log(element.childNodes);
+        for (i=0; i<element.childNodes.length; i++) {
+            i=lnk(element.childNodes[i]);
         }
     }
+    return getChildNumber(aq[aq.length-1]);
 }
 var c=0;
 var d=true;
@@ -440,4 +441,8 @@ function tst(e) {
         }
     }
     c++;
+}
+
+function getChildNumber(node) {
+    return Array.prototype.indexOf.call(node.parentNode.childNodes, node);
 }

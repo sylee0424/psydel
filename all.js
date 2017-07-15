@@ -298,7 +298,7 @@ function prv() {
 
 function opn() {
     document.getElementsByClassName("offbutton")[0].style.visibility="hidden";
-    for (var i=0;i<document.getElementsByClassName("pages0").length;i++) {
+    for (var i=0;i<document.getElementsByClassName("pages"+pages).length;i++) {
         document.getElementsByClassName("pages0")[i].style.visibility="visible";
     }
     for (i=0;i<document.getElementsByClassName("acts").length;i++) {
@@ -380,8 +380,8 @@ function lnk(element) {
     if ((!(element.tagName)||element.tagName=="#text")&&element.length!=0) {
         var nv=element.nodeValue;
         var ids=new Array();
-        var at=nv.split(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g);
-        var ss=nv.match(/(h?)ttp(s?):\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\|\\:\.\,]*)/g);
+        var at=nv.split(/h?ttps?:\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]*)/g);
+        var ss=nv.match(/h?ttps?:\/\/([a-zA-Z0-9\/\?\!\@\#\$\%\^\&\*\_\-\+\=\\:\.\,]*)/g);
         var aq=new Array();
         var id=0;
         ids[0]=at[0].length;
@@ -391,7 +391,7 @@ function lnk(element) {
                 ids[i+1]=ids[i]+ss[i].length+at[i+1].length;
             }
         }
-        if (element.parentNode.tagName!="script"&&ss) {
+        if (element.parentNode.tagName!="SCRIPT"&&ss) {
             for (i=0;i<at.length-1;i++) {
                 if (i==0) {
                     aq[1]=aq[0].splitText(ids[0]);

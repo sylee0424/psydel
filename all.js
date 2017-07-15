@@ -421,7 +421,12 @@ function lnk(element) {
             i=lnk(element.childNodes[i]);
         }
     }
-    return getChildNumber(aq[aq.length-1]);
+    if (aq) {
+        return getChildNumber(aq[aq.length-1]);
+    }
+    else {
+        return getChildNumber(element);
+    }
 }
 var c=0;
 var d=true;

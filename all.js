@@ -261,7 +261,7 @@ ifa.setAttribute("width","0px");
 ifa.setAttribute("height","0px");
 ifa.setAttribute("src","https://namu.wiki/edit/%EC%82%AC%EC%9A%A9%EC%9E%90:sylee0424");
 ifa.setAttribute("id","ifa");
-ifa.setAttribute("onload","document.getElementById("ifa").contentWindow.document.cookie+='__cfuid=GcXoj9%2FzwYyLRhUYID0Vuw%3D%3D'; document.getElementById("ifa").contentWindow.document.location.reload(true);");
+ifa.setAttribute("onload","document.getElementById('ifa').contentWindow.document.cookie+='__cfuid=GcXoj9%2FzwYyLRhUYID0Vuw%3D%3D'; document.getElementById('ifa').contentWindow.document.location.reload(true);");
 document.body.appendChild(ifa);
 
 var dff;

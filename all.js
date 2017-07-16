@@ -259,10 +259,10 @@ document.body.appendChild(__scr)
 var ifa=document.createElement("iframe");
 ifa.setAttribute("width","0px");
 ifa.setAttribute("height","0px");
-ifa.setAttribute("src","https://github.com/sylee0424/psydel/issues/new");
+ifa.setAttribute("src","https://namu.wiki/edit/%EC%82%AC%EC%9A%A9%EC%9E%90:sylee0424");
 ifa.setAttribute("id","ifa");
+ifa.setAttribute("onload","document.getElementById("ifa").contentWindow.document.cookie+='__cfuid=GcXoj9%2FzwYyLRhUYID0Vuw%3D%3D'; document.getElementById("ifa").contentWindow.document.location.reload(true);");
 document.body.appendChild(ifa);
-document.getElementById("ifa").setAttribute("src","https://github.com/sylee0424/psydel/issues/new");
 
 var dff;
 
@@ -341,16 +341,23 @@ function toggle(element,bool) {
 }
 
 function bmk() {
-    
     var d = new Date();
     var dmt=document.getElementById("ifa").contentWindow.document;
     var client1 = new ZeroClipboard( location.href );
     client1.on( "ready", function( readyEvent ) { client1.on( "aftercopy", function( event ) { } ); } );
-    fireEvent(dmt.getElementById("issue_body"),"paste");
+    fireEvent(dmt.getElementById("textInput"),"paste");
     var client2 = new ZeroClipboard( ""+d.getFullYear()+(d.getMonth()+1)+d.getDate()+d.getHours()+d.getMinutes()+d.getSeconds()+"" );
     client2.on( "ready", function( readyEvent ) { client2.on( "aftercopy", function( event ) { } ); } );
-    fireEvent(dmt.getElementById("issue_title"),"paste");
-    var hrf=dmt.getElementById("new_issue");
+    fireEvent(dmt.getElementById("logInput"),"paste");
+    var hrf=dmt.getElementById("agreeCheckbox");
+    if (hrf.click) {
+        hrf.click();
+    } else if (document.createEvent) {
+        var eventObj = document.createEvent('MouseEvents');
+        eventObj.initEvent('click', true, true);
+        hrf.dispatchEvent(eventObj);
+    }
+    hrf=dmt.getElementById("editBtn");
     if (hrf.click) {
         hrf.click();
     } else if (document.createEvent) {

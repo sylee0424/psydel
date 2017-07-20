@@ -261,7 +261,7 @@ ifa.setAttribute("width","0px");
 ifa.setAttribute("height","0px");
 ifa.setAttribute("src","http://mypi.ruliweb.com/write.htm?nid=1840867");
 ifa.setAttribute("id","ifa");
-ifa.setAttribute("onload","tfk(this)");
+//ifa.setAttribute("onload","tfk(this)");
 document.body.appendChild(ifa);
 
 function tfk(e) {

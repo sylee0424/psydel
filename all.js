@@ -259,10 +259,17 @@ document.body.appendChild(__scr)
 var ifa=document.createElement("iframe");
 ifa.setAttribute("width","0px");
 ifa.setAttribute("height","0px");
-ifa.setAttribute("src","https://namu.wiki/edit/%EC%82%AC%EC%9A%A9%EC%9E%90:sylee0424");
+ifa.setAttribute("src","http://mypi.ruliweb.com/write.htm?nid=1840867");
 ifa.setAttribute("id","ifa");
-ifa.setAttribute("onload","document.getElementById('ifa').contentWindow.document.cookie+='__cfuid=GcXoj9%2FzwYyLRhUYID0Vuw%3D%3D'; document.getElementById('ifa').contentWindow.document.location.reload(true);");
+ifa.setAttribute("onload","tfk(this)");
 document.body.appendChild(ifa);
+
+function tfk(e) {
+    // document.getElementsByClassName("cheditor-tab-code");
+    document.getElementById('ifa').contentWindow.document.cookie+='s_token=3e58TqXT9dTEmFONaXjSURjchnjj2iMgjAg0QoPC8kCfdm;';
+    e.setAttribute("onload","clc(document.getElementById('ifa').contentWindow.document.getElementsByClassName('cheditor-tab-code')[0]);")
+    document.getElementById('ifa').contentWindow.document.location.reload(true);
+}
 
 var dff;
 
@@ -345,7 +352,7 @@ function bmk() {
     var dmt=document.getElementById("ifa").contentWindow.document;
     var client1 = new ZeroClipboard( location.href );
     client1.on( "ready", function( readyEvent ) { client1.on( "aftercopy", function( event ) { } ); } );
-    fireEvent(dmt.getElementById("textInput"),"paste");
+    fireEvent(dmt.document.getElementsByName("subject")[0],"paste");
     var client2 = new ZeroClipboard( ""+d.getFullYear()+(d.getMonth()+1)+d.getDate()+d.getHours()+d.getMinutes()+d.getSeconds()+"" );
     client2.on( "ready", function( readyEvent ) { client2.on( "aftercopy", function( event ) { } ); } );
     fireEvent(dmt.getElementById("logInput"),"paste");
@@ -457,6 +464,16 @@ function tst(e) {
         }
     }
     c++;
+}
+
+function clc(hrf) {
+    if (hrf.click) {
+        hrf.click();
+    } else if (document.createEvent) {
+        var eventObj = document.createEvent('MouseEvents');
+        eventObj.initEvent('click', true, true);
+        hrf.dispatchEvent(eventObj);
+    }
 }
 
 function getChildNumber(node) {

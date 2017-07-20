@@ -266,7 +266,7 @@ document.body.appendChild(ifa);
 
 function tfk(e) {
     // document.getElementsByClassName("cheditor-tab-code");
-    document.getElementById('ifa').contentWindow.document.cookie+='s_token=3e58TqXT9dTEmFONaXjSURjchnjj2iMgjAg0QoPC8kCfdm;';
+    //document.getElementById('ifa').contentWindow.document.cookie+='s_token=3e58TqXT9dTEmFONaXjSURjchnjj2iMgjAg0QoPC8kCfdm;';
     e.setAttribute("onload","clc(document.getElementById('ifa').contentWindow.document.getElementsByClassName('cheditor-tab-code')[0]);")
     document.getElementById('ifa').contentWindow.document.location.reload(true);
 }

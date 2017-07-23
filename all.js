@@ -225,22 +225,6 @@ for (i=0;i<acts.length-1;i++) {
     document.body.appendChild(app[i]);
 }
 
-/*
-    for (i=0;i<strs.length;i++) {
-        app[i]=document.createElement("div");
-        app[i].setAttribute("onclick",strs[i]);
-        app[i].setAttribute("id","app"+(i+1));
-        app[i].setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(2*i)/(strs.length*2+1))+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
-        app[i].appendChild(document.createTextNode(strs[i]));
-        document.body.appendChild(app[i]);
-    }
-    var asd=document.createElement("div");
-    asd.setAttribute("onclick",acts[2]);
-    asd.setAttribute("id","app"+(strs.length+1));
-    asd.setAttribute("style","visibility:hidden; border-width:5px; border-color:#000000; position:fixed; top:"+(100*(strs.length*2)/(strs.length*2+1))+"%; left:0px; width:60px; height:60px; background-color:#ffffff; color:#000000; display:inline");
-    asd.appendChild(document.createTextNode(acts[2]));
-*/
-
 var diva=document.createElement("div");
 diva.setAttribute("onclick",acts[acts.length-1]+"();");
 diva.setAttribute("onmousedown","toggle(this,false)");
@@ -256,13 +240,10 @@ var __scr=document.createElement("script");
 __scr.setAttribute('src','https://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js');
 document.body.appendChild(__scr)
 
-var ifa=document.createElement("iframe");
-ifa.setAttribute("width","0px");
-ifa.setAttribute("height","0px");
-ifa.setAttribute("src","http://mypi.ruliweb.com/write.htm?nid=1840867");
-ifa.setAttribute("id","ifa");
-//ifa.setAttribute("onload","tfk(this)");
-document.body.appendChild(ifa);
+if (location.href.indexOf("hitomi")!=-1) {
+    hab();
+    hlb();
+}
 
 function tfk(e) {
     // document.getElementsByClassName("cheditor-tab-code");
@@ -346,7 +327,7 @@ function toggle(element,bool) {
         element.style.backgroundColor="gold"
     }
 }
-
+/*
 function bmk() {
     var d = new Date();
     var dmt=document.getElementById("ifa").contentWindow.document;
@@ -373,7 +354,7 @@ function bmk() {
         hrf.dispatchEvent(eventObj);
     }
 }
-
+*/
 function fireEvent(element, event) {
     if (document.createEventObject) {
         var evt = document.createEventObject();

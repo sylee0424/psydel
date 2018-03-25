@@ -1,1 +1,0 @@
-for /f "delims=" %%i in ('dir /a:d /o:n /b') do zip -r %%i+".zip" %%i\*.*

@@ -9,13 +9,11 @@
 		"*"
 	],
 	
-	/*
 	"applications": {
 		"gecko": {
 			"id": "scriptimport@psydel.org"
 		}
 	},
-	*/
 
 	"content_scripts": [{
 		"matches": ["<all_urls>"],

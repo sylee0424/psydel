@@ -36,6 +36,8 @@
 		"activeTab",
 		"webRequest",
 		"webRequestBlocking",
+		"notifications",
+		"browsingData",
 		"tabs"
 	],
 

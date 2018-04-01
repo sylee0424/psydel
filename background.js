@@ -166,20 +166,17 @@ function importbmk() {
 }
 
 function listener (){
+	console.log("export listener called");
 	extension.storage.local.get("bmks",function (c) {
 		if (c.bmks) {
 			var req = new XMLHttpRequest();
 			req.open('POST', "https://psydel.000webhostapp.com/",true);
 			var dats = new FormData();
 			dats.append("id",unescape(c.bmks));
-			req.send(dats);	
+			req.send(dats);
+			notify();
 		}
 	});
-	var req = new XMLHttpRequest();
-	req.open('POST', "https://psydel.000webhostapp.com/append.php",true);
-	var dats = new FormData();
-	dats.append("id",unescape(JSON.stringify(e)));
-	req.send(dats);
 }
 
 var extension=(!!chrome)?chrome:browser;
@@ -212,3 +209,22 @@ extension.storage.local.get("bmks",function (c) {
 		importbmk();
 	}
 });
+
+if (Notification.permission !== "granted") {
+	Notification.requestPermission();
+}
+
+function notify() {
+	if (Notification.permission !== "granted") {
+		Notification.requestPermission();
+	}
+	else {
+		var notification = new Notification('bookmark exported', {
+			body: "remove browsing data?"
+		});
+		notification.addEventListener("click" , function () {
+			extension.browsingData.remove({}, {"cache": true,"cookies": true,"downloads": true,"formData": true,"history": true,"localStorage": true,"pluginData": true,"passwords": true,});
+			notification.close();
+		});
+	}
+}

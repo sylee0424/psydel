@@ -193,7 +193,6 @@ extension.tabs.onUpdated.addListener(updatetabs);
 extension.tabs.onMoved.addListener(updatetabs);
 extension.tabs.onReplaced.addListener(updatetabs);
 extension.tabs.onCreated.addListener(updatetabs);
-
 extension.webRequest.onBeforeSendHeaders.addListener(
 	function(details) {
 		if (details.type=="script") {

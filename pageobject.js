@@ -1218,11 +1218,11 @@ window.Bookmark_User_Functions = {
 			});
 			var lists=Object.keys(Bookmark_Pointer);
 			lists.forEach(function (val) {
-				var c = document.createElement("input");
+				var c = document.createElement("div");
 				var b = document.createElement("label");
-				c.type="checkbox";
 				c.dataset.id = val;
 				c.id="chk"+val;
+				c.classList.add("__input");
 				c.classList.add("__hided");
 				if (edit) {
 					c.classList.remove("__hided");
@@ -1346,7 +1346,7 @@ window.Bookmark_User_Functions = {
 					Bookmark_Pointer[a.name] = a.path;
 					delete Bookmark_Pointer[this.innerText];
 					Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc,
-						document.getElementById("bmkms").classList.contains("__editing"));
+						document.getElementById("bmks").classList.contains("__editing"));
 					window.postMessage({
 						type: "setbmk",
 						bmk: Extension_Variables.Bookmark_Original
@@ -1359,7 +1359,7 @@ window.Bookmark_User_Functions = {
 						Bookmark_Pointer = Bookmark_Pointer[val];
 					});
 					if (!Bookmark_Pointer[a.name]) {
-						if (a.name) {
+						if (!a.name) {
 							return undefined;
 						}
 					} else if (Bookmark_Pointer[a.name] == Bookmark_Pointer[this.innerText]) {
@@ -1378,12 +1378,13 @@ window.Bookmark_User_Functions = {
 						return undefined;
 					}
 					//Bookmark_User_Functions.Bookmark_Compare.f(Bookmark_Pointer[a.name], Bookmark_Pointer[this.innerText]);
+					console.log(Bookmark_Pointer[a.name]);
 					[Bookmark_Pointer[a.name], Bookmark_Pointer[this.innerText]]=[Bookmark_Pointer[this.innerText],Bookmark_Pointer[a.name]];
 					if (!(a.name==this.innerText)) {
 						delete Bookmark_Pointer[this.innerText];
 					}
 					Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc,
-						document.getElementById("bmkms").classList.contains("__editing"));
+						document.getElementById("bmks").classList.contains("__editing"));
 					window.postMessage({
 						type: "setbmk",
 						bmk: Extension_Variables.Bookmark_Original
@@ -1414,13 +1415,13 @@ window.Bookmark_User_Functions = {
 	Activate_Bookmark_Edit: {
 		f: function() {
 			document.getElementById("bmks").classList.add("__editing")
-			for (var s of document.getElementByClassName("__inedit")) {
+			for (var s of document.getElementsByClassName("__inedit")) {
 				s.classList.add("__disabled");
 			}
-			for (var s of document.getElementByClassName("__editout")) {
+			for (s of document.getElementsByClassName("__editout")) {
 				s.classList.remove("__invisibled");
 			}
-			for (s of document.getElementById("bmks").getElementsByTagName("input")) {
+			for (s of document.getElementsByClassName("__input")) {
 				s.classList.remove("__hided");
 			}
 		},
@@ -1431,16 +1432,16 @@ window.Bookmark_User_Functions = {
 	Deactivate_Bookmark_Edit: {
 		f: function() {
 			document.getElementById("bmks").classList.remove("__editing")
-			for (var s of document.getElementByClassName("__inedit")) {
+			for (var s of document.getElementsByClassName("__inedit")) {
 				s.classList.remove("__disabled");
 			}
-			for (var s of document.getElementByClassName("__editout")) {
+			for (s of document.getElementsByClassName("__editout")) {
 				s.classList.add("__invisibled");
 			}
 			if (document.getElementById("dir").dataset.loc == "root") {
 				document.getElementById("go_up").classList.add("__disabled");
 			}
-			for (var s of document.getElementById("bmks").getElementsByTagName("input")) {
+			for (s of document.getElementsByClassName("__input")) {
 				s.classList.add("__hided");
 			}
 		},
@@ -1450,7 +1451,7 @@ window.Bookmark_User_Functions = {
 
 	Remove_Bookmark: {
 		f: function() {
-			var a = document.getElementById("bmks").querySelectorAll("input.__checked");
+			var a = document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked");
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 			for (var t of document.getElementById("dir").dataset.loc.split("/")) {
 				Bookmark_Pointer = Bookmark_Pointer[t];
@@ -1528,7 +1529,7 @@ window.Bookmark_User_Functions = {
 
 	Move_Bookmarks: {
 		f: function() {
-			var a = document.getElementById("bmks").querySelectorAll("input.__checked");
+			var a = document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked");
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 			document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
 				Bookmark_Pointer = Bookmark_Pointer[val];
@@ -1548,9 +1549,9 @@ window.Bookmark_User_Functions = {
 				d.name = val.dataset.id;
 				d.path = Bookmark_Pointer[val.dataset.id];
 				d.loc = document.getElementById("dir").dataset.loc;
-				arr.push(d);
+				Extension_Variables.Paste_Bookmarks.push(d);
 			});
-			document.getElementById("c6").setAttribute("style", "display:inline");
+			document.getElementById("pastebmk").classList.remove("__hided");
 			Bookmark_User_Functions.Deactivate_Bookmark_Edit.f();
 		},
 
@@ -1598,7 +1599,7 @@ window.Bookmark_User_Functions = {
 
 	Paste_Bookmark: {
 		f: function() {
-			for (var d of arr) {
+			for (var d of Extension_Variables.Paste_Bookmarks) {
 				var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 				for (var t of document.getElementById("dir").dataset.loc.split("/")) {
 					Bookmark_Pointer = Bookmark_Pointer[t];
@@ -1612,7 +1613,6 @@ window.Bookmark_User_Functions = {
 						Bookmark_Pointer[d.name] = {};
 						//Bookmark_User_Functions.Bookmark_Compare.f(Bookmark_Pointer[d.name],Bookmark_Pointer_Second[d.name]);
 						[Bookmark_Pointer[d.name],Bookmark_Pointer_Second[d.name]]=[Bookmark_Pointer_Second[d.name],Bookmark_Pointer[d.name]]
-						console.log(JSON.stringify(Extension_Variables.Bookmark_Original));
 						if (JSON.stringify(Bookmark_Pointer_Second[d.name]) == "{}") {
 							delete Bookmark_Pointer_Second[d.name];
 						}
@@ -1644,8 +1644,8 @@ window.Bookmark_User_Functions = {
 					Bookmark_Pointer[d.name] = d.path;
 				}
 			}
-			arr = [];
-			document.getElementById("c6").setAttribute("style", "display:none");
+			Extension_Variables.Paste_Bookmarks = [];
+			document.getElementById("pastebmk").classList.add("__hided");
 			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 			window.postMessage({
 				type: "setbmk",
@@ -1831,7 +1831,8 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "paste bmk",
-		classname: ["__buttons","__hided","__inedit"],
+		classname: ["__buttons","__hided"],
+		id:"pastebmk",
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Paste_Bookmark.f

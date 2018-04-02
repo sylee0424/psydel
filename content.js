@@ -1,5 +1,6 @@
-﻿function contentonmessage(event) {
+function contentonmessage(event) {
 		if (event.data.type=="setbmk") {
+			console.log("setted");
 			extension.storage.local.set({"bmks":escape(JSON.stringify(event.data.bmk))});
 		}
 		else if (event.data.type=="removebmk") {

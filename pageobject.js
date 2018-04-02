@@ -521,6 +521,7 @@ window.Extension_Tool_Functions = {
 	hitomi_Image_Sequential: {
 		f: function (imagelist) {
 			var __scr=document.createElement("img");
+			__scr.classList.add("__loadedimg");
 			document.body.appendChild(__scr);
 			__scr.addEventListener("load",function () {
 				if (imagelist.length) {
@@ -1266,7 +1267,7 @@ window.Bookmark_User_Functions = {
 				Bookmark_Pointer = Bookmark_Pointer[val];
 			});
 			if (!Bookmark_Pointer[a.name]) {
-				if (!(a.name)) {
+				if (!a.name) {
 					return undefined;
 				}
 			} else if (confirm("overwrite \"" + a.name + "\" ?")) {
@@ -1325,7 +1326,7 @@ window.Bookmark_User_Functions = {
 						Bookmark_Pointer = Bookmark_Pointer[val];
 					});
 					if (!Bookmark_Pointer[a.name]) {
-						if (a.name) {
+						if (!a.name) {
 							return undefined;
 						}
 					} else if (Bookmark_Pointer[a.name] == this.dataset.src) {

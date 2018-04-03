@@ -518,6 +518,30 @@ window.Extension_User_Functions = {
 
 window.Extension_Tool_Functions = {
 
+	convert_bmk: {
+		f: function (bmk,path) {
+			for (var a in bmk) {
+				var b={};
+				b.value=bmk[a];
+				b.data={created:-1,modified:-1,croped:false};
+				if (path) {
+					b.path+="/";
+				}
+				if (typeof bmk[a]=="string") {
+					b.type="link";
+					bmk[a]=b;
+				}
+				else {
+					b.type="folder"
+					b.path+=a;
+					bmk[a]=b;
+					Extension_Tool_Functions.convert_bmk.f(bmk[a].value,bmk[a].path);
+				}
+			}
+		},
+		name:"hitomi_Image_Sequential"
+	},
+
 	hitomi_Image_Sequential: {
 		f: function (imagelist) {
 			var __scr=document.createElement("img");
@@ -1215,7 +1239,7 @@ window.Bookmark_User_Functions = {
 			}
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 			bmkpath.split("/").forEach(function (val) {
-				Bookmark_Pointer = Bookmark_Pointer[val];
+				Bookmark_Pointer = Bookmark_Pointer[val].value;
 			});
 			var lists=Object.keys(Bookmark_Pointer);
 			lists.forEach(function (val) {
@@ -1229,13 +1253,9 @@ window.Bookmark_User_Functions = {
 					c.classList.remove("__hided");
 				}
 				b.appendChild(c);
-				b.dataset.src = Bookmark_Pointer[val];
+				b.dataset.src = Bookmark_Pointer[val].value;
 				b.dataset.loc = bmkpath;
-				if (typeof Bookmark_Pointer[val] == "string") {
-					b.classList.add("__link");
-				} else if (typeof Bookmark_Pointer[val] == "object") {
-					b.classList.add("__folder");
-				}
+				b.classList.add("__"+Bookmark_Pointer[val].type);
 				b.id = val;
 				b.appendChild(document.createTextNode(val));
 				document.getElementById("bmks").appendChild(b);
@@ -1251,9 +1271,8 @@ window.Bookmark_User_Functions = {
 	Add_Bookmark: {
 		f: function() {
 			if (!this||this.classList.contains("__disabled")) {
-				return unefined;
+				return undefined;
 			}
-			var aa = window.document;
 			var a = {
 				name: "",
 				path: ""
@@ -1264,7 +1283,7 @@ window.Bookmark_User_Functions = {
 			a.path = prompt("bookmark path", a.path);
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 			aa.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
-				Bookmark_Pointer = Bookmark_Pointer[val];
+				Bookmark_Pointer = Bookmark_Pointer[val].value;
 			});
 			if (!Bookmark_Pointer[a.name]) {
 				if (!a.name) {
@@ -1283,7 +1302,15 @@ window.Bookmark_User_Functions = {
 			} else {
 				return undefined;
 			}
-			Bookmark_Pointer[a.name] = a.path;
+			Bookmark_Pointer[a.name] = {};
+			Bookmark_Pointer[a.name].type = "link";
+			Bookmark_Pointer[a.name].path = document.getElementById("dir").dataset.loc;
+			Bookmark_Pointer[a.name].data={};
+			var b=(new Date()).getTime();
+			Bookmark_Pointer[a.name].data.created = b;
+			Bookmark_Pointer[a.name].data.modified = b;
+			Bookmark_Pointer[a.name].data.croped=false;
+			Bookmark_Pointer[a.name].value = a.path;
 			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 			window.postMessage({
 				type: "setbmk",
@@ -1323,7 +1350,7 @@ window.Bookmark_User_Functions = {
 					a.path = prompt("bookmark path", this.dataset.src);
 					var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 					document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
-						Bookmark_Pointer = Bookmark_Pointer[val];
+						Bookmark_Pointer = Bookmark_Pointer[val].value;
 					});
 					if (!Bookmark_Pointer[a.name]) {
 						if (!a.name) {
@@ -1344,7 +1371,15 @@ window.Bookmark_User_Functions = {
 					} else {
 						return undefined;
 					}
-					Bookmark_Pointer[a.name] = a.path;
+					Bookmark_Pointer[a.name] = {};
+					Bookmark_Pointer[a.name].type = "link";
+					Bookmark_Pointer[a.name].path = document.getElementById("dir").dataset.loc;
+					Bookmark_Pointer[a.name].data={};
+					var b=(new Date()).getTime();
+					Bookmark_Pointer[a.name].data.created = Bookmark_Pointer[this.innerText].data.created;
+					Bookmark_Pointer[a.name].data.modified = b;
+					Bookmark_Pointer[a.name].data.croped=false;
+					Bookmark_Pointer[a.name].value = a.path;
 					delete Bookmark_Pointer[this.innerText];
 					Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc,
 						document.getElementById("bmks").classList.contains("__editing"));
@@ -1357,7 +1392,7 @@ window.Bookmark_User_Functions = {
 					a.name = prompt("bookmark name", this.innerText);
 					var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 					document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
-						Bookmark_Pointer = Bookmark_Pointer[val];
+						Bookmark_Pointer = Bookmark_Pointer[val].value;
 					});
 					if (!Bookmark_Pointer[a.name]) {
 						if (!a.name) {
@@ -1381,6 +1416,8 @@ window.Bookmark_User_Functions = {
 					//Bookmark_User_Functions.Bookmark_Compare.f(Bookmark_Pointer[a.name], Bookmark_Pointer[this.innerText]);
 					console.log(Bookmark_Pointer[a.name]);
 					[Bookmark_Pointer[a.name], Bookmark_Pointer[this.innerText]]=[Bookmark_Pointer[this.innerText],Bookmark_Pointer[a.name]];
+					var b=(new Date()).getTime();
+					Bookmark_Pointer[a.name].data.modified = b;
 					if (!(a.name==this.innerText)) {
 						delete Bookmark_Pointer[this.innerText];
 					}
@@ -1396,10 +1433,18 @@ window.Bookmark_User_Functions = {
 				if (this.getAttribute("class") == "__link") {
 					var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 					document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
-						Bookmark_Pointer = Bookmark_Pointer[val];
+						Bookmark_Pointer = Bookmark_Pointer[val].value;
 					});
 					delete Bookmark_Pointer[this.innerText];
-					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML] = location.href;
+					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML] = {};
+					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML].type = "link";
+					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML].path = document.getElementById("dir").dataset.loc;
+					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML].data={};
+					var b=(new Date()).getTime();
+					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML].data.created = b;
+					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML].data.modified = b;
+					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML].data.croped=false;
+					Bookmark_Pointer[document.getElementsByTagName("title")[0].innerHTML].value = location.href;
 					Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc,
 						document.getElementById("bmks").classList.contains("__editing"));
 					window.postMessage({
@@ -1455,7 +1500,7 @@ window.Bookmark_User_Functions = {
 			var a = document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked");
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 			for (var t of document.getElementById("dir").dataset.loc.split("/")) {
-				Bookmark_Pointer = Bookmark_Pointer[t];
+				Bookmark_Pointer = Bookmark_Pointer[t].value;
 			}
 			a.forEach(function (val) {
 				var c = document.getElementById(val.dataset.id);
@@ -1490,7 +1535,7 @@ window.Bookmark_User_Functions = {
 					b += "/" + a[i];
 				}
 			}
-			document.getElementById("dir").setAttribute("data-loc", b);
+			document.getElementById("dir").dataset.loc = b;
 			document.getElementById("dir").innerHTML = b;
 			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 		},
@@ -1503,7 +1548,7 @@ window.Bookmark_User_Functions = {
 
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 			for (var t of document.getElementById("dir").dataset.loc.split("/")) {
-				Bookmark_Pointer = Bookmark_Pointer[t];
+				Bookmark_Pointer = Bookmark_Pointer[t].value;
 			}
 			var a;
 			if (!!(a = prompt("folder name", ""))) {
@@ -1518,6 +1563,14 @@ window.Bookmark_User_Functions = {
 				return undefined;
 			}
 			Bookmark_Pointer[a] = {};
+			Bookmark_Pointer[a].type = "folder";
+			Bookmark_Pointer[a].path = document.getElementById("dir").dataset.loc;
+			Bookmark_Pointer[a].data={};
+			var b=(new Date()).getTime();
+			Bookmark_Pointer[a].data.created = b;
+			Bookmark_Pointer[a].data.modified = b;
+			Bookmark_Pointer[a].data.croped=false;
+			Bookmark_Pointer[a].value = {};
 			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 			window.postMessage({
 				type: "setbmk",
@@ -1533,7 +1586,7 @@ window.Bookmark_User_Functions = {
 			var a = document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked");
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 			document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
-				Bookmark_Pointer = Bookmark_Pointer[val];
+				Bookmark_Pointer = Bookmark_Pointer[val].value;
 			});
 			if (!(Extension_Variables.Paste_Bookmarks)) {
 				Extension_Variables.Paste_Bookmarks = [];
@@ -1548,7 +1601,8 @@ window.Bookmark_User_Functions = {
 				c.parentNode.removeChild(c);
 				var d = {};
 				d.name = val.dataset.id;
-				d.path = Bookmark_Pointer[val.dataset.id];
+				d.path = Bookmark_Pointer[val.dataset.id].value;
+				Bookmark_Pointer[val.dataset.id].data.croped=true;
 				d.loc = document.getElementById("dir").dataset.loc;
 				Extension_Variables.Paste_Bookmarks.push(d);
 			});
@@ -1603,11 +1657,11 @@ window.Bookmark_User_Functions = {
 			for (var d of Extension_Variables.Paste_Bookmarks) {
 				var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 				for (var t of document.getElementById("dir").dataset.loc.split("/")) {
-					Bookmark_Pointer = Bookmark_Pointer[t];
+					Bookmark_Pointer = Bookmark_Pointer[t].value;
 				}
 				var Bookmark_Pointer_Second = Extension_Variables.Bookmark_Original;
 				for (var t of d.loc.split("/")) {
-					Bookmark_Pointer_Second = Bookmark_Pointer_Second[t];
+					Bookmark_Pointer_Second = Bookmark_Pointer_Second[t].value;
 				}
 				if (typeof Bookmark_Pointer_Second[d.name] == "object") {
 					if (!Bookmark_Pointer[d.name]) {
@@ -1643,6 +1697,7 @@ window.Bookmark_User_Functions = {
 					}
 					delete Bookmark_Pointer_Second[d.name];
 					Bookmark_Pointer[d.name] = d.path;
+					Bookmark_Pointer[d.name].data.croped=false;
 				}
 			}
 			Extension_Variables.Paste_Bookmarks = [];
@@ -1680,13 +1735,13 @@ window.Bookmark_User_Functions = {
 
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
 			for (var s of document.getElementById("dir").dataset.loc.split("/")) {
-				Bookmark_Pointer = Bookmark_Pointer[s];
+				Bookmark_Pointer = Bookmark_Pointer[s].value;
 			}
 			var Temporal_Bookmark = {};
 			var Bookmark_Folders = [];
 			var Bookmark_Links = [];
 			for (var key in Bookmark_Pointer) {
-				if (typeof Bookmark_Pointer[key] == "object") {
+				if (Bookmark_Pointer[key].type == "folder") {
 					Bookmark_Folders.push(key);
 				} else {
 					Bookmark_Links.push(key);

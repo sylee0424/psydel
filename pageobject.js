@@ -518,13 +518,26 @@ window.Extension_User_Functions = {
 
 window.Extension_Tool_Functions = {
 
+	reset_bmk: {
+		f: function (bmk,path) {
+			for (var a in bmk.value) {
+				bmk.value[a].path=path;
+				if (bmk.value[a].type=="folder") {
+					console.log(bmk.value[a].value,bmk.value[a].type);
+					Extension_Tool_Functions.reset_bmk.f(bmk.value[a],bmk.value[a].path+"/"+a);
+				}
+			}
+		},
+		name:"hitomi_Image_Sequential"
+	},
+
 	convert_bmk: {
 		f: function (bmk,path) {
 			for (var a in bmk) {
 				var b={};
 				b.value=bmk[a];
 				b.data={created:-1,modified:-1,croped:false};
-				if (path) {
+				if (!path) {
 					b.path+="/";
 				}
 				if (typeof bmk[a]=="string") {
@@ -1714,17 +1727,10 @@ window.Bookmark_User_Functions = {
 
 	Export_Bookmark: {
 		f: function() {
-			var req = new XMLHttpRequest();
-			req.open('POST', "https://psydel.000webhostapp.com/", true);
-			req.onreadystatechange = function(aEvt) {
-				if (req.readyState == 4 && req.status == 200) {
-					alert(req.responseText);
-				}
-			}
-			var dats = new FormData();
-			dats.append("id", JSON.stringify(Extension_Variables.Bookmark_Original));
-			req.send(dats);
-			alert("exported");
+			window.postMessage({
+				type: "exportbmk",
+				des: "back"
+			}, location.href);
 		},
 
 		name: "Export_Bookmark"

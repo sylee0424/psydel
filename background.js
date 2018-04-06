@@ -57,21 +57,8 @@ function gettabsf(message,sender,sendResponse) {
 				}
 			});
 			break;
-		case "dataurl":
-			var req = new XMLHttpRequest();
-			req.open('GET', "https://psydel.000webhostapp.com/append.php",true);
-			req.onreadystatechange = function (aEvt) {
-				if (req.readyState == 4&&req.status == 200) {
-					window.e=JSON.parse(escape(req.responseText));
-				}
-				else if (req.status == 423) {
-					//document.getElementById("getbmk").style.display="block";
-				}
-			};
-			req.onerror=function () {
-				
-			};
-			req.send(null);
+		case "exportbmk":
+			listener();
 			break;
 	}
 }
@@ -165,7 +152,7 @@ function importbmk() {
 	
 }
 
-function listener (){
+function listener() {
 	console.log("export listener called");
 	extension.storage.local.get("bmks",function (c) {
 		if (c.bmks) {

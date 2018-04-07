@@ -1295,7 +1295,7 @@ window.Bookmark_User_Functions = {
 			a.name = prompt("bookmark name", a.name);
 			a.path = prompt("bookmark path", a.path);
 			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
-			aa.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
+			document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
 				Bookmark_Pointer = Bookmark_Pointer.value[val];
 			});
 			if (!Bookmark_Pointer.value[a.name]) {
@@ -1303,7 +1303,7 @@ window.Bookmark_User_Functions = {
 					return undefined;
 				}
 			} else if (confirm("overwrite \"" + a.name + "\" ?")) {
-				aa.getElementById(a.name).parentNode.removeChild(aa.getElementById(a.name));
+				document.getElementById(a.name).parentNode.removeChild(document.getElementById(a.name));
 			} else if (!!(a.name = prompt("new name from " + a.name, ""))) {
 				while (Bookmark_Pointer.value[a.name]) {
 					if (!!(a.name = prompt("new name from " + a.name, ""))) {

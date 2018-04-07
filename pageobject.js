@@ -416,50 +416,47 @@ window.Extension_User_Functions = {
 		f: function() {
 			var num1 = Number(prompt("max", "-1"));
 			var num2 = Number(prompt("min", "0"));
-			var galleryId = location.href.split("/")[location.href.split("/").length - 1].split(".")[0];
 			if (location.href.indexOf("/reader/") != -1 || location.href.indexOf("/galleries/") != -1) {
-				var i = galleryinfo.length;
-				if (i > num1 && num1 != -1) {
-					i = num1;
-				}
-				var k = 0;
-				var key=document.getElementsByTagName("img")[0].src.split(".hitomi.la/")[0].split("//")[1] + ".hitomi.la/galleries/";
-				if (!confirm("download?")) {
-					document.getElementsByTagName("head")[0].innerHTML = "";
-					document.body.innerHTML = "";
-					var arr=[];
-					while ((i--) - num2) {
-						arr.unshift("https://" + key + galleryId + "/" + galleryinfo[i - num2].name);
-					}
-					Extension_Tool_Functions.hitomi_Image_Sequential.f(arr);
-				} 
-				else {
-					while ((i--) - num2) {
-						var m = "";
-						if ((i + 1) / 10 < 1) {
-							m = m + "0";
-						}
-						if ((i + 1) / 100 < 1) {
-							m = m + "0";
-						}
-						var hrf = document.createElement("a");
-						hrf.name = "hrf";
-						document.body.appendChild(hrf);
-						hrf = document.getElementsByName("hrf")[0];
-						hrf.href = "https://" + key + galleryId + "/" + galleryinfo[i].name;
-						hrf.download = "hitomi_" + galleryId + "_" + m + (i + 1) + ".jpg";
-						hrf.name = "href";
-						if (hrf.click) {
-							hrf.click();
-						} else if (document.createEvent) {
-							var eventObj = document.createEvent('MouseEvents');
-							eventObj.initEvent('click', true, true);
-							hrf.dispatchEvent(eventObj);
-						}
-					}
-				}
-			} else {
+				var galleryId = location.href.split("/")[location.href.split("/").length - 1].split(".")[0];
+			}
+			else if ((var galleryId = Number(prompt("다운 받을 갤러리 주소","")))) {
+				
+			}
+			else {
 				alert("갤러리/리더 화면이 아닙니다.");
+				return undefined;
+			}
+			var target = galleryinfo.slice(num2,(num1==-1?undefined:num1));
+			var key=document.getElementsByTagName("img")[0].src.split(".hitomi.la/")[0].split("//")[1] + ".hitomi.la/galleries/";
+			if (!confirm("download?")) {
+				document.getElementsByTagName("head")[0].innerHTML = "";
+				document.body.innerHTML = "";
+				var arr=[];
+				target.forEach(function (val) {
+					arr.push("https://" + key + galleryId + "/" + val.name);
+				});
+				Extension_Tool_Functions.hitomi_Image_Sequential.f(arr);
+			} 
+			else {
+				target.forEach(function (val,index) {
+					var m = "";
+					if ((index+num2 + 1) / 10 < 1) {
+						m = m + "0";
+					}
+					if ((index+num2 + 1) / 100 < 1) {
+						m = m + "0";
+					}
+					var hrf = document.createElement("a");
+					hrf.href = "https://" + key + galleryId + "/" + val.name;
+					hrf.download = "hitomi_" + galleryId + "_" + m + (index+num2 + 1) + ".jpg";
+					if (hrf.click) {
+						hrf.click();
+					} else if (document.createEvent) {
+						var eventObj = document.createEvent('MouseEvents');
+						eventObj.initEvent('click', true, true);
+						hrf.dispatchEvent(eventObj);
+					}
+				});
 			}
 		},
 		name: "hitomi_Image_Downloader",
@@ -517,19 +514,6 @@ window.Extension_User_Functions = {
 };
 
 window.Extension_Tool_Functions = {
-
-	reset_bmk: {
-		f: function (bmk,path) {
-			for (var a in bmk.value) {
-				bmk.value[a].path=path;
-				if (bmk.value[a].type=="folder") {
-					console.log(bmk.value[a].value,bmk.value[a].type);
-					Extension_Tool_Functions.reset_bmk.f(bmk.value[a],bmk.value[a].path+"/"+a);
-				}
-			}
-		},
-		name:"hitomi_Image_Sequential"
-	},
 
 	convert_bmk: {
 		f: function (bmk,path) {

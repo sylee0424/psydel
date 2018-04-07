@@ -416,10 +416,11 @@ window.Extension_User_Functions = {
 		f: function() {
 			var num1 = Number(prompt("max", "-1"));
 			var num2 = Number(prompt("min", "0"));
+			var galleryId="";
 			if (location.href.indexOf("/reader/") != -1 || location.href.indexOf("/galleries/") != -1) {
-				var galleryId = location.href.split("/")[location.href.split("/").length - 1].split(".")[0];
+				galleryId = location.href.split("/")[location.href.split("/").length - 1].split(".")[0];
 			}
-			else if ((var galleryId = Number(prompt("다운 받을 갤러리 주소","")))) {
+			else if ((galleryId = prompt("다운 받을 갤러리 주소",""))) {
 				
 			}
 			else {

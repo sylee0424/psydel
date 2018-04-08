@@ -9,12 +9,14 @@
 		"*"
 	],
 	
+	/*
 	"applications": {
 		"gecko": {
 			"id": "scriptimport@psydel.org"
 		}
 	},
-
+	*/
+	
 	"content_scripts": [{
 		"matches": ["<all_urls>"],
 		"match_about_blank": true,
@@ -34,6 +36,8 @@
 		"activeTab",
 		"webRequest",
 		"webRequestBlocking",
+		"notifications",
+		"browsingData",
 		"tabs"
 	],
 

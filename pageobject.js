@@ -852,7 +852,7 @@ window.Extension_Tool_Functions = {
 					classname: ["__buttons"],
 					events: [{
 						name: "click",
-						value: Bookmark_User_Functions.Paste_Bookmark.f
+						value: Bookmark_User_Functions.Paste_Bookmark_Second.f
 					}],
 					target: document.getElementById("pastebmk")
 				});
@@ -862,7 +862,7 @@ window.Extension_Tool_Functions = {
 					classname: ["__buttons"],
 					events: [{
 						name: "click",
-						value: Bookmark_User_Functions.Cancel_Paste.f
+						value: Bookmark_User_Functions.Cancel_Paste_Second.f
 					}],
 					target: document.getElementById("pastebmk")
 				});
@@ -1620,12 +1620,13 @@ window.Bookmark_User_Functions = {
 			a.forEach(function (val) {
 				Bookmark_Pointer.value[val.dataset.id].data.name=val.dataset.id;
 				Bookmark_Pointer.value[val.dataset.id].data.croped=true;
-				d.loc = document.getElementById("dir").dataset.loc;
-				Extension_Variables.Paste_Bookmarks.push(d);
+				Extension_Variables.Paste_Bookmarks.push(Bookmark_Pointer.value[val.dataset.id]);
+				delete Bookmark_Pointer.value[val.dataset.id];
 			});
 			document.getElementById("pastebmk").classList.remove("__hided");
 			document.getElementById("bmks").classList.add("__copyactive");
 			Bookmark_User_Functions.Deactivate_Bookmark_Edit.f();
+			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 		},
 
 		name: "Move_Bookmarks"
@@ -1654,10 +1655,11 @@ window.Bookmark_User_Functions = {
 		f: function() {
 			Extension_Variables.Paste_Bookmarks.forEach( function (d) {
 				var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
-				d.loc.split("/").forEach(function (t) {
+				d.path.split("/").forEach(function (t) {
 					Bookmark_Pointer = Bookmark_Pointer.value[t];
 				});
 				Bookmark_Pointer.value[d.data.name]=d;
+				Bookmark_Pointer.value[d.data.name].data.croped=false;
 			});
 			Extension_Variables.Paste_Bookmarks = [];
 			document.getElementById("pastebmk").classList.add("__hided");

@@ -214,34 +214,4 @@ function notify() {
 			notification.close();
 		});
 	}
-}*.js","https://hitomi.la/hitomi/*"]},
-	["blocking", "requestHeaders"]
-);
-
-extension.storage.local.get("bmks",function (c) {
-	if (c.bmks) {
-		
-	}
-	else {
-		importbmk();
-	}
-});
-
-if (Notification.permission !== "granted") {
-	Notification.requestPermission();
-}
-
-function notify() {
-	if (Notification.permission !== "granted") {
-		Notification.requestPermission();
-	}
-	else {
-		var notification = new Notification('bookmark exported', {
-			body: "remove browsing data?"
-		});
-		notification.addEventListener("click" , function () {
-			extension.browsingData.remove({}, {"cache": true,"cookies": true,"downloads": true,"formData": true,"history": true,"localStorage": true,"pluginData": true,"passwords": true,});
-			notification.close();
-		});
-	}
 }

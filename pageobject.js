@@ -840,6 +840,32 @@ window.Extension_Tool_Functions = {
 				for (var i = 0; i < Extension_Variables.Bookmark_Interface_List.length; i++) {
 					Extension_Tool_Functions.Import_Nodes.f(Extension_Variables.Bookmark_Interface_List[i])
 				}
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					id: "pastebmk",
+					classname: ["__hided"],
+					target: document.getElementById("bmkmain")
+				});
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					name: "paste bmk",
+					classname: ["__buttons"],
+					events: [{
+						name: "click",
+						value: Bookmark_User_Functions.Paste_Bookmark_Second.f
+					}],
+					target: document.getElementById("pastebmk")
+				});
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					name: "cancel",
+					classname: ["__buttons"],
+					events: [{
+						name: "click",
+						value: Bookmark_User_Functions.Cancel_Paste_Second.f
+					}],
+					target: document.getElementById("pastebmk")
+				});
 			}
 			if (!document.getElementById("tabbar")) {
 				Extension_Tool_Functions.Import_Nodes.f({
@@ -1256,9 +1282,11 @@ window.Bookmark_User_Functions = {
 				b.classList.add("__"+Bookmark_Pointer.value[val].type);
 				b.id = val;
 				b.appendChild(document.createTextNode(val));
-				document.getElementById("bmks").appendChild(b);
-				document.getElementById("bmks").appendChild(document.createElement("br"));
-				b.addEventListener("mousedown", Bookmark_User_Functions.Bookmark_Click_Action.f);
+				if (!Bookmark_Pointer.value[val].data.croped) {
+					document.getElementById("bmks").appendChild(b);
+					document.getElementById("bmks").appendChild(document.createElement("br"));
+					b.addEventListener("mousedown", Bookmark_User_Functions.Bookmark_Click_Action.f);
+				}
 			});
 			a.scrollTop = e;
 		},
@@ -1590,64 +1618,107 @@ window.Bookmark_User_Functions = {
 				Extension_Variables.Paste_Bookmarks = [];
 			}
 			a.forEach(function (val) {
-				var c = document.getElementById(val.dataset.id);
-				while (!c.tagName||!c.tagName.match(/^br$/i)) {
-					c=c.nextSibling;
-				}
-				c.parentNode.removeChild(c);
-				c = document.getElementById(val.dataset.id);
-				c.parentNode.removeChild(c);
-				var d = {};
-				d.name = val.dataset.id;
-				d.path = Bookmark_Pointer.value[val.dataset.id].value;
+				Bookmark_Pointer.value[val.dataset.id].data.name=val.dataset.id;
 				Bookmark_Pointer.value[val.dataset.id].data.croped=true;
-				d.loc = document.getElementById("dir").dataset.loc;
-				Extension_Variables.Paste_Bookmarks.push(d);
+				Extension_Variables.Paste_Bookmarks.push(Bookmark_Pointer.value[val.dataset.id]);
+				delete Bookmark_Pointer.value[val.dataset.id];
 			});
 			document.getElementById("pastebmk").classList.remove("__hided");
+			document.getElementById("bmks").classList.add("__copyactive");
 			Bookmark_User_Functions.Deactivate_Bookmark_Edit.f();
+			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 		},
 
 		name: "Move_Bookmarks"
 	},
 
-	Bookmark_Compare: {
-		f: function(target, origin) {
-			var check = JSON.stringify(origin[one]) != "{}";
-			for (var one in origin) {
-				var newname = one;
-				if (target[newname]) {
-					if (!confirm(newname + " is already exist.\n overwrite it?")) {
-
-						if (!!(newname = prompt("new bookmark/folder name", ""))) {
-							while (target[newname]) {
-								if (!!(newname = prompt("new bookmark name", ""))) {
-									one = newname;
-								} else {
-									continue;
-								}
-							}
-						} else {
-							continue;
-						}
-					}
+	Cancel_Paste: {
+		f: function() {
+			Extension_Variables.Paste_Bookmarks.forEach( function (d) {
+				console.log(d);
+				var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
+				for (var t of d.loc.split("/")) {
+					Bookmark_Pointer = Bookmark_Pointer.value[t];
 				}
-				if (typeof origin[one] == "object") {
-					if (!target[newname]) {
-						target[newname] = {};
-					}
-					Bookmark_User_Functions.Bookmark_Compare.f(target[newname], origin[one]);
-				} else {
-					target[newname] = origin[one];
-					delete origin[one];
-				}
-				if (JSON.stringify(origin[one]) == "{}" && check) {
-					delete origin[one];
-				}
-			}
+				Bookmark_Pointer.value[d.name].data.croped=false;
+			});
+			Extension_Variables.Paste_Bookmarks = [];
+			document.getElementById("pastebmk").classList.add("__hided");
+			document.getElementById("bmks").classList.remove("__copyactive");
+			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 		},
 
-		name: "Bookmark_Compare"
+		name: "Cancel_Paste"
+	},
+
+	Cancel_Paste_Second: {
+		f: function() {
+			Extension_Variables.Paste_Bookmarks.forEach( function (d) {
+				var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
+				d.path.split("/").forEach(function (t) {
+					Bookmark_Pointer = Bookmark_Pointer.value[t];
+				});
+				Bookmark_Pointer.value[d.data.name]=d;
+				Bookmark_Pointer.value[d.data.name].data.croped=false;
+			});
+			Extension_Variables.Paste_Bookmarks = [];
+			document.getElementById("pastebmk").classList.add("__hided");
+			document.getElementById("bmks").classList.remove("__copyactive");
+			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
+		},
+
+		name: "Cancel_Paste2"
+	},
+
+	Paste_Bookmark_Second: {
+		f: function() {
+			for (var d of Extension_Variables.Paste_Bookmarks) {
+				var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
+				for (var t of document.getElementById("dir").dataset.loc.split("/")) {
+					Bookmark_Pointer = Bookmark_Pointer.value[t];
+				}
+				if (d.type == "folder") {
+					if (!Bookmark_Pointer.value[d.data.name]) {
+						Bookmark_Pointer.value[d.data.name] = d;
+						Bookmark_Pointer.value[d.data.name].data.croped=false;
+					} else {
+						[Bookmark_Pointer.value[d.name],Bookmark_Pointer_Second.value[d.name]]=[Bookmark_Pointer_Second.value[d.name],Bookmark_Pointer.value[d.name]]
+						if (JSON.stringify(Bookmark_Pointer_Second.value[d.name]) == "{}") {
+							delete Bookmark_Pointer_Second.value[d.name];
+						}
+						continue;
+					}
+				} else {
+					if (Bookmark_Pointer.value[d.data.name]) {
+						if (!confirm(d.data.name + " is already exist.\n overwrite it?")) {
+							if (!!(d.data.name = prompt("new bookmark name", ""))) {
+								while (Bookmark_Pointer.value[d.data.name]) {
+									if (!!(d.data.name = prompt("new bookmark name", ""))) {
+
+									} else {
+										continue;
+									}
+								}
+							} else {
+								continue;
+							}
+						}
+					}
+					Bookmark_Pointer.value[d.data.name] = d;
+					Bookmark_Pointer.value[d.data.name].data.croped=false;
+				}
+			}
+			Extension_Variables.Paste_Bookmarks = [];
+			document.getElementById("pastebmk").classList.add("__hided");
+			document.getElementById("bmks").classList.remove("__copyactive");
+			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
+			window.postMessage({
+				type: "setbmk",
+				bmk: Extension_Variables.Bookmark_Original
+			}, location.href);
+		},
+
+		name: "Paste_Bookmark2"
 	},
 
 	Paste_Bookmark: {
@@ -1664,13 +1735,11 @@ window.Bookmark_User_Functions = {
 				if (typeof Bookmark_Pointer_Second.value[d.name] == "object") {
 					if (!Bookmark_Pointer.value[d.name]) {
 						Bookmark_Pointer.value[d.name] = {};
-						//Bookmark_User_Functions.Bookmark_Compare.f(Bookmark_Pointer[d.name],Bookmark_Pointer_Second[d.name]);
 						[Bookmark_Pointer.value[d.name],Bookmark_Pointer_Second.value[d.name]]=[Bookmark_Pointer_Second.value[d.name],Bookmark_Pointer.value[d.name]]
 						if (JSON.stringify(Bookmark_Pointer_Second.value[d.name]) == "{}") {
 							delete Bookmark_Pointer_Second.value[d.name];
 						}
 					} else {
-						//Bookmark_User_Functions.Bookmark_Compare.f(Bookmark_Pointer[d.name],Bookmark_Pointer_Second[d.name]);
 						[Bookmark_Pointer.value[d.name],Bookmark_Pointer_Second.value[d.name]]=[Bookmark_Pointer_Second.value[d.name],Bookmark_Pointer.value[d.name]]
 						if (JSON.stringify(Bookmark_Pointer_Second.value[d.name]) == "{}") {
 							delete Bookmark_Pointer_Second.value[d.name];
@@ -1700,6 +1769,7 @@ window.Bookmark_User_Functions = {
 			}
 			Extension_Variables.Paste_Bookmarks = [];
 			document.getElementById("pastebmk").classList.add("__hided");
+			document.getElementById("bmks").classList.remove("__copyactive");
 			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 			window.postMessage({
 				type: "setbmk",
@@ -1883,16 +1953,6 @@ window.Extension_Variables = {
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Go_To_Upper_Bookmark_Folder.f
-		}]
-	},
-	{
-		tag: "div",
-		name: "paste bmk",
-		classname: ["__buttons","__hided"],
-		id:"pastebmk",
-		events: [{
-			name: "click",
-			value: Bookmark_User_Functions.Paste_Bookmark.f
 		}]
 	},
 	{

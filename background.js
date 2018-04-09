@@ -1,10 +1,9 @@
-﻿function gettablist(option,callback) {
-	if (navigator.userAgent.toLowerCase().indexOf("firefox")!=-1) {
-		extension.tabs.query(option).then(callback,function (){});
-	}
-	else {
-		extension.tabs.query(option,callback);
-	}
+﻿var extension=(!!chrome)?chrome:browser;
+
+var e={};
+
+function gettablist(option,callback) {
+	extension.tabs.query(option,callback);
 }
 
 function gettabsf(message,sender,sendResponse) {
@@ -64,12 +63,7 @@ function gettabsf(message,sender,sendResponse) {
 }
 
 function updatetabs(id,info,tab) {
-	if (navigator.userAgent.toLowerCase().indexOf("firefox")!=-1) {
-		extension.tabs.query({}).then(favcng,function (){});
-	}
-	else {
-		extension.tabs.query({},favcng);
-	}
+	extension.tabs.query({},favcng);
 }
 
 function favcng(a) {
@@ -165,10 +159,6 @@ function listener() {
 		}
 	});
 }
-
-var extension=(!!chrome)?chrome:browser;
-
-var e={};
 
 extension.windows.onRemoved.addListener(listener)
 extension.runtime.onMessage.addListener(gettabsf);

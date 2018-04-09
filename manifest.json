@@ -37,12 +37,5 @@
 		"notifications",
 		"browsingData",
 		"tabs"
-	],
-
-	"externally_connectable": {
-		"ids": [
-			"*"
-		],
-		"accepts_tls_channel_id": false
-	}
+	]
 }

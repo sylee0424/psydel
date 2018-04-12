@@ -22,15 +22,14 @@
 		"js": ["content.js"],
 		"css": ["content.css"]
 	}],
-
+	
 	"background": {
 		"scripts": ["background.js"]
 	},
-
+	
 	"permissions": [
 		"<all_urls>",
 		"storage",
-		"background",
 		"activeTab",
 		"webRequest",
 		"webRequestBlocking",

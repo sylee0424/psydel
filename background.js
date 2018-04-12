@@ -1,74 +1,16 @@
-﻿function gettablist(option,callback) {
-	if (navigator.userAgent.toLowerCase().indexOf("firefox")!=-1) {
-		extension.tabs.query(option).then(callback,function (){});
-	}
-	else {
-		extension.tabs.query(option,callback);
-	}
+var extension=(!!chrome)?chrome:browser;
+
+var e={};
+
+function gettablist(option,callback) {
+	extension.tabs.query(option,callback);
 }
 
 function gettabsf(message,sender,sendResponse) {
 	switch (message.type) {
-		case "gettab":
-			gettablist({},function (a) {
-				extension.tabs.sendMessage(sender.tab.id,{type:"tabbarupdate",tab:a});
-			});
-			break;
-		case "changeto":
-			if (message.id) {
-				extension.tabs.update(message.id, {active: true});
-			}
-			else {
-				gettablist({},function (a) {
-					if (message.dir=="left") {
-						if (sender.tab.index==0) {
-							return undefined;
-						}
-						extension.tabs.update(a[sender.tab.index-1].id,{active: true});
-					} else if (message.dir=="right") {
-						if (sender.tab.index==a.length-1) {
-							return undefined;
-						}
-						extension.tabs.update(a[sender.tab.index+1].id,{active: true});
-					}
-				});
-			}
-			break;
-		case "create":
-			extension.tabs.create(message.option);
-			break;
-		case "moveto":
-			if (message.dir=="left") {
-				if (sender.tab.index==0) {
-					return undefined;
-				}
-				extension.tabs.move(sender.tab.id,{index:sender.tab.index-1});
-			} else if (message.dir=="right") {
-				extension.tabs.move(sender.tab.id,{index:sender.tab.index+1});
-			}
-			break;
-		case "closeto":
-			extension.tabs.remove(message.id);
-			break;
-		case "tabbartoggle":
-			gettablist({},function (a) {
-				for (var i=0;i<a.length;i++) {
-					extension.tabs.sendMessage(a[i].id,{type:"toggle",toggle:message.toggle});
-				}
-			});
-			break;
 		case "exportbmk":
 			listener();
 			break;
-	}
-}
-
-function updatetabs(id,info,tab) {
-	if (navigator.userAgent.toLowerCase().indexOf("firefox")!=-1) {
-		extension.tabs.query({}).then(favcng,function (){});
-	}
-	else {
-		extension.tabs.query({},favcng);
 	}
 }
 
@@ -93,7 +35,7 @@ function favcng(a) {
 		}
 	}
 	for (var i=0;i<a.length;i++) {
-		extension.tabs.sendMessage(a[i].id,d);
+		//extension.tabs.sendMessage(a[i].id,d);
 	}
 }
 
@@ -166,25 +108,16 @@ function listener() {
 	});
 }
 
-var extension=(!!chrome)?chrome:browser;
-
-var e={};
-
-extension.windows.onRemoved.addListener(listener)
 extension.runtime.onMessage.addListener(gettabsf);
-extension.tabs.onRemoved.addListener(updatetabs);
-extension.tabs.onUpdated.addListener(updatetabs);
-extension.tabs.onMoved.addListener(updatetabs);
-extension.tabs.onReplaced.addListener(updatetabs);
-extension.tabs.onCreated.addListener(updatetabs);
 extension.webRequest.onBeforeSendHeaders.addListener(
 	function(details) {
-		if (details.type=="script") {
+		if (details.type=="script"||details.type=="sub_frame") {
+			console.log("canceled");
 			return {cancel:true};
 		}
 	return {requestHeaders: details.requestHeaders};
 	},
-	{urls: ["https://ads.exosrv.com/*","https://*.top/*.js","https://hitomi.la/hitomi/*"]},
+	{urls: ["https://ads.exosrv.com/*","https://*.top/*.js","https://hitomi.la/hitomi/*","http://*.clickmon.co.kr/*","*://*.criteo.*/*","*://*.vidible.*/*","*://*.doubleclick.*/*","*://*.advertising.*/*","*://*.moatads.*/*","*://filecast.co.kr/*","http://ad.tpmn.co.kr/*","*://*.ad-stir.*/*","*://*/*adbnMobileBanner*","*://ads-exchange.*/*","*://*.hotclick.*/*","http://wasabisyrup.com/cdn-cgi/apps/head/*.js","http://wasabisyrup.com/template/plugin02.js"]},
 	["blocking", "requestHeaders"]
 );
 

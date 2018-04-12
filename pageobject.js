@@ -624,7 +624,7 @@ window.Extension_Tool_Functions = {
 	},
 
 	hitomi_Link_Action: {
-		f: function() {
+		f: function(event) {
 			event.stopPropagation();
 			var i = this.dataset.index;
 			var j = this.dataset.type;

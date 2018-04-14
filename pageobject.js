@@ -1265,7 +1265,9 @@ window.Bookmark_User_Functions = {
 					Bookmark_Pointer.value[a.name].data.modified = b;
 					Bookmark_Pointer.value[a.name].data.croped=false;
 					Bookmark_Pointer.value[a.name].value = a.path;
-					delete Bookmark_Pointer.value[this.innerText];
+					if (a.name!=this.innerText) {
+						delete Bookmark_Pointer.value[this.innerText];
+					}
 					Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc,
 						document.getElementById("bmks").classList.contains("__editing"));
 					window.postMessage({
@@ -1707,11 +1709,10 @@ window.Bookmark_User_Functions = {
 
 	Backup_Bookmark: {
 		f: function() {
-			var a=document.createElement("a");
-			var b=new Date();
-			a.download="backup(date:"+b.getFullYear()+"_"+(b.getMonth()+1)+"_"+b.getDate()+"_"+b.getHours()+"_"+b.getMinutes()+"_"+b.getSeconds()+"_"+b.getMilliseconds()+").json";
-			a.href="data:text/plain,"+escape(Extension_Tool_Functions.utf8_encode.f(JSON.stringify(Extension_Variables.Bookmark_Original)));
-			Extension_Tool_Functions.Emulate_Click_Event.f(a);
+			window.postMessage({
+				type: "backupbmk",
+				des: "back"
+			}, location.href);
 		},
 
 		name: "Backup_Bookmark"

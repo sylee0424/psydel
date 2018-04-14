@@ -4,9 +4,13 @@
 			listener();
 			break;
 		case "backupbmk":
+			var b=new Date();
 			extension.storage.local.get("bmks",function (c) {
 				if (c.bmks) {
-					chrome.downloads.download({url:"data:text/plain,"+unescape(c.bmks)});
+					chrome.downloads.download({
+						url:"data:text/plain,"+unescape(c.bmks),
+						filename:"backup(date_"+b.getFullYear()+"_"+(b.getMonth()+1)+"_"+b.getDate()+"_"+b.getHours()+"_"+b.getMinutes()+"_"+b.getSeconds()+"_"+b.getMilliseconds()+").json"
+					});
 				}
 			});
 			break;
@@ -18,7 +22,6 @@
 
 function importbmk() {
 	try {
-		//document.getElementById("bmks").innerHTML="loading...";
 		var req = new XMLHttpRequest();
 		req.open('GET', "https://psydel.000webhostapp.com/",true);
 		req.onreadystatechange = function (aEvt) {

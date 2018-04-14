@@ -8,6 +8,11 @@ if (location.href.match(/^https?\:\/\/(m|www|bbs)\.ruliweb/i)) {
 	Extension_Sub_Functions.Ruliweb_Ad_Block.f();
 }
 
+if (location.href.match(/^https?\:\/\/(marumaru|wasabisyrup)\.(in|com)/i)) {
+	Extension_Sub_Functions.Marumaru_Ad_Block.f();
+}
+
+
 window.postMessage({
 	type: "gettab",
 	des: "back"

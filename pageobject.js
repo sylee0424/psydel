@@ -334,10 +334,10 @@ window.Extension_Sub_Functions = {
 					Extension_Tool_Functions.Import_Nodes.f(a);
 				}
 			}
-			if (!document.getElementById("sidebar")) {
+			if (!document.getElementById("functionbar")) {
 				Extension_Tool_Functions.Import_Nodes.f({
 					tag: "div",
-					id: "sidebar",
+					id: "functionbar",
 					classname: ["__hided"],
 					target: document.body
 				});
@@ -356,14 +356,14 @@ window.Extension_Sub_Functions = {
 						name: "click",
 						value: Extension_User_Functions[s].f
 					}];
-					a.target = document.getElementById("sidebar");
+					a.target = document.getElementById("functionbar");
 					Extension_Tool_Functions.Import_Nodes.f(a);
 				}
 				Extension_Tool_Functions.Import_Nodes.f({
 					tag: "div",
 					id: "sidebarpad",
 					classname: ["__extension"],
-					target: document.getElementById("sidebar")
+					target: document.getElementById("functionbar")
 				});
 			}
 
@@ -460,6 +460,27 @@ window.Extension_Sub_Functions = {
 			}
 		},
 		name: "Ruliweb_Ad_Block"
+	},
+
+	Marumaru_Ad_Block: {
+		f: function() {
+			var a=document.getElementById("responsive-banner");
+			if (a) {
+				a.parentNode.removeChild(a);
+			}
+			document.querySelectorAll("iframe").forEach(function (val) {
+				val.parentNode.removeChild(val);
+			});
+			a=document.getElementById("header-anchor");
+			if (a) {
+				a.parentNode.removeChild(a);
+			}
+			a=document.getElementById("footer-anchor");
+			if (a) {
+				a.parentNode.removeChild(a);
+			}
+		},
+		name: "Marumaru_Ad_Block"
 	}
 
 };
@@ -1883,6 +1904,17 @@ window.Extension_Variables = {
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Merge_Bookmark.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "expand",
+		classname: ["__buttons"],
+		events: [{
+			name: "click",
+			value: function (event) {
+				document.getElementById("bmkmain").classList.toggle("__expanded");
+			}
 		}]
 	},
 	{

@@ -86,7 +86,7 @@ extension.webRequest.onBeforeSendHeaders.addListener(
 		}
 	return {requestHeaders: details.requestHeaders};
 	},
-	{urls: ["https://ads.exosrv.com/*","https://*.top/*.js","https://hitomi.la/hitomi/*","https://*.clickmon.co.kr/*","http://*.realclick.co.kr/*","http://*.clickmon.co.kr/*","http://*.realclick.co.kr/*","https://marumaru.in/cdn-cgi/apps/head/*.js"]},
+	{urls: ["https://ads.exosrv.com/*","https://*.top/*.js","https://hitomi.la/hitomi/*","https://*.clickmon.co.kr/*","http://*.realclick.co.kr/*","http://*.clickmon.co.kr/*","http://*.realclick.co.kr/*","https://marumaru.in/cdn-cgi/apps/head/*.js","http://www.dreamsearch.or.kr/servlet/adBanner*","https://www8.smartadserver.com/*"]},
 	["blocking", "requestHeaders"]
 );
 

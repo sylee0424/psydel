@@ -1,32 +1,31 @@
 function contentonmessage(event) {
 		if (event.data.type=="setbmk") {
-			console.log("setted");
-			extension.storage.local.set({"bmks":escape(JSON.stringify(event.data.bmk))});
+			extension.storage.local.get("bmks",function (c) {
+				console.log("setted");
+				var rtn=MergeRecursive(event.data.bmk,JSON.parse(unescape(c.bmks)));
+				extension.storage.local.set({"bmks":escape(JSON.stringify(rtn))});
+				console.log(event.data.bmk);
+				console.log(rtn);
+			});
 		}
 		else if (event.data.type=="removebmk") {
 			extension.storage.local.remove("bmks");
 		}
 		else if (event.data.type=="importbmk") {
-			try {
-				//document.getElementById("bmks").innerHTML="loading...";
-				var req = new XMLHttpRequest();
-				req.open('GET', "https://psydel.000webhostapp.com/",true);
-				req.onreadystatechange = function (aEvt) {
-					if (req.readyState == 4&&req.status == 200) {
-						extension.storage.local.set({"bmks":escape(req.responseText)});
-					}
-					else if (req.status == 423) {
-						//document.getElementById("getbmk").style.display="block";
-					}
-				};
-				req.onerror=function () {
+			var req = new XMLHttpRequest();
+			req.open('GET', "https://psydel.000webhostapp.com/",true);
+			req.onreadystatechange = function (aEvt) {
+				if (req.readyState == 4&&req.status == 200) {
+					extension.storage.local.set({"bmks":escape(req.responseText)});
+				}
+				else if (req.status == 423) {
 					
-				};
-				req.send(null);
-			}
-			catch (e) {
-				//document.getElementById("bmks").innerHTML="load fail!";
-			}
+				}
+			};
+			req.onerror=function () {
+				
+			};
+			req.send(null);
 		}
 		else if (event.data.type=="check") {
 			extension.storage.local.get("bmks",function (c) {
@@ -37,7 +36,8 @@ function contentonmessage(event) {
 					if (!c.bmks) {
 						c.bmks="{}";
 					}
-					var rtn=Object.assign({},event.data.bmk,JSON.parse(unescape(c.bmks)));
+					var rtn=MergeRecursive(event.data.bmk,JSON.parse(unescape(c.bmks)));
+					extension.storage.local.set({"bmks":escape(JSON.stringify(rtn))});
 					window.postMessage({type:"update",bmk:rtn},location.href);
 				}
 			});
@@ -75,6 +75,32 @@ function addscript(scriptlist,removenode) {
 		}
 	});
 	__scr.setAttribute("src",extension.runtime.getURL(scriptlist.shift()));
+}
+
+/*
+* Recursively merge properties of two objects 
+*/
+function MergeRecursive(obj1, obj2) {
+
+  for (var p in obj2) {
+    try {
+      // Property in destination object set; update its value.
+      if ( obj2[p].constructor==Object ) {
+        obj1[p] = MergeRecursive(obj1[p], obj2[p]);
+
+      } else {
+        obj1[p] = obj2[p];
+
+      }
+
+    } catch(e) {
+      // Property in destination object not set; create it and set its value.
+      obj1[p] = obj2[p];
+
+    }
+  }
+
+  return obj1;
 }
 
 var extension=(!!chrome)?chrome:browser;

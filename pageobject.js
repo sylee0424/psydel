@@ -466,6 +466,18 @@ window.Extension_Sub_Functions = {
 
 window.Extension_Tool_Functions = {
 
+	change_bmk: {
+		f: function (bmk,path) {
+			for (var a in bmk.value) {
+				bmk.value[a].path=path;
+				if (bmk.value[a].type=="folder") {
+					Extension_Tool_Functions.change_bmk.f(bmk.value[a],bmk.value[a].path+(path?"/":"")+a);
+				}
+			}
+		},
+		name:"hitomi_Image_Sequential"
+	},
+
 	convert_bmk: {
 		f: function (bmk,path) {
 			for (var a in bmk) {
@@ -1466,6 +1478,7 @@ window.Bookmark_User_Functions = {
 			}
 			a.forEach(function (val) {
 				Bookmark_Pointer.value[val.dataset.id].data.name=val.dataset.id;
+				Bookmark_Pointer.value[val.dataset.id].path=document.getElementById("dir").dataset.loc;
 				Bookmark_Pointer.value[val.dataset.id].data.croped=true;
 				Extension_Variables.Paste_Bookmarks.push(Bookmark_Pointer.value[val.dataset.id]);
 				delete Bookmark_Pointer.value[val.dataset.id];
@@ -1524,6 +1537,7 @@ window.Bookmark_User_Functions = {
 				for (var t of document.getElementById("dir").dataset.loc.split("/")) {
 					Bookmark_Pointer = Bookmark_Pointer.value[t];
 				}
+				d.path=document.getElementById("dir").dataset.loc;
 				if (d.type == "folder") {
 					if (!Bookmark_Pointer.value[d.data.name]) {
 						Bookmark_Pointer.value[d.data.name] = d;

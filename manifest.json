@@ -38,6 +38,7 @@
 		"webRequestBlocking",
 		"notifications",
 		"browsingData",
+		"downloads",
 		"tabs"
 	],
 

@@ -3,6 +3,13 @@
 		case "exportbmk":
 			listener();
 			break;
+		case "backupbmk":
+			extension.storage.local.get("bmks",function (c) {
+				if (c.bmks) {
+					chrome.downloads.download({url:"data:text/plain,"+unescape(c.bmks)});
+				}
+			});
+			break;
 		case "create":
 			extension.tabs.create(message.prop);
 			break;

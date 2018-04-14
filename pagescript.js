@@ -1,11 +1,11 @@
-﻿Extension_Tool_Functions.Add_Extension_Interface.f();
+﻿Extension_Sub_Functions.Add_Extension_Interface.f();
 
 if (location.href.match(/^https?\:\/\/hitomi\.la/i)) {
-	Extension_Tool_Functions.hitomi_Link_Change.f();
+	Extension_Sub_Functions.hitomi_Link_Change.f();
 }
 
 if (location.href.match(/^https?\:\/\/(m|www|bbs)\.ruliweb/i)) {
-	Extension_Tool_Functions.Ruliweb_Ad_Block.f();
+	Extension_Sub_Functions.Ruliweb_Ad_Block.f();
 }
 
 window.postMessage({

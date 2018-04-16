@@ -46,6 +46,20 @@ function contentonmessage(event) {
 		else if (event.data.des=="back") {
 			extension.runtime.sendMessage(extension.runtime.id,event.data);
 		}
+		else if (event.data.type=="change") {
+			if (event.data.changeinfo.type=="add") {
+				
+			}
+			else if (event.data.changeinfo.type=="remove") {
+				
+			}
+			else if (event.data.changeinfo.type=="update") {
+				
+			}
+			else if (event.data.changeinfo.type=="move") {
+				
+			}
+		}
 		else if (event.data.type=="test") {
 			console.log("test");
 			alert("test message");

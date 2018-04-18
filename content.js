@@ -2,11 +2,8 @@ function contentonmessage(event) {
 		if (event.data.type=="setbmk") {
 			extension.storage.local.get("bmks",function (c) {
 				console.log("setted");
-				//var rtn=MergeRecursive(event.data.bmk,JSON.parse(unescape(c.bmks)));
 				extension.storage.local.set({"bmks":escape(JSON.stringify(event.data.bmk))});
 				extension.runtime.sendMessage(extension.runtime.id,event.data);
-				//console.log(event.data.bmk);
-				//console.log(rtn);
 			});
 		}
 		else if (event.data.type=="removebmk") {

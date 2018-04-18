@@ -1351,36 +1351,17 @@ window.Bookmark_User_Functions = {
 
 	Create_Bookmark_Folder: {
 		f: function() {
-
-			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
-			for (var t of document.getElementById("dir").dataset.loc.split("/")) {
-				Bookmark_Pointer = Bookmark_Pointer.value[t];
-			}
-			var a;
-			if (!!(a = prompt("folder name", ""))) {
-				while (Bookmark_Pointer.value[a]) {
-					if (!!(a = prompt("folder name", ""))) {
-
-					} else {
-						return undefined;
-					}
-				}
-			} else {
-				return undefined;
-			}
-			Bookmark_Pointer.value[a] = {};
-			Bookmark_Pointer.value[a].type = "folder";
-			Bookmark_Pointer.value[a].path = document.getElementById("dir").dataset.loc;
-			Bookmark_Pointer.value[a].data={};
-			var b=(new Date()).getTime();
-			Bookmark_Pointer.value[a].data.created = b;
-			Bookmark_Pointer.value[a].data.modified = b;
-			Bookmark_Pointer.value[a].data.croped=false;
-			Bookmark_Pointer.value[a].value = {};
-			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
+			var a = {};
+			a.title = prompt("bookmark name", document.getElementsByTagName("title")[0].innerHTML);
+			a.url = prompt("bookmark path", document.location.href);
+			a.type = "folder";
 			window.postMessage({
-				type: "setbmk",
-				bmk: Extension_Variables.Bookmark_Original
+				type: "change",
+				changeinfo: {
+					type:"add",
+					loc:document.getElementById("dir").dataset.loc,
+					data:[a]
+				}
 			}, location.href);
 		},
 

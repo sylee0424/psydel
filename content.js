@@ -47,22 +47,127 @@ function contentonmessage(event) {
 			extension.runtime.sendMessage(extension.runtime.id,event.data);
 		}
 		else if (event.data.type=="change") {
-			if (event.data.changeinfo.type=="add") {
-				
+			if (!event.data.changeinfo) {
+				return undefined;
 			}
-			else if (event.data.changeinfo.type=="remove") {
-				
-			}
-			else if (event.data.changeinfo.type=="update") {
-				
-			}
-			else if (event.data.changeinfo.type=="move") {
-				
-			}
+			console.log(event.data.changeinfo);
+			extension.storage.local.get("bmks",function (c) {
+				var bmk=JSON.parse(unescape(c.bmks));
+				var bmkptr=bmk;
+				event.data.changeinfo.loc.split("/").forEach(function (val) {
+					bmkptr=bmkptr.value[val];
+				});
+				if (event.data.changeinfo.type=="add") {
+					event.data.changeinfo.data.forEach(function (val) {
+						if (!bmkptr.value[val.title]) {
+							if (!val.title) {
+								return undefined;
+							}
+						} else if (confirm("overwrite \"" + val.title + "\" ?")) {
+							if (val.type=="folder") {
+								return undefined;
+							}
+						} else if (!!(val.title = prompt("new name from " + val.title, ""))) {
+							while (bmkptr.value[val.title]) {
+								if (!!(a.name = prompt("new name from " + val.title, ""))) {
+
+								} else {
+									return undefined;
+								}
+							}
+						} else {
+							return undefined;
+						}
+						bmkptr.value[val.title] = {};
+						bmkptr.value[val.title].path = event.data.changeinfo.loc;
+						bmkptr.value[val.title].data={};
+						var b=(new Date()).getTime();
+						bmkptr.value[val.title].data.created = b;
+						bmkptr.value[val.title].data.modified = b;
+						bmkptr.value[val.title].data.croped=false;
+						bmkptr.value[val.title].type = val.type;
+						if (val.type=="link") {
+							bmkptr.value[val.title].value = val.url;
+						}
+						else {
+							bmkptr.value[val.title].value = {};
+						}
+					})
+				}
+				else if (event.data.changeinfo.type=="remove") {
+					event.data.changeinfo.data.forEach(function (val) {
+						delete bmkptr.value[val];
+					})
+				}
+				else if (event.data.changeinfo.type=="update") {
+					event.data.changeinfo.data.forEach(function (val) {
+						[bmkptr.value[val.title],bmkptr.value[val.ptitle]]=[bmkptr.value[val.ptitle],bmkptr.value[val.title]];
+						if (val.type=="link") {
+							bmkptr.value[val.title].value=val.url;
+						}
+						if (val.title!=val.ptitle) {
+							delete bmkptr.value[val.ptitle];
+						}
+						var b=(new Date()).getTime();
+						bmkptr.value[val.title].data.modified = b;
+					})
+				}
+				else if (event.data.changeinfo.type=="move") {
+					event.data.changeinfo.data.forEach(function (val) {
+						if (val.type == "folder") {
+							if (!bmkptr.value[val.data.name]) {
+								bmkptr.value[val.data.name] = val;
+								bmkptr.value[val.data.name].data.croped=false;
+							} else {
+								if (bmkptr.value[val.data.name].type=="link") {
+									var a=bmkptr.value[val.data.name];
+									bmkptr.value[val.data.name] = val;
+									bmkptr.value[val.data.name].data.croped=false;
+									bmkptr.value[val.data.name].data.exx=a;
+								}
+								else {
+									MergeRecursive(bmkptr.value[val.data.name].vlaue,val.value);
+								}
+								continue;
+							}
+						} else {
+							if (bmkptr.value[val.data.name]) {
+								if (!confirm(val.data.name + " is already exist.\n overwrite it?")) {
+									if (!!(val.data.name = prompt("new bookmark name", ""))) {
+										while (bmkptr.value[val.data.name]) {
+											if (!!(val.data.name = prompt("new bookmark name", ""))) {
+
+											} else {
+												continue;
+											}
+										}
+									} else {
+										continue;
+									}
+								}
+							}
+							bmkptr.value[val.data.name] = val;
+							bmkptr.value[val.data.name].data.croped=false;
+						}
+					})
+				}
+				else if (event.data.changeinfo.type=="return") {
+					event.data.changeinfo.data.forEach(function (val) {
+						bmkptr=bmk;
+						val.path.split("/").forEach(function (s) {
+							bmkptr=bmkptr.value[s];
+						});
+						bmkptr.value[val.data.name]=val;
+						bmkptr.value[val.data.name].data.croped=false;
+					});
+				}
+				extension.storage.local.set({"bmks":escape(JSON.stringify(bmk))});
+				window.postMessage({type:"update","bmk":bmk},location.href);
+				console.log("setted");
+			});
 		}
 		else if (event.data.type=="test") {
-			console.log("test");
-			alert("test message");
+			console.log(event.data);
 		}
 }
 

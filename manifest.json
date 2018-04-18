@@ -3,18 +3,20 @@
 
 	"name": "all_in_one",
 	"description": "all functions in one extension",
-	"version": "1.2.2",
+	"version": "1.0",
 
 	"web_accessible_resources": [
 		"*"
 	],
-
+	
+	/*
 	"applications": {
 		"gecko": {
 			"id": "scriptimport@psydel.org"
 		}
 	},
-
+	*/
+	
 	"content_scripts": [{
 		"matches": ["<all_urls>"],
 		"match_about_blank": true,
@@ -29,13 +31,21 @@
 
 	"permissions": [
 		"<all_urls>",
-		"background",
 		"storage",
+		"background",
 		"activeTab",
 		"webRequest",
 		"webRequestBlocking",
 		"notifications",
 		"browsingData",
+		"downloads",
 		"tabs"
-	]
+	],
+
+	"externally_connectable": {
+		"ids": [
+			"*"
+		],
+		"accepts_tls_channel_id": false
+	}
 }

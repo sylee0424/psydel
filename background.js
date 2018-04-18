@@ -1,59 +1,27 @@
-var extension=(!!chrome)?chrome:browser;
-
-var e={};
-
-function gettablist(option,callback) {
-	extension.tabs.query(option,callback);
-}
-
-function gettabsf(message,sender,sendResponse) {
+﻿function gettabsf(message,sender,sendResponse) {
 	switch (message.type) {
 		case "exportbmk":
 			listener();
 			break;
+		case "backupbmk":
+			var b=new Date();
+			extension.storage.local.get("bmks",function (c) {
+				if (c.bmks) {
+					chrome.downloads.download({
+						url:"data:text/plain,"+unescape(c.bmks),
+						filename:"backup(date_"+b.getFullYear()+"_"+(b.getMonth()+1)+"_"+b.getDate()+"_"+b.getHours()+"_"+b.getMinutes()+"_"+b.getSeconds()+"_"+b.getMilliseconds()+").json"
+					});
+				}
+			});
+			break;
+		case "create":
+			extension.tabs.create(message.prop);
+			break;
 	}
-}
-
-function favcng(a) {
-	var d=[];
-	var b="";
-	for (var i=0;i<a.length;i++) {
-		d[i]={};
-		d[i].id=Number(a[i].id);
-		d[i].index=Number(a[i].index);
-		d[i].title=String(a[i].title);
-		b=a[i].favIconUrl;
-		if (!b||b=="undefined"||b==""||typeof b=="undefined") {
-			d[i].favIconUrl="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAADYYG7QAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABDSURBVFhH7c4xAQAwDASh+jf9lcCa4VDA2zGFpJAUkkJSSApJISkkhaSQFJJCUkgKSSEpJIWkkBSSQlJICkkhORbaPoBi5ofwSUznAAAAAElFTkSuQmCC";
-		}
-		else if (window.e[b]) {
-			d[i].favIconUrl=window.e[b];
-		}
-		else {
-			getDataUri(b, function(dataUri) {});
-			d[i].favIconUrl=a[i].favIconUrl;
-		}
-	}
-	for (var i=0;i<a.length;i++) {
-		//extension.tabs.sendMessage(a[i].id,d);
-	}
-}
-
-function getDataUri(url, callback) {
-    var image = new Image();
-    image.onload = function () {
-        var canvas = document.createElement('canvas');
-        canvas.width = this.naturalWidth;
-        canvas.height = this.naturalHeight;
-        canvas.getContext('2d').drawImage(this, 0, 0);
-        window.e[url]=canvas.toDataURL('image/png');
-    };
-    image.src = url;
 }
 
 function importbmk() {
 	try {
-		//document.getElementById("bmks").innerHTML="loading...";
 		var req = new XMLHttpRequest();
 		req.open('GET', "https://psydel.000webhostapp.com/",true);
 		req.onreadystatechange = function (aEvt) {
@@ -108,16 +76,20 @@ function listener() {
 	});
 }
 
+var extension=(!!chrome)?chrome:browser;
+
+var e={};
+
+extension.windows.onRemoved.addListener(listener)
 extension.runtime.onMessage.addListener(gettabsf);
 extension.webRequest.onBeforeSendHeaders.addListener(
 	function(details) {
 		if (details.type=="script"||details.type=="sub_frame") {
-			console.log("canceled");
 			return {cancel:true};
 		}
 	return {requestHeaders: details.requestHeaders};
 	},
-	{urls: ["https://ads.exosrv.com/*","https://*.top/*.js","https://hitomi.la/hitomi/*","http://*.clickmon.co.kr/*","*://*.criteo.*/*","*://*.vidible.*/*","*://*.doubleclick.*/*","*://*.advertising.*/*","*://*.moatads.*/*","*://filecast.co.kr/*","http://ad.tpmn.co.kr/*","*://*.ad-stir.*/*","*://*/*adbnMobileBanner*","*://ads-exchange.*/*","*://*.hotclick.*/*","http://wasabisyrup.com/cdn-cgi/apps/head/*.js","http://wasabisyrup.com/template/plugin02.js"]},
+	{urls: ["https://ads.exosrv.com/*","https://*.top/*.js","https://hitomi.la/hitomi/*","https://*.clickmon.co.kr/*","https://*.realclick.co.kr/*","http://*.clickmon.co.kr/*","http://*.realclick.co.kr/*","https://marumaru.in/cdn-cgi/apps/head/*.js","http://www.dreamsearch.or.kr/servlet/adBanner*","https://www8.smartadserver.com/*"]},
 	["blocking", "requestHeaders"]
 );
 

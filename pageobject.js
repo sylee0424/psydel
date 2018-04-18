@@ -14,11 +14,7 @@
 			console.log("l");
 		},
 		r: function() {
-			window.postMessage({
-				type: "moveto",
-				dir: "left",
-				des: "back"
-			}, location.href);
+			console.log("r");
 		},
 		lt: function() {
 			scroll(0, 0);
@@ -72,10 +68,7 @@
 
 	Action_Bar_Function_4: {
 		f: function() {
-			window.postMessage({
-				type: "dataurl",
-				des: "back"
-			}, location.href);
+			console.log("f");
 		},
 		u: function() {
 			console.log("u");
@@ -107,7 +100,7 @@
 		u: function() {
 			window.postMessage({
 				type: "create",
-				option: {active:true},
+				prop: {active:true},
 				des: "back"
 			}, location.href);
 		},
@@ -115,18 +108,10 @@
 			console.log("d");
 		},
 		l: function() {
-			window.postMessage({
-				type: "changeto",
-				dir: "right",
-				des: "back"
-			}, location.href);
+			console.log("l");
 		},
 		r: function() {
-			window.postMessage({
-				type: "changeto",
-				dir: "left",
-				des: "back"
-			}, location.href);
+			console.log("r");
 		},
 		lt: function() {
 			Bookmark_User_Functions.Add_Bookmark.f.call(this);
@@ -136,11 +121,7 @@
 
 	Action_Bar_Function_6: {
 		f: function() {
-			window.postMessage({
-				type: "tabbartoggle",
-				toggle: document.getElementById("tabbar").classList.contains("__hided"),
-				des: "back"
-			}, location.href);
+			console.log("f");
 		},
 		u: function() {
 			console.log("u");
@@ -215,11 +196,7 @@
 			console.log("d");
 		},
 		l: function() {
-			window.postMessage({
-				type: "moveto",
-				dir: "right",
-				des: "back"
-			}, location.href);
+			console.log("l");
 		},
 		r: function() {
 			console.log("r");
@@ -230,6 +207,641 @@
 		name: "Go_Down"
 	}
 
+};
+
+window.Extension_Sub_Functions = {
+
+	hitomi_Image_Sequential: {
+		f: function (imagelist) {
+			var __scr=document.createElement("img");
+			__scr.classList.add("__loadedimg");
+			document.body.appendChild(__scr);
+			__scr.addEventListener("load",function () {
+				if (imagelist.length) {
+					Extension_Sub_Functions.hitomi_Image_Sequential.f(imagelist);
+				}
+			});
+			__scr.addEventListener("error",function () {
+				console.log(""+this.src);
+				this.src+="#"+new Date().getTime();
+			});
+			__scr.setAttribute("src",imagelist.shift());
+		},
+		name:"hitomi_Image_Sequential"
+	},
+
+	hitomi_Link_Action: {
+		f: function() {
+			event.stopPropagation();
+			var i = this.dataset.index;
+			var j = this.dataset.type;
+			var k = this.dataset.url;
+			var url;
+			if (location.protocol == "file:") {
+				url = "";
+			} else {
+				url = "https://hitomi.la";
+			}
+			if (j == "normal") {
+				url += k;
+			} else if (j == "korean") {
+				url += k.split("-all-")[0] + "-korean-" + k.split("-all-")[1];
+			} else if (j == "reader") {
+				url += k.split("galleries")[0] + "reader" + k.split("galleries")[1] + "#1";
+			}
+			if (document.getElementById("input-" + i).checked) {
+				window.open(url)
+			} else if (location.protocol == "file:") {
+				location.hash = url;
+			} else {
+				location.href = url;
+			}
+		},
+		name: "hitomi_Click_Action"
+	},
+	
+	Add_Extension_Interface: {
+		f: function() {
+			if (!document.getElementById("bmkmain")) {
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					id: "bmkmain",
+					classname: ["__hided"],
+					target: document.body
+				});
+				for (var i = 0; i < Extension_Variables.Bookmark_Interface_List.length; i++) {
+					Extension_Tool_Functions.Import_Nodes.f(Extension_Variables.Bookmark_Interface_List[i])
+				}
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					id: "pastebmk",
+					classname: ["__hided"],
+					target: document.getElementById("bmkmain")
+				});
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					name: "paste bmk",
+					classname: ["__buttons"],
+					events: [{
+						name: "click",
+						value: Bookmark_User_Functions.Paste_Bookmark_Second.f
+					}],
+					target: document.getElementById("pastebmk")
+				});
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					name: "cancel",
+					classname: ["__buttons"],
+					events: [{
+						name: "click",
+						value: Bookmark_User_Functions.Cancel_Paste_Second.f
+					}],
+					target: document.getElementById("pastebmk")
+				});
+			}
+			if (!document.getElementById("actionbar")) {
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					id: "actionbar",
+					classname: [],
+					target: document.body
+				});
+				for (s in Action_Bar_Function) {
+					a = {};
+					a.tag = "div";
+					a.id = s;
+					a.classname = ["__abtn"];
+					a.name = Action_Bar_Function[s].name;
+					a.events = [{
+						name: "mousedown",
+						value: Extension_Tool_Functions.Drag_Event_Checker.f
+					}, {
+						name: "mouseup",
+						value: Extension_Tool_Functions.Remove_Longtab_Event_Checker.f
+					}, {
+						name: "touchstart",
+						value: Extension_Tool_Functions.Drag_Event_Checker.f
+					}, {
+						name: "touchend",
+						value: Extension_Tool_Functions.Drag_Event_Checker_Action.f
+					}, {
+						name: "selectstart",
+						value: function(event) {
+							event.preventDefault();
+						}
+					}];
+					a.target = document.getElementById("actionbar");
+					Extension_Tool_Functions.Import_Nodes.f(a);
+				}
+			}
+			if (!document.getElementById("functionbar")) {
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					id: "functionbar",
+					classname: ["__hided"],
+					target: document.body
+				});
+				for (var s in Extension_User_Functions) {
+					var a = {};
+					a.tag = "div";
+					a.classname = ["__btnz"];
+					if (Extension_User_Functions[s].image) {
+						a.image=Extension_User_Functions[s].image;
+					} else if (Extension_User_Functions[s].name) {
+						a.name = Extension_User_Functions[s].name;
+					} else {
+						a.name = s;
+					}
+					a.events = [{
+						name: "click",
+						value: Extension_User_Functions[s].f
+					}];
+					a.target = document.getElementById("functionbar");
+					Extension_Tool_Functions.Import_Nodes.f(a);
+				}
+				Extension_Tool_Functions.Import_Nodes.f({
+					tag: "div",
+					id: "sidebarpad",
+					classname: ["__extension"],
+					target: document.getElementById("functionbar")
+				});
+			}
+
+			window.postMessage({
+				type: "gettab",
+				des: "back"
+			}, location.href);
+		},
+		name: "Drag_Event_Checker"
+	},
+
+	hitomi_Link_Change: {
+		f: function() {
+			var d = 0;
+			var divs = document.getElementsByTagName('a');
+			var i = divs.length;
+			while (i--) {
+				var k = divs[i].getAttribute("href");
+				if (k && divs[i].id != "dl-button" && divs[i].parentNode.parentNode.getAttribute("class") !=
+					"simplePagerNav") {
+					divs[i].dataset.url = k;
+					divs[i].dataset.type = "normal";
+					divs[i].dataset.index = i;
+					divs[i].addEventListener("click", Extension_Sub_Functions.hitomi_Link_Action.f);
+					var inp = document.createElement("input");
+					var inq = document.createElement("label");
+					var tx = document.createTextNode("N");
+					inp.type = "checkbox";
+					inq.style.display = "inline";
+					inp.id = "input-" + i;
+					inp.addEventListener("click", Extension_Tool_Functions.Cancel_Event_Bubling.f);
+					inp.style["vertical-align"] = "middle";
+					inq.addEventListener("click", Extension_Tool_Functions.Element_Toggle.f);
+					if (divs[i].parentNode.parentNode.parentNode.getAttribute("class") != "page-container" &&
+						divs[i].parentNode.tagName != "DIV" && divs[i].href != "/") {
+						if (k.match("galleries")) {
+							var j = document.createElement("span");
+							divs[i].insertBefore(j, divs[i].firstChild);
+							j.innerHTML = "(R) ";
+							j.dataset.url = k;
+							j.dataset.type = "reader";
+							j.dataset.index = i;
+							j.addEventListener("click", Extension_Sub_Functions.hitomi_Link_Action.f);
+						}
+						if (k.match("-all-")) {
+							var j = document.createElement("span");
+							divs[i].insertBefore(j, divs[i].firstChild);
+							j.innerHTML = "(K) ";
+							j.dataset.url = k;
+							j.dataset.type = "korean";
+							j.dataset.index = i;
+							j.addEventListener("click", Extension_Sub_Functions.hitomi_Link_Action.f);
+						}
+					} else {
+						var j = document.createElement("span");
+						while (divs[i].firstChild) {
+							j.appendChild(divs[i].firstChild);
+						}
+						j.dataset.url = k;
+						j.dataset.type = "normal";
+						j.dataset.index = i;
+						j.addEventListener("click", Extension_Sub_Functions.hitomi_Link_Action.f);
+						divs[i].parentNode.insertBefore(j, divs[i]);
+						var k = divs[i];
+						divs[i] = j;
+						k.parentNode.removeChild(k);
+						inq.style.display = "none";
+					}
+					inq.appendChild(tx);
+					inq.appendChild(inp);
+					divs[i].insertBefore(inq, divs[i].firstChild);
+					divs[i].removeAttribute("href");
+				}
+			}
+			divs = document.getElementsByClassName("page-content")[0]
+			if (divs) {
+				divs = document.getElementsByClassName("page-content")[0].getElementsByTagName("label");
+				i = divs.length;
+				while (i--) {
+					divs[i].setAttribute("style", "display:none");
+				}
+			}
+		},
+		name: "hitomi_Link_Change"
+	},
+
+	Ruliweb_Ad_Block: {
+		f: function() {
+			var arr = document.getElementsByTagName("div")
+			for (var i = 0; i < arr.length; i++) {
+				if (arr[i].className.indexOf("ad_") != -1) {
+					arr[i].parentNode.removeChild(arr[i]);
+				}
+			}
+		},
+		name: "Ruliweb_Ad_Block"
+	},
+
+	Marumaru_Ad_Block: {
+		f: function() {
+			var a=document.getElementById("responsive-banner");
+			if (a) {
+				a.parentNode.removeChild(a);
+			}
+			document.querySelectorAll("iframe").forEach(function (val) {
+				val.parentNode.removeChild(val);
+			});
+			a=document.getElementById("header-anchor");
+			if (a) {
+				a.parentNode.removeChild(a);
+			}
+			a=document.getElementById("footer-anchor");
+			if (a) {
+				a.parentNode.removeChild(a);
+			}
+		},
+		name: "Marumaru_Ad_Block"
+	}
+
+};
+
+window.Extension_Tool_Functions = {
+
+	change_bmk: {
+		f: function (bmk,path) {
+			for (var a in bmk.value) {
+				bmk.value[a].path=path;
+				if (bmk.value[a].type=="folder") {
+					Extension_Tool_Functions.change_bmk.f(bmk.value[a],bmk.value[a].path+(path?"/":"")+a);
+				}
+			}
+		},
+		name:"hitomi_Image_Sequential"
+	},
+
+	convert_bmk: {
+		f: function (bmk,path) {
+			for (var a in bmk) {
+				var b={};
+				b.value=bmk[a];
+				b.data={created:-1,modified:-1,croped:false};
+				if (!path) {
+					b.path+="/";
+				}
+				if (typeof bmk[a]=="string") {
+					b.type="link";
+					bmk[a]=b;
+				}
+				else {
+					b.type="folder"
+					b.path+=a;
+					bmk[a]=b;
+					Extension_Tool_Functions.convert_bmk.f(bmk[a].value,bmk[a].path);
+				}
+			}
+		},
+		name:"hitomi_Image_Sequential"
+	},
+
+	Tab_Change: {
+		f: function() {
+			window.postMessage({
+				type: "changeto",
+				id: Number(this.dataset.id),
+				des: "back"
+			}, location.href);
+		},
+		name: "Fake_Scroll_Event"
+	},
+
+	Tab_Remove: {
+		f: function() {
+			window.postMessage({
+				type: "closeto",
+				id: Number(this.dataset.id),
+				index: Number(this.dataset.index),
+				des: "back"
+			}, location.href);
+		},
+		name: "Fake_Scroll_Event"
+	},
+
+	Fake_Scroll_Event: {
+		f: function(event) {
+			if (event.altKey) {
+				event.preventDefault();
+				if (event.which == 3) {
+					Extension_Variables.Fake_Scroll_Direction = "u";
+				} else if (event.which == 1) {
+					Extension_Variables.Fake_Scroll_Direction = "d";
+				}
+			}
+		},
+		name: "Fake_Scroll_Event"
+	},
+
+	Fake_Scroll_Event_End: {
+		f: function(event) {
+			delete Extension_Variables.Fake_Scroll_Direction;
+		},
+		name: "Fake_Scroll_Event_End"
+	},
+
+	Emulate_Click_Event: {
+		f: function(hrf) {
+			if (hrf.click) {
+				hrf.click();
+			} else if (document.createEvent) {
+				var eventObj = document.createEvent('MouseEvents');
+				eventObj.initEvent('click', true, true);
+				hrf.dispatchEvent(eventObj);
+			}
+		},
+		name: "Emulate_Click_Event"
+	},
+
+	Get_Chils_Index: {
+		f: function(node) {
+			return Array.prototype.indexOf.call(node.parentNode.childNodes, node);
+		},
+		name: "Get_Child_Number"
+	},
+
+	Element_Toggle: {
+		f: function(event) {
+			event.stopPropagation();
+			this.classList.toggle("__checked");
+			this.checked = this.classList.contains("__checked");
+		},
+		name: "Element_Toggle"
+	},
+	
+	utf8_encode : {
+		f: function (string) {
+			string = string.replace(/\r\n/g,"\n");
+			var utftext = "";
+			for (var n = 0; n < string.length; n++) {
+				var c = string.charCodeAt(n);
+				if (c < 128) {
+					utftext += String.fromCharCode(c);
+				}
+				else if((c > 127) && (c < 2048)) {
+					utftext += String.fromCharCode((c >> 6) | 192);
+					utftext += String.fromCharCode((c & 63) | 128);
+				}
+				else {
+					utftext += String.fromCharCode((c >> 12) | 224);
+					utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+					utftext += String.fromCharCode((c & 63) | 128);
+				}
+			}
+			return utftext;
+		},
+		name: "utf8_encode"
+	},
+
+	utf8_decode: {
+		f: function(utftext) {
+			var string = "";
+			var i = 0;
+			var c = c1 = c2 = 0;
+			while (i < utftext.length) {
+				c = utftext.charCodeAt(i);
+				if (c < 128) {
+					string += String.fromCharCode(c);
+					i++;
+				} else if ((c > 191) && (c < 224)) {
+					c2 = utftext.charCodeAt(i + 1);
+					string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+					i += 2;
+				} else {
+					c2 = utftext.charCodeAt(i + 1);
+					c3 = utftext.charCodeAt(i + 2);
+					string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+					i += 3;
+				}
+			}
+			return string;
+		},
+
+		name: "utf8_decode"
+	},
+
+	Drag_Event_Checker: {
+		f: function(event) {
+			if (event.touches && event.touches.length > 1) {
+				return undefined;
+			}
+			if (event.which && event.which == 3) {
+				return undefined;
+			}
+			event.preventDefault();
+			var eventx = event.clientX || event.changedTouches[0].clientX;
+			var eventy = event.clientY || event.changedTouches[0].clientY;
+			var nds = document.createElement("div");
+			nds.setAttribute("style",
+				"visibility:visible; position:fixed; bottom:0%; left:0%; width:100%; height:100%; background-color:#000000; opacity:0;"
+			);
+			nds.id = "setover";
+			nds.setAttribute("data-x", eventx);
+			nds.setAttribute("data-y", eventy);
+			nds.setAttribute("data-id", this.id);
+			document.body.appendChild(nds);
+			nds.addEventListener("mouseup", Extension_Tool_Functions.Drag_Event_Checker_Action.f);
+			window.setTimeout(Extension_Tool_Functions.Longtab_Event_Checker.f, 350);
+		},
+		name: "Drag_Event_Checker"
+	},
+
+	Remove_Longtab_Event_Checker: {
+		f: function() {
+			if (document.getElementById("setover")) {
+				document.getElementById("setover").parentNode.removeChild(document.getElementById("setover"));
+			}
+		},
+		name: "Drag_Event_Checker"
+	},
+
+	Longtab_Event_Checker: {
+		f: function() {
+			if (document.getElementById("setover")) {
+				var a = document.createElement("div");
+				a.style = document.getElementById(document.getElementById("setover").dataset.id).getAttribute(
+					"style");
+				a.setAttribute("data-id", document.getElementById("setover").dataset.id);
+				a.id = "ltsde";
+				a.appendChild(document.createTextNode("lt"));
+				document.body.appendChild(a);
+				a.addEventListener("mouseup", Extension_Tool_Functions.Drag_Event_Checker_Action.f);
+			}
+		},
+		name: "Drag_Event_Checker"
+	},
+
+	Drag_Event_Checker_Action: {
+		f: function(event) {
+			var a = 15;
+			var aaa = this;
+			if (event.changedTouches || this.id == "ltsde") {
+				aaa = document.getElementById("setover");
+			}
+			var eventx = event.clientX || event.changedTouches[0].clientX;
+			var eventy = event.clientY || event.changedTouches[0].clientY;
+			var movex = eventx - Number(aaa.dataset.x);
+			var movey = Number(aaa.dataset.y) - eventy;
+			if (Math.abs(movex) < a && Math.abs(movey) < a) {
+				if (document.getElementById("ltsde")) {
+					Action_Bar_Function[aaa.dataset.id].lt.call(document.getElementById(aaa.dataset.id));
+					document.getElementById("ltsde").parentNode.removeChild(document.getElementById("ltsde"));
+				} else {
+					Action_Bar_Function[aaa.dataset.id].f();
+				}
+			} else if (movex >= 0 && movey >= 0) {
+				if (movey / movex > 3) {
+					if (Action_Bar_Function[aaa.dataset.id].u) {
+						Action_Bar_Function[aaa.dataset.id].u();
+					}
+				} else if (movey / movex < 0.3) {
+					if (Action_Bar_Function[aaa.dataset.id].r) {
+						Action_Bar_Function[aaa.dataset.id].r();
+					}
+				}
+			} else if (movex < 0 && movey >= 0) {
+				if (movey / movex < -3) {
+					if (Action_Bar_Function[aaa.dataset.id].u) {
+						Action_Bar_Function[aaa.dataset.id].u();
+					}
+				} else if (movey / movex > -0.3) {
+					if (Action_Bar_Function[aaa.dataset.id].l) {
+						Action_Bar_Function[aaa.dataset.id].l();
+					}
+				}
+			} else if (movex >= 0 && movey < 0) {
+				if (movey / movex < -3) {
+					if (Action_Bar_Function[aaa.dataset.id].d) {
+						Action_Bar_Function[aaa.dataset.id].d();
+					}
+				} else if (movey / movex > -0.3) {
+					if (Action_Bar_Function[aaa.dataset.id].r) {
+						Action_Bar_Function[aaa.dataset.id].r();
+					}
+				}
+			} else if (movex < 0 && movey < 0) {
+				if (movey / movex > 3) {
+					if (Action_Bar_Function[aaa.dataset.id].d) {
+						Action_Bar_Function[aaa.dataset.id].d();
+					}
+				} else if (movey / movex < 0.3) {
+					if (Action_Bar_Function[aaa.dataset.id].l) {
+						Action_Bar_Function[aaa.dataset.id].l();
+					}
+				}
+			}
+			aaa.parentNode.removeChild(aaa);
+		},
+		name: "Drag_Event_Checker"
+	},
+
+	Import_Nodes: {
+		f: function(item) {
+			var div = document.createElement(item.tag);
+			if (item.classname) {
+				for (var i = 0; i < item.classname.length; i++) {
+					div.classList.add(item.classname[i]);
+				}
+			}
+			div.classList.toggle("__extension");
+			if (item.id) {
+				div.id = item.id;
+			}
+			if (item.image) {
+				if (!item.childs) {
+					item.childs=[];
+				}
+				var b = {}
+				b.tag = "img"
+				b.attributes = [{
+					name: "src",
+					value: item.image
+				}];
+				b.classname = ["__innerimage","__extension"];
+				item.childs.push(b);
+			} else if (item.name) {
+				div.appendChild(document.createTextNode(item.name));
+			}
+			if (item.childs) {
+				for (var i = 0; i < item.childs.length; i++) {
+					item.childs[i].target = div;
+					Extension_Tool_Functions.Import_Nodes.f(item.childs[i]);
+				}
+			}
+			if (item.events) {
+				for (var i = 0; i < item.events.length; i++) {
+					div.addEventListener(item.events[i].name, item.events[i].value);
+				}
+
+			}
+			if (item.attributes) {
+				for (var i = 0; i < item.attributes.length; i++) {
+					div.setAttribute(item.attributes[i].name, item.attributes[i].value);
+				}
+			}
+			if (item.target) {
+				item.target.appendChild(div);
+			} else {
+				document.getElementById("bmkmain").appendChild(div);
+			}
+		},
+		name: "Drag_Event_Checker"
+	},
+
+	On_Message: {
+		f: function(event) {
+			if (event.data.type == "update") {
+				Extension_Variables.Bookmark_Original = event.data.bmk;
+				Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
+			}
+		},
+		name: "Drag_Event_Checker"
+	},
+
+	Fake_Scroll_Action: {
+		f: function() {
+			if (Extension_Variables.Fake_Scroll_Direction == "u") {
+				document.documentElement.scrollTop -= 60;
+			} else if (Extension_Variables.Fake_Scroll_Direction == "d") {
+				document.documentElement.scrollTop += 60;
+			}
+		},
+		name: "Set_Scroll"
+	},
+
+	Cancel_Event_Bubling: {
+		f: function(event) {
+			event.stopPropagation();
+		},
+		name: "Cancel_Event_Bubling"
+	}
 };
 
 window.Extension_User_Functions = {
@@ -436,7 +1048,7 @@ window.Extension_User_Functions = {
 				target.forEach(function (val) {
 					arr.push("https://" + key + galleryId + "/" + val.name);
 				});
-				Extension_Tool_Functions.hitomi_Image_Sequential.f(arr);
+				Extension_Sub_Functions.hitomi_Image_Sequential.f(arr);
 			} 
 			else {
 				target.forEach(function (val,index) {
@@ -512,738 +1124,6 @@ window.Extension_User_Functions = {
 		name: "Force_Drag_Enable"
 	}
 
-};
-
-window.Extension_Tool_Functions = {
-
-	convert_bmk: {
-		f: function (bmk,path) {
-			for (var a in bmk) {
-				var b={};
-				b.value=bmk[a];
-				b.data={created:-1,modified:-1,croped:false};
-				if (!path) {
-					b.path+="/";
-				}
-				if (typeof bmk[a]=="string") {
-					b.type="link";
-					bmk[a]=b;
-				}
-				else {
-					b.type="folder"
-					b.path+=a;
-					bmk[a]=b;
-					Extension_Tool_Functions.convert_bmk.f(bmk[a].value,bmk[a].path);
-				}
-			}
-		},
-		name:"hitomi_Image_Sequential"
-	},
-
-	hitomi_Image_Sequential: {
-		f: function (imagelist) {
-			var __scr=document.createElement("img");
-			__scr.classList.add("__loadedimg");
-			document.body.appendChild(__scr);
-			__scr.addEventListener("load",function () {
-				if (imagelist.length) {
-					Extension_Tool_Functions.hitomi_Image_Sequential.f(imagelist);
-				}
-			});
-			__scr.addEventListener("error",function () {
-				console.log(""+this.src);
-				this.src+="#"+new Date().getTime();
-			});
-			__scr.setAttribute("src",imagelist.shift());
-		},
-		name:"hitomi_Image_Sequential"
-	},
-
-	Tab_Change: {
-		f: function() {
-			window.postMessage({
-				type: "changeto",
-				id: Number(this.dataset.id),
-				des: "back"
-			}, location.href);
-		},
-		name: "Fake_Scroll_Event"
-	},
-
-	Tab_Remove: {
-		f: function() {
-			window.postMessage({
-				type: "closeto",
-				id: Number(this.dataset.id),
-				index: Number(this.dataset.index),
-				des: "back"
-			}, location.href);
-		},
-		name: "Fake_Scroll_Event"
-	},
-
-	Fake_Scroll_Event: {
-		f: function(event) {
-			if (event.altKey) {
-				event.preventDefault();
-				if (event.which == 3) {
-					Extension_Variables.Fake_Scroll_Direction = "u";
-				} else if (event.which == 1) {
-					Extension_Variables.Fake_Scroll_Direction = "d";
-				}
-			}
-		},
-		name: "Fake_Scroll_Event"
-	},
-
-	Fake_Scroll_Event_End: {
-		f: function(event) {
-			delete Extension_Variables.Fake_Scroll_Direction;
-		},
-		name: "Fake_Scroll_Event_End"
-	},
-
-	Emulate_Click_Event: {
-		f: function(hrf) {
-			if (hrf.click) {
-				hrf.click();
-			} else if (document.createEvent) {
-				var eventObj = document.createEvent('MouseEvents');
-				eventObj.initEvent('click', true, true);
-				hrf.dispatchEvent(eventObj);
-			}
-		},
-		name: "Emulate_Click_Event"
-	},
-
-	Get_Chils_Index: {
-		f: function(node) {
-			return Array.prototype.indexOf.call(node.parentNode.childNodes, node);
-		},
-		name: "Get_Child_Number"
-	},
-
-	hitomi_Link_Action: {
-		f: function(event) {
-			event.stopPropagation();
-			var i = this.dataset.index;
-			var j = this.dataset.type;
-			var k = this.dataset.url;
-			var url;
-			if (location.protocol == "file:") {
-				url = "";
-			} else {
-				url = "https://hitomi.la";
-			}
-			if (j == "normal") {
-				url += k;
-			} else if (j == "korean") {
-				url += k.split("-all-")[0] + "-korean-" + k.split("-all-")[1];
-			} else if (j == "reader") {
-				url += k.split("galleries")[0] + "reader" + k.split("galleries")[1] + "#1";
-			}
-			if (document.getElementById("input-" + i).checked) {
-				window.open(url)
-			} else if (location.protocol == "file:") {
-				location.hash = url;
-			} else {
-				location.href = url;
-			}
-		},
-		name: "hitomi_Click_Action"
-	},
-
-	Element_Toggle: {
-		f: function(event) {
-			event.stopPropagation();
-			this.classList.toggle("__checked");
-			this.checked = this.classList.contains("__checked");
-		},
-		name: "Element_Toggle"
-	},
-	
-	utf8_encode : {
-		f: function (string) {
-			string = string.replace(/\r\n/g,"\n");
-			var utftext = "";
-			for (var n = 0; n < string.length; n++) {
-				var c = string.charCodeAt(n);
-				if (c < 128) {
-					utftext += String.fromCharCode(c);
-				}
-				else if((c > 127) && (c < 2048)) {
-					utftext += String.fromCharCode((c >> 6) | 192);
-					utftext += String.fromCharCode((c & 63) | 128);
-				}
-				else {
-					utftext += String.fromCharCode((c >> 12) | 224);
-					utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-					utftext += String.fromCharCode((c & 63) | 128);
-				}
-			}
-			return utftext;
-		},
-		name: "utf8_encode"
-	},
-
-	utf8_decode: {
-		f: function(utftext) {
-			var string = "";
-			var i = 0;
-			var c = c1 = c2 = 0;
-			while (i < utftext.length) {
-				c = utftext.charCodeAt(i);
-				if (c < 128) {
-					string += String.fromCharCode(c);
-					i++;
-				} else if ((c > 191) && (c < 224)) {
-					c2 = utftext.charCodeAt(i + 1);
-					string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-					i += 2;
-				} else {
-					c2 = utftext.charCodeAt(i + 1);
-					c3 = utftext.charCodeAt(i + 2);
-					string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-					i += 3;
-				}
-			}
-			return string;
-		},
-
-		name: "utf8_decode"
-	},
-
-	Drag_Event_Checker: {
-		f: function(event) {
-			if (event.touches && event.touches.length > 1) {
-				return undefined;
-			}
-			if (event.which && event.which == 3) {
-				return undefined;
-			}
-			event.preventDefault();
-			var eventx = event.clientX || event.changedTouches[0].clientX;
-			var eventy = event.clientY || event.changedTouches[0].clientY;
-			var nds = document.createElement("div");
-			nds.setAttribute("style",
-				"visibility:visible; position:fixed; bottom:0%; left:0%; width:100%; height:100%; background-color:#000000; opacity:0;"
-			);
-			nds.id = "setover";
-			nds.setAttribute("data-x", eventx);
-			nds.setAttribute("data-y", eventy);
-			nds.setAttribute("data-id", this.id);
-			document.body.appendChild(nds);
-			nds.addEventListener("mouseup", Extension_Tool_Functions.Drag_Event_Checker_Action.f);
-			window.setTimeout(Extension_Tool_Functions.Longtab_Event_Checker.f, 350);
-		},
-		name: "Drag_Event_Checker"
-	},
-
-	Remove_Longtab_Event_Checker: {
-		f: function() {
-			if (document.getElementById("setover")) {
-				document.getElementById("setover").parentNode.removeChild(document.getElementById("setover"));
-			}
-		},
-		name: "Drag_Event_Checker"
-	},
-
-	Longtab_Event_Checker: {
-		f: function() {
-			if (document.getElementById("setover")) {
-				var a = document.createElement("div");
-				a.style = document.getElementById(document.getElementById("setover").dataset.id).getAttribute(
-					"style");
-				a.setAttribute("data-id", document.getElementById("setover").dataset.id);
-				a.id = "ltsde";
-				a.appendChild(document.createTextNode("lt"));
-				document.body.appendChild(a);
-				a.addEventListener("mouseup", Extension_Tool_Functions.Drag_Event_Checker_Action.f);
-			}
-		},
-		name: "Drag_Event_Checker"
-	},
-
-	Drag_Event_Checker_Action: {
-		f: function(event) {
-			var a = 15;
-			var aaa = this;
-			if (event.changedTouches || this.id == "ltsde") {
-				aaa = document.getElementById("setover");
-			}
-			var eventx = event.clientX || event.changedTouches[0].clientX;
-			var eventy = event.clientY || event.changedTouches[0].clientY;
-			var movex = eventx - Number(aaa.dataset.x);
-			var movey = Number(aaa.dataset.y) - eventy;
-			if (Math.abs(movex) < a && Math.abs(movey) < a) {
-				if (document.getElementById("ltsde")) {
-					Action_Bar_Function[aaa.dataset.id].lt.call(document.getElementById(aaa.dataset.id));
-					document.getElementById("ltsde").parentNode.removeChild(document.getElementById("ltsde"));
-				} else {
-					Action_Bar_Function[aaa.dataset.id].f();
-				}
-			} else if (movex >= 0 && movey >= 0) {
-				if (movey / movex > 3) {
-					if (Action_Bar_Function[aaa.dataset.id].u) {
-						Action_Bar_Function[aaa.dataset.id].u();
-					}
-				} else if (movey / movex < 0.3) {
-					if (Action_Bar_Function[aaa.dataset.id].r) {
-						Action_Bar_Function[aaa.dataset.id].r();
-					}
-				}
-			} else if (movex < 0 && movey >= 0) {
-				if (movey / movex < -3) {
-					if (Action_Bar_Function[aaa.dataset.id].u) {
-						Action_Bar_Function[aaa.dataset.id].u();
-					}
-				} else if (movey / movex > -0.3) {
-					if (Action_Bar_Function[aaa.dataset.id].l) {
-						Action_Bar_Function[aaa.dataset.id].l();
-					}
-				}
-			} else if (movex >= 0 && movey < 0) {
-				if (movey / movex < -3) {
-					if (Action_Bar_Function[aaa.dataset.id].d) {
-						Action_Bar_Function[aaa.dataset.id].d();
-					}
-				} else if (movey / movex > -0.3) {
-					if (Action_Bar_Function[aaa.dataset.id].r) {
-						Action_Bar_Function[aaa.dataset.id].r();
-					}
-				}
-			} else if (movex < 0 && movey < 0) {
-				if (movey / movex > 3) {
-					if (Action_Bar_Function[aaa.dataset.id].d) {
-						Action_Bar_Function[aaa.dataset.id].d();
-					}
-				} else if (movey / movex < 0.3) {
-					if (Action_Bar_Function[aaa.dataset.id].l) {
-						Action_Bar_Function[aaa.dataset.id].l();
-					}
-				}
-			}
-			aaa.parentNode.removeChild(aaa);
-		},
-		name: "Drag_Event_Checker"
-	},
-
-	Add_Extension_Interface: {
-		f: function() {
-			if (!document.getElementById("bmkmain")) {
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "bmkmain",
-					classname: ["__hided"],
-					target: document.body
-				});
-				for (var i = 0; i < Extension_Variables.Bookmark_Interface_List.length; i++) {
-					Extension_Tool_Functions.Import_Nodes.f(Extension_Variables.Bookmark_Interface_List[i])
-				}
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "pastebmk",
-					classname: ["__hided"],
-					target: document.getElementById("bmkmain")
-				});
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					name: "paste bmk",
-					classname: ["__buttons"],
-					events: [{
-						name: "click",
-						value: Bookmark_User_Functions.Paste_Bookmark_Second.f
-					}],
-					target: document.getElementById("pastebmk")
-				});
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					name: "cancel",
-					classname: ["__buttons"],
-					events: [{
-						name: "click",
-						value: Bookmark_User_Functions.Cancel_Paste_Second.f
-					}],
-					target: document.getElementById("pastebmk")
-				});
-			}
-			if (!document.getElementById("tabbar")) {
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "tabbar",
-					classname: ["__hided"],
-					target: document.body
-				});
-			}
-			if (!document.getElementById("actionbar")) {
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "actionbar",
-					classname: [],
-					target: document.body
-				});
-				for (s in Action_Bar_Function) {
-					a = {};
-					a.tag = "div";
-					a.id = s;
-					a.classname = ["__abtn"];
-					a.name = Action_Bar_Function[s].name;
-					a.events = [{
-						name: "mousedown",
-						value: Extension_Tool_Functions.Drag_Event_Checker.f
-					}, {
-						name: "mouseup",
-						value: Extension_Tool_Functions.Remove_Longtab_Event_Checker.f
-					}, {
-						name: "touchstart",
-						value: Extension_Tool_Functions.Drag_Event_Checker.f
-					}, {
-						name: "touchend",
-						value: Extension_Tool_Functions.Drag_Event_Checker_Action.f
-					}, {
-						name: "selectstart",
-						value: function(event) {
-							event.preventDefault();
-						}
-					}];
-					a.target = document.getElementById("actionbar");
-					Extension_Tool_Functions.Import_Nodes.f(a);
-				}
-			}
-			if (!document.getElementById("sidebar")) {
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "sidebar",
-					classname: ["__hided"],
-					target: document.body
-				});
-				for (var s in Extension_User_Functions) {
-					var a = {};
-					a.tag = "div";
-					a.classname = ["__btnz"];
-					if (Extension_User_Functions[s].image) {
-						a.image=Extension_User_Functions[s].image;
-					} else if (Extension_User_Functions[s].name) {
-						a.name = Extension_User_Functions[s].name;
-					} else {
-						a.name = s;
-					}
-					a.events = [{
-						name: "click",
-						value: Extension_User_Functions[s].f
-					}];
-					a.target = document.getElementById("sidebar");
-					Extension_Tool_Functions.Import_Nodes.f(a);
-				}
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "sidebarpad",
-					classname: ["__extension"],
-					target: document.getElementById("sidebar")
-				});
-			}
-
-			window.postMessage({
-				type: "gettab",
-				des: "back"
-			}, location.href);
-		},
-		name: "Drag_Event_Checker"
-	},
-
-	Import_Nodes: {
-		f: function(item) {
-			var div = document.createElement(item.tag);
-			if (item.classname) {
-				for (var i = 0; i < item.classname.length; i++) {
-					div.classList.add(item.classname[i]);
-				}
-			}
-			div.classList.toggle("__extension");
-			if (item.id) {
-				div.id = item.id;
-			}
-			if (item.image) {
-				if (!item.childs) {
-					item.childs=[];
-				}
-				var b = {}
-				b.tag = "img"
-				b.attributes = [{
-					name: "src",
-					value: item.image
-				}];
-				b.classname = ["__innerimage","__extension"];
-				item.childs.push(b);
-			} else if (item.name) {
-				div.appendChild(document.createTextNode(item.name));
-			}
-			if (item.childs) {
-				for (var i = 0; i < item.childs.length; i++) {
-					item.childs[i].target = div;
-					Extension_Tool_Functions.Import_Nodes.f(item.childs[i]);
-				}
-			}
-			if (item.events) {
-				for (var i = 0; i < item.events.length; i++) {
-					div.addEventListener(item.events[i].name, item.events[i].value);
-				}
-
-			}
-			if (item.attributes) {
-				for (var i = 0; i < item.attributes.length; i++) {
-					div.setAttribute(item.attributes[i].name, item.attributes[i].value);
-				}
-			}
-			if (item.target) {
-				item.target.appendChild(div);
-			} else {
-				document.getElementById("bmkmain").appendChild(div);
-			}
-		},
-		name: "Drag_Event_Checker"
-	},
-
-	On_Message: {
-		f: function(event) {
-			if (event.data.type == "update") {
-				Extension_Variables.Bookmark_Original = event.data.bmk;
-				Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
-			}
-			else if (event.data.type == "toggle") {
-				if (!(event.data.toggle)) {
-					document.getElementById("tabbar").classList.add("__hided");
-					document.body.style.marginTop = "0px";
-				} else {
-					document.getElementById("tabbar").classList.remove("__hided");
-					document.body.style.marginTop = "50px";
-				}
-			}
-			else if (event.data.type == "tabbarupdate"){
-				Extension_Tool_Functions.Set_Tab_Bar.f(event.data.tab);
-			}
-		},
-		name: "Drag_Event_Checker"
-	},
-
-	Set_Tab_Bar: {
-		f: function(tabs) {
-			if (!document.head.innerHTML) {
-				return;
-			}
-			var e = document.getElementById("tabbar");
-			while (e&&e.firstChild) {
-				e.removeChild(e.firstChild);
-			}
-			for (var i = 0; i < tabs.length; i++) {
-				var a = document.createElement("div");
-				var b = document.createElement("img");
-				var c = document.createElement("span");
-				var d = document.createElement("button");
-				a.style =
-					"border:1px solid #000000; overflow-y:hidden; " +
-					"position:relative; width:150px; height:30px; " +
-					"display:inline-block;";
-				b.style =
-					"border:1px solid #000000; position:absolute; " +
-					"top:0px; left:0px; width:20px; height:20px;";
-				c.style =
-					"border:1px solid #000000; background-color:#ffffff; " +
-					"position:absolute; top:0px; left:22px; width:100px; " +
-					"height:20px; overflow:hidden; text-overflow:ellipsis;";
-				d.style =
-					"border:1px solid #000000; background-color:#ce3333; " +
-					"position:absolute; top:0px; right:0px; width:20px; " +
-					"height:20px;";
-				if (!(tabs[i].favIconUrl)) {
-					b.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAIAAA" +
-					"DYYG7QAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAc" +
-					"dvqGQAAABDSURBVFhH7c4xAQAwDASh+jf9lcCa4VDA2zGFpJAUkkJSSApJISkkhaSQFJ" +
-					"JCUkgKSSEpJIWkkBSSQlJICkkhORbaPoBi5ofwSUznAAAAAElFTkSuQmCC";
-				} else {
-					b.src = tabs[i].favIconUrl;
-				}
-				c.appendChild(document.createTextNode(tabs[i].title));
-				c.setAttribute("data-id", tabs[i].id);
-				d.appendChild(document.createTextNode("X"));
-				d.setAttribute("data-id", tabs[i].id);
-				d.setAttribute("data-index", tabs[i].index);
-				a.appendChild(b);
-				a.appendChild(c);
-				a.appendChild(d);
-				document.getElementById("tabbar").appendChild(a);
-				c.addEventListener("click", Extension_Tool_Functions.Tab_Change.f);
-				d.addEventListener("click", Extension_Tool_Functions.Tab_Remove.f);
-			}
-		},
-		name: "Set_Tab_Bar"
-	},
-
-	hitomi_Ad_Block: {
-		f: function() {
-			var i = 0;
-			var b;
-			var galleryId = location.href.split("/")[location.href.split("/").length - 1].split(".")[0];
-			var scripts = document.getElementsByTagName('script');
-			i = scripts.length;
-			while (i--) {
-				scripts[i].parentNode.removeChild(scripts[i]);
-			}
-			scripts = document.getElementsByTagName('noscript');
-			i = scripts.length;
-			while (i--) {
-				scripts[i].parentNode.removeChild(scripts[i]);
-			}
-			scripts = document.getElementsByTagName('iframe');
-			i = scripts.length;
-			while (i--) {
-				scripts[i].parentNode.removeChild(scripts[i]);
-			}
-			if (location.href.indexOf("reader") != -1 || location.href.indexOf("galleries") != -1) {
-				var scr = document.createElement('script');
-				scr.src = 'https://hitomi.la/galleries/' + galleryId + '.js';
-				document.body.appendChild(scr);
-			}
-			divs = document.getElementsByTagName('style');
-			i = divs.length;
-			while (i--) {
-				divs[i].parentNode.removeChild(divs[i]);
-			}
-			divs = document.getElementsByTagName('div');
-			i = divs.length;
-			while (i--) {
-				divs[i].addEventListener("mousedown", function(event) {
-					event.stopImmediatePropagation();
-				});
-				divs[i].addEventListener("touchstart", function(event) {
-					event.stopImmediatePropagation();
-				});
-				divs[i].addEventListener("click", function(event) {
-					event.stopImmediatePropagation();
-				});
-			}
-			document.body.setAttribute("ontouchstart", "event.stopImmediatePropagation();");
-			document.body.setAttribute("onmousedown", "event.stopImmediatePropagation();");
-			document.body.setAttribute("onclink", "event.stopImmediatePropagation();");
-			if (document.getElementsByClassName("page-container").length != 0 && document.getElementsByClassName(
-					"page-container")[0].getElementsByTagName) {
-				divs = document.getElementsByClassName("page-container")[0].getElementsByTagName("li");
-				i = divs.length;
-				while (i--) {
-					if (divs[i].innerHTML == location.href.split("-")[location.href.split("-").length - 1].split(
-							".")[0]) {
-						divs[i].setAttribute("style", "color:#ff00ff");
-					}
-				}
-			}
-		},
-		name: "hitomi_Ad_Block"
-	},
-
-	Fake_Scroll_Action: {
-		f: function() {
-			if (Extension_Variables.Fake_Scroll_Direction == "u") {
-				document.documentElement.scrollTop -= 60;
-			} else if (Extension_Variables.Fake_Scroll_Direction == "d") {
-				document.documentElement.scrollTop += 60;
-			}
-		},
-		name: "Set_Scroll"
-	},
-
-	hitomi_Link_Change: {
-		f: function() {
-			var d = 0;
-			var divs = document.getElementsByTagName('a');
-			var i = divs.length;
-			while (i--) {
-				var k = divs[i].getAttribute("href");
-				if (k && divs[i].id != "dl-button" && divs[i].parentNode.parentNode.getAttribute("class") !=
-					"simplePagerNav") {
-					divs[i].dataset.url = k;
-					divs[i].dataset.type = "normal";
-					divs[i].dataset.index = i;
-					divs[i].addEventListener("click", Extension_Tool_Functions.hitomi_Link_Action.f);
-					var inp = document.createElement("input");
-					var inq = document.createElement("label");
-					var tx = document.createTextNode("N");
-					inp.type = "checkbox";
-					inq.style.display = "inline";
-					inp.id = "input-" + i;
-					inp.addEventListener("click", Extension_Tool_Functions.Cancel_Event_Bubling.f);
-					inp.style["vertical-align"] = "middle";
-					inq.addEventListener("click", Extension_Tool_Functions.Element_Toggle.f);
-					if (divs[i].parentNode.parentNode.parentNode.getAttribute("class") != "page-container" &&
-						divs[i].parentNode.tagName != "DIV" && divs[i].href != "/") {
-						if (k.match("galleries")) {
-							var j = document.createElement("span");
-							divs[i].insertBefore(j, divs[i].firstChild);
-							j.innerHTML = "(R) ";
-							j.dataset.url = k;
-							j.dataset.type = "reader";
-							j.dataset.index = i;
-							j.addEventListener("click", Extension_Tool_Functions.hitomi_Link_Action.f);
-						}
-						if (k.match("-all-")) {
-							var j = document.createElement("span");
-							divs[i].insertBefore(j, divs[i].firstChild);
-							j.innerHTML = "(K) ";
-							j.dataset.url = k;
-							j.dataset.type = "korean";
-							j.dataset.index = i;
-							j.addEventListener("click", Extension_Tool_Functions.hitomi_Link_Action.f);
-						}
-					} else {
-						var j = document.createElement("span");
-						while (divs[i].firstChild) {
-							j.appendChild(divs[i].firstChild);
-						}
-						j.dataset.url = k;
-						j.dataset.type = "normal";
-						j.dataset.index = i;
-						j.addEventListener("click", Extension_Tool_Functions.hitomi_Link_Action.f);
-						divs[i].parentNode.insertBefore(j, divs[i]);
-						var k = divs[i];
-						divs[i] = j;
-						k.parentNode.removeChild(k);
-						inq.style.display = "none";
-					}
-					inq.appendChild(tx);
-					inq.appendChild(inp);
-					divs[i].insertBefore(inq, divs[i].firstChild);
-					divs[i].removeAttribute("href");
-				}
-			}
-			divs = document.getElementsByClassName("page-content")[0]
-			if (divs) {
-				divs = document.getElementsByClassName("page-content")[0].getElementsByTagName("label");
-				i = divs.length;
-				while (i--) {
-					divs[i].setAttribute("style", "display:none");
-				}
-			}
-		},
-		name: "hitomi_Link_Change"
-	},
-
-	Ruliweb_Ad_Block: {
-		f: function() {
-			var arr = document.getElementsByTagName("div")
-			for (var i = 0; i < arr.length; i++) {
-				if (arr[i].className.indexOf("ad_") != -1) {
-					arr[i].parentNode.removeChild(arr[i]);
-				}
-			}
-		},
-		name: "Ruliweb_Ad_Block"
-	},
-
-	Cancel_Event_Bubling: {
-		f: function(event) {
-			event.stopPropagation();
-		},
-		name: "Cancel_Event_Bubling"
-	}
 };
 
 window.Bookmark_User_Functions = {
@@ -1406,7 +1286,9 @@ window.Bookmark_User_Functions = {
 					Bookmark_Pointer.value[a.name].data.modified = b;
 					Bookmark_Pointer.value[a.name].data.croped=false;
 					Bookmark_Pointer.value[a.name].value = a.path;
-					delete Bookmark_Pointer.value[this.innerText];
+					if (a.name!=this.innerText) {
+						delete Bookmark_Pointer.value[this.innerText];
+					}
 					Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc,
 						document.getElementById("bmks").classList.contains("__editing"));
 					window.postMessage({
@@ -1493,7 +1375,7 @@ window.Bookmark_User_Functions = {
 			for (s of document.getElementsByClassName("__editout")) {
 				s.classList.remove("__invisibled");
 			}
-			for (s of document.getElementsByClassName("__input")) {
+			for (s of document.querySelectorAll("#bmks .__input")) {
 				s.classList.remove("__hided");
 			}
 		},
@@ -1513,7 +1395,7 @@ window.Bookmark_User_Functions = {
 			if (document.getElementById("dir").dataset.loc == "root") {
 				document.getElementById("go_up").classList.add("__disabled");
 			}
-			for (s of document.getElementsByClassName("__input")) {
+			for (s of document.querySelectorAll("#bmks .__input")) {
 				s.classList.add("__hided");
 			}
 		},
@@ -1619,6 +1501,7 @@ window.Bookmark_User_Functions = {
 			}
 			a.forEach(function (val) {
 				Bookmark_Pointer.value[val.dataset.id].data.name=val.dataset.id;
+				Bookmark_Pointer.value[val.dataset.id].path=document.getElementById("dir").dataset.loc;
 				Bookmark_Pointer.value[val.dataset.id].data.croped=true;
 				Extension_Variables.Paste_Bookmarks.push(Bookmark_Pointer.value[val.dataset.id]);
 				delete Bookmark_Pointer.value[val.dataset.id];
@@ -1630,25 +1513,6 @@ window.Bookmark_User_Functions = {
 		},
 
 		name: "Move_Bookmarks"
-	},
-
-	Cancel_Paste: {
-		f: function() {
-			Extension_Variables.Paste_Bookmarks.forEach( function (d) {
-				console.log(d);
-				var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
-				for (var t of d.loc.split("/")) {
-					Bookmark_Pointer = Bookmark_Pointer.value[t];
-				}
-				Bookmark_Pointer.value[d.name].data.croped=false;
-			});
-			Extension_Variables.Paste_Bookmarks = [];
-			document.getElementById("pastebmk").classList.add("__hided");
-			document.getElementById("bmks").classList.remove("__copyactive");
-			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
-		},
-
-		name: "Cancel_Paste"
 	},
 
 	Cancel_Paste_Second: {
@@ -1677,6 +1541,7 @@ window.Bookmark_User_Functions = {
 				for (var t of document.getElementById("dir").dataset.loc.split("/")) {
 					Bookmark_Pointer = Bookmark_Pointer.value[t];
 				}
+				d.path=document.getElementById("dir").dataset.loc;
 				if (d.type == "folder") {
 					if (!Bookmark_Pointer.value[d.data.name]) {
 						Bookmark_Pointer.value[d.data.name] = d;
@@ -1719,65 +1584,6 @@ window.Bookmark_User_Functions = {
 		},
 
 		name: "Paste_Bookmark2"
-	},
-
-	Paste_Bookmark: {
-		f: function() {
-			for (var d of Extension_Variables.Paste_Bookmarks) {
-				var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
-				for (var t of document.getElementById("dir").dataset.loc.split("/")) {
-					Bookmark_Pointer = Bookmark_Pointer.value[t];
-				}
-				var Bookmark_Pointer_Second = Extension_Variables.Bookmark_Original;
-				for (var t of d.loc.split("/")) {
-					Bookmark_Pointer_Second = Bookmark_Pointer_Second.value[t];
-				}
-				if (typeof Bookmark_Pointer_Second.value[d.name] == "object") {
-					if (!Bookmark_Pointer.value[d.name]) {
-						Bookmark_Pointer.value[d.name] = {};
-						[Bookmark_Pointer.value[d.name],Bookmark_Pointer_Second.value[d.name]]=[Bookmark_Pointer_Second.value[d.name],Bookmark_Pointer.value[d.name]]
-						if (JSON.stringify(Bookmark_Pointer_Second.value[d.name]) == "{}") {
-							delete Bookmark_Pointer_Second.value[d.name];
-						}
-					} else {
-						[Bookmark_Pointer.value[d.name],Bookmark_Pointer_Second.value[d.name]]=[Bookmark_Pointer_Second.value[d.name],Bookmark_Pointer.value[d.name]]
-						if (JSON.stringify(Bookmark_Pointer_Second.value[d.name]) == "{}") {
-							delete Bookmark_Pointer_Second.value[d.name];
-						}
-						continue;
-					}
-				} else {
-					if (Bookmark_Pointer.value[d.name]) {
-						if (!confirm(d.name + " is already exist.\n overwrite it?")) {
-							if (!!(d.name = prompt("new bookmark name", ""))) {
-								while (Bookmark_Pointer.value[d.name]) {
-									if (!!(d.name = prompt("new bookmark name", ""))) {
-
-									} else {
-										continue;
-									}
-								}
-							} else {
-								continue;
-							}
-						}
-					}
-					delete Bookmark_Pointer_Second.value[d.name];
-					Bookmark_Pointer.value[d.name] = d.path;
-					Bookmark_Pointer.value[d.name].data.croped=false;
-				}
-			}
-			Extension_Variables.Paste_Bookmarks = [];
-			document.getElementById("pastebmk").classList.add("__hided");
-			document.getElementById("bmks").classList.remove("__copyactive");
-			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
-			window.postMessage({
-				type: "setbmk",
-				bmk: Extension_Variables.Bookmark_Original
-			}, location.href);
-		},
-
-		name: "Paste_Bookmark"
 	},
 
 	Export_Bookmark: {
@@ -1846,11 +1652,10 @@ window.Bookmark_User_Functions = {
 
 	Backup_Bookmark: {
 		f: function() {
-			var a=document.createElement("a");
-			var b=new Date();
-			a.download="backup(date:"+b.getFullYear()+"_"+(b.getMonth()+1)+"_"+b.getDate()+"_"+b.getHours()+"_"+b.getMinutes()+"_"+b.getSeconds()+"_"+b.getMilliseconds()+").json";
-			a.href="data:text/plain,"+escape(Extension_Tool_Functions.utf8_encode.f(JSON.stringify(Extension_Variables.Bookmark_Original)));
-			Extension_Tool_Functions.Emulate_Click_Event.f(a);
+			window.postMessage({
+				type: "backupbmk",
+				des: "back"
+			}, location.href);
 		},
 
 		name: "Backup_Bookmark"
@@ -1968,20 +1773,24 @@ window.Extension_Variables = {
 		tag: "br"
 	},
 	{
-		tag: "label",
+		tag: "div",
+		id: "tab",
+		events: [{
+			name: "click",
+			value: Extension_Tool_Functions.Element_Toggle.f
+		}],
+		classname:["__input","__extension"]
+	},
+	{
+		tag: "span",
 		name: "this tab",
-		childs: [{
-			tag: "input",
-			id: "tab",
-			events: [{
-				name: "click",
-				value: Extension_Tool_Functions.Element_Toggle.f
-			}],
-			attributes: [{
-				name: "type",
-				"value": "checkbox"
-			}]
-		}]
+		events: [{
+			name: "click",
+			value: function (event) {
+				Extension_Tool_Functions.Element_Toggle.f.call(document.getElementById("tab"),event);
+			}
+		}],
+		classname:["__extension"]
 	},
 	{
 		tag: "div",
@@ -2017,6 +1826,17 @@ window.Extension_Variables = {
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Merge_Bookmark.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "expand",
+		classname: ["__buttons"],
+		events: [{
+			name: "click",
+			value: function (event) {
+				document.getElementById("bmkmain").classList.toggle("__expanded");
+			}
 		}]
 	},
 	{

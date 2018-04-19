@@ -27,17 +27,10 @@ function contentonmessage(event) {
 		}
 		else if (event.data.type=="check") {
 			extension.storage.local.get("bmks",function (c) {
-				if (unescape(c.bmks)!=JSON.stringify(event.data.bmks)) {
-					if (!event.data.bmk) {
-						event.data.bmk={};
-					}
-					if (!c.bmks) {
-						c.bmks="{}";
-					}
-					var rtn=MergeRecursive(event.data.bmk,JSON.parse(unescape(c.bmks)));
-					extension.storage.local.set({"bmks":escape(JSON.stringify(rtn))});
-					window.postMessage({type:"update",bmk:rtn},location.href);
-				}
+				window.postMessage({
+					type:"update",
+					bmk:JSON.parse(unescape(c.bmks))
+				},location.href);
 			});
 		}
 		else if (event.data.des=="back") {
@@ -56,23 +49,34 @@ function contentonmessage(event) {
 				});
 				if (event.data.changeinfo.type=="add") {
 					event.data.changeinfo.data.forEach(function (val) {
-						if (!bmkptr.value[val.title]) {
+						if (!val.title) {
+							return undefined;
+						}
+						else if (val.title.indexOf("/")!=-1) {
+							while (val.title.indexOf("/")!=-1) {
+								val.title = prompt("/is non-usable", "")
+							}
+						}
+						else if (!bmkptr.value[val.title]) {
 							if (!val.title) {
 								return undefined;
 							}
-						} else if (confirm("overwrite \"" + val.title + "\" ?")) {
+						}
+						else if (confirm("overwrite \"" + val.title + "\" ?")) {
 							if (val.type=="folder") {
 								return undefined;
 							}
-						} else if (!!(val.title = prompt("new name from " + val.title, ""))) {
+						}
+						else if ((val.title = prompt("new name from " + val.title, ""))) {
 							while (bmkptr.value[val.title]) {
-								if (!!(a.name = prompt("new name from " + val.title, ""))) {
-
+								if ((val.title = prompt("new name from " + val.title, ""))) {
+									
 								} else {
 									return undefined;
 								}
 							}
-						} else {
+						}
+						else {
 							return undefined;
 						}
 						bmkptr.value[val.title] = {};
@@ -89,12 +93,12 @@ function contentonmessage(event) {
 						else {
 							bmkptr.value[val.title].value = {};
 						}
-					})
+					});
 				}
 				else if (event.data.changeinfo.type=="remove") {
 					event.data.changeinfo.data.forEach(function (val) {
 						delete bmkptr.value[val];
-					})
+					});
 				}
 				else if (event.data.changeinfo.type=="update") {
 					event.data.changeinfo.data.forEach(function (val) {
@@ -107,7 +111,7 @@ function contentonmessage(event) {
 						}
 						var b=(new Date()).getTime();
 						bmkptr.value[val.title].data.modified = b;
-					})
+					});
 				}
 				else if (event.data.changeinfo.type=="move") {
 					event.data.changeinfo.data.forEach(function (val) {
@@ -146,7 +150,7 @@ function contentonmessage(event) {
 							bmkptr.value[val.data.name] = val;
 							bmkptr.value[val.data.name].data.croped=false;
 						}
-					})
+					});
 				}
 				else if (event.data.changeinfo.type=="return") {
 					event.data.changeinfo.data.forEach(function (val) {
@@ -156,6 +160,35 @@ function contentonmessage(event) {
 						});
 						bmkptr.value[val.data.name]=val;
 						bmkptr.value[val.data.name].data.croped=false;
+					});
+				}
+				else if (event.data.changeinfo.type=="import") {
+					event.data.changeinfo.data.forEach(function (val) {
+						bmk=MergeRecursive(bmk,val);
+					});
+				}
+				else if (event.data.changeinfo.type=="sort") {
+					var Temporal_Bookmark = {};
+					var Bookmark_Folders = [];
+					var Bookmark_Links = [];
+					Object.key(bmkptr.value).forEach(function (val) {
+						if (Bookmark_Pointer.value[val].type == "folder") {
+							Bookmark_Folders.push(val);
+						} else {
+							Bookmark_Links.push(val);
+						}
+					});
+					Bookmark_Folders.sort();
+					Bookmark_Links.sort();
+					Bookmark_Folders.forEach(function (val) {
+						Temporal_Bookmark[val] = Bookmark_Pointer.value[val];
+					});
+					Bookmark_Links.forEach(function (val) {
+						Temporal_Bookmark[val] = Bookmark_Pointer.value[val];
+					});
+					Object.key(Temporal_Bookmark).forEach(function (val) {
+						delete Bookmark_Pointer.value[val];
+						Bookmark_Pointer.value[val] = Temporal_Bookmark[val];
 					});
 				}
 				extension.storage.local.set({"bmks":escape(JSON.stringify(bmk))});

@@ -1309,9 +1309,8 @@ window.Bookmark_User_Functions = {
 
 	Remove_Bookmark: {
 		f: function() {
-			var a = document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked");
 			var b=[];
-			a.forEach(function (val) {
+			document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked").forEach(function (val) {
 				b.push(val.dataset.id);
 			});
 			window.postMessage({
@@ -1449,41 +1448,12 @@ window.Bookmark_User_Functions = {
 
 	Sort_Bookmark: {
 		f: function() {
-
-			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
-			for (var s of document.getElementById("dir").dataset.loc.split("/")) {
-				Bookmark_Pointer = Bookmark_Pointer.value[s];
-			}
-			var Temporal_Bookmark = {};
-			var Bookmark_Folders = [];
-			var Bookmark_Links = [];
-			for (var key in Bookmark_Pointer.value) {
-				if (Bookmark_Pointer.value[key].type == "folder") {
-					Bookmark_Folders.push(key);
-				} else {
-					Bookmark_Links.push(key);
-				}
-			}
-			if (Bookmark_Folders.length > 1) {
-				Bookmark_Folders.sort();
-			}
-			if (Bookmark_Links.length > 1) {
-				Bookmark_Links.sort();
-			}
-			for (key = 0; key < Bookmark_Folders.length; key++) {
-				Temporal_Bookmark[Bookmark_Folders[key]] = Bookmark_Pointer.value[Bookmark_Folders[key]];
-			}
-			for (key = 0; key < Bookmark_Links.length; key++) {
-				Temporal_Bookmark[Bookmark_Links[key]] = Bookmark_Pointer.value[Bookmark_Links[key]];
-			}
-			for (key in Temporal_Bookmark) {
-				delete Bookmark_Pointer.value[key];
-				Bookmark_Pointer.value[key] = Temporal_Bookmark[key];
-			}
-			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
 			window.postMessage({
-				type: "setbmk",
-				bmk: Extension_Variables.Bookmark_Original
+				type: "change",
+				changeinfo: {
+					type:"sort",
+					loc:document.getElementById("dir").dataset.loc
+				}
 			}, location.href);
 		},
 
@@ -1542,15 +1512,14 @@ window.Bookmark_User_Functions = {
 		f: function() {
 			var reader = new FileReader();
 			reader.addEventListener("load", function() {
-				if (!Extension_Variables.Bookmark_Original) {
-					Extension_Variables.Bookmark_Original={};
-				}
-				Extension_Variables.Bookmark_Original = Object.asign(Extension_Variables.Bookmark_Original,JSON.parse(Extension_Tool_Functions.utf8_decode.f(reader.result)));
 				window.postMessage({
-					type: "setbmk",
-					bmk: Extension_Variables.Bookmark_Original
+					type: "change",
+					changeinfo: {
+						type:"import",
+						loc:document.getElementById("dir").dataset.loc,
+						data:[JSON.parse(Extension_Tool_Functions.utf8_decode.f(reader.result))]
+					}
 				}, location.href);
-				Bookmark_User_Functions.Show_Bookmark.f("root");
 			}, false);
 			if (this.files[0]) {
 				reader.readAsBinaryString(this.files[0]);

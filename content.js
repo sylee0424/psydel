@@ -124,7 +124,6 @@ function contentonmessage(event) {
 						if (!val.title) {
 							return undefined;
 						}
-						console.log(bmkptr,val.ptitle);
 						bmkptr.value[val.title]=bmkptr.value[val.ptitle];
 						if (val.title!=val.ptitle) {
 							delete bmkptr.value[val.ptitle];

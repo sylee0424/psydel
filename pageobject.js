@@ -1205,8 +1205,8 @@ window.Bookmark_User_Functions = {
 				e.preventDefault();
 				if (this.classList.contains("__link")) {
 					var a = {};
-					a.ptitle = this.innerText;
-					a.title = prompt("bookmark name", this.innerText);
+					a.ptitle = this.id;
+					a.title = prompt("bookmark name", this.id);
 					a.url = prompt("bookmark path", this.dataset.src);
 					a.type = "link";
 					window.postMessage({
@@ -1219,8 +1219,8 @@ window.Bookmark_User_Functions = {
 					}, location.href);
 				} else if (this.classList.contains("__folder")) {
 					var a = {};
-					a.ptitle = this.innerText;
-					a.title = prompt("bookmark name", this.innerText);
+					a.ptitle = this.id;
+					a.title = prompt("bookmark name", this.id);
 					a.type = "folder";
 					window.postMessage({
 						type: "change",
@@ -1241,8 +1241,8 @@ window.Bookmark_User_Functions = {
 							loc:document.getElementById("dir").dataset.loc,
 							data:[{
 								type:"link",
-								title:document.getElementsByTagName("title")[0].innerHTML,
-								ptitle:this.innerText,
+								title:document.getElementsByTagName("title")[0].innerText,
+								ptitle:this.id,
 								url:location.href
 							}]
 						}

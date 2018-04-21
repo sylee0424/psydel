@@ -124,8 +124,9 @@ function contentonmessage(event) {
 						if (!val.title) {
 							return undefined;
 						}
+						console.log(bmkptr,val.ptitle);
+						bmkptr.value[val.title]=bmkptr.value[val.ptitle];
 						if (val.title!=val.ptitle) {
-							bmkptr.value[val.title]=bmkptr.value[val.ptitle];
 							delete bmkptr.value[val.ptitle];
 						}
 						if (val.type=="link") {
@@ -253,30 +254,19 @@ function addscript(scriptlist,removenode) {
 	__scr.setAttribute("src",extension.runtime.getURL(scriptlist.shift()));
 }
 
-/*
-* Recursively merge properties of two objects 
-*/
 function MergeRecursive(obj1, obj2) {
-
-  for (var p in obj2) {
-    try {
-      // Property in destination object set; update its value.
-      if ( obj2[p].constructor==Object ) {
-        obj1[p] = MergeRecursive(obj1[p], obj2[p]);
-
-      } else {
-        obj1[p] = obj2[p];
-
-      }
-
-    } catch(e) {
-      // Property in destination object not set; create it and set its value.
-      obj1[p] = obj2[p];
-
-    }
-  }
-
-  return obj1;
+	for (var p in obj2) {
+		try {
+			if ( obj2[p].constructor==Object ) {
+				obj1[p] = MergeRecursive(obj1[p], obj2[p]);
+			} else {
+				obj1[p] = obj2[p];
+			}
+		} catch(e) {
+			obj1[p] = obj2[p];
+		}
+	}
+	return obj1;
 }
 
 var extension=(!!chrome)?chrome:browser;

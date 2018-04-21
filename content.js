@@ -8,6 +8,7 @@ function contentonmessage(event) {
 			req.onreadystatechange = function (aEvt) {
 				if (req.readyState == 4&&req.status == 200) {
 					extension.storage.local.set({"bmks":escape(req.responseText)});
+					console.log("imported");
 				}
 				else if (req.status == 423) {
 					
@@ -34,7 +35,7 @@ function contentonmessage(event) {
 				return undefined;
 			}
 			console.log(event.data.changeinfo);
-			extension.storage.local.get("bmks",function (c) {
+			extension.storage.local.get(["bmks","croped"],function (c) {
 				if (c.bmks) {
 					var bmk=JSON.parse(unescape(c.bmks));
 					var bmkptr=bmk;
@@ -100,24 +101,29 @@ function contentonmessage(event) {
 					});
 				}
 				else if (event.data.changeinfo.type=="remove") {
-					event.data.changeinfo.data.forEach(function (val) {
-						delete bmkptr.value[val];
-					});
 					if (event.data.changeinfo.crop) {
-						extension.storage.local.get("croped",function (c) {
-							if (!c.croped) {
-								c.croped=[];
-							}
-							event.data.changeinfo.crop.forEach(function (val) {
-								c.croped.push(val);
-							});
-							extension.storage.local.set({"croped":c.croped});
+						if (!c.croped) {
+							c.croped=[];
+						}
+						event.data.changeinfo.data.forEach(function (val) {
+							bmkptr.value[val].data.name=val;
+							bmkptr.value[val].path=event.data.changeinfo.loc;
+							c.croped.push(bmkptr.value[val]);
+							delete bmkptr.value[val];
+						});
+						extension.storage.local.set({"croped":c.croped});
+					}
+					else {
+						event.data.changeinfo.data.forEach(function (val) {
+							delete bmkptr.value[val];
 						});
 					}
 				}
 				else if (event.data.changeinfo.type=="update") {
 					event.data.changeinfo.data.forEach(function (val) {
-						//[bmkptr.value[val.title],bmkptr.value[val.ptitle]]=[bmkptr.value[val.ptitle],bmkptr.value[val.title]];
+						if (!val.title) {
+							return undefined;
+						}
 						if (val.title!=val.ptitle) {
 							bmkptr.value[val.title]=bmkptr.value[val.ptitle];
 							delete bmkptr.value[val.ptitle];
@@ -130,59 +136,56 @@ function contentonmessage(event) {
 					});
 				}
 				else if (event.data.changeinfo.type=="move") {
-					extension.storage.local.get("croped",function (c) {
-						c.croped.data.forEach(function (val) {
-							if (val.type == "folder") {
-								if (!bmkptr.value[val.data.name]) {
-									bmkptr.value[val.data.name] = val;
-									bmkptr.value[val.data.name].data.croped=false;
-								} else {
-									if (bmkptr.value[val.data.name].type=="link") {
-										var a=bmkptr.value[val.data.name];
-										bmkptr.value[val.data.name] = val;
-										bmkptr.value[val.data.name].data.croped=false;
-										bmkptr.value[val.data.name].data.exx=a;
-									}
-									else {
-										MergeRecursive(bmkptr.value[val.data.name].vlaue,val.value);
-									}
-									return undefined;
-								}
-							} else {
-								if (bmkptr.value[val.data.name]) {
-									if (!confirm(val.data.name + " is already exist.\n overwrite it?")) {
-										if (!!(val.data.name = prompt("new bookmark name", ""))) {
-											while (bmkptr.value[val.data.name]) {
-												if (!!(val.data.name = prompt("new bookmark name", ""))) {
-	
-												} else {
-													return undefined;
-												}
-											}
-										} else {
-											return undefined;
-										}
-									}
-								}
+					c.croped.forEach(function (val) {
+						if (val.type == "folder") {
+							if (!bmkptr.value[val.data.name]) {
 								bmkptr.value[val.data.name] = val;
 								bmkptr.value[val.data.name].data.croped=false;
+							} else {
+								if (bmkptr.value[val.data.name].type=="link") {
+									var a=bmkptr.value[val.data.name];
+									bmkptr.value[val.data.name] = val;
+									bmkptr.value[val.data.name].data.croped=false;
+									bmkptr.value[val.data.name].data.exx=a;
+								}
+								else {
+									MergeRecursive(bmkptr.value[val.data.name].value,val.value);
+								}
+								return undefined;
 							}
-						});
-						extension.storage.local.remove("croped");
+						} else {
+							console.log(bmkptr);
+							if (bmkptr.value[val.data.name]) {
+								if (!confirm(val.data.name + " is already exist.\n overwrite it?")) {
+									if (!!(val.data.name = prompt("new bookmark name", ""))) {
+										while (bmkptr.value[val.data.name]) {
+											if (!!(val.data.name = prompt("new bookmark name", ""))) {
+	
+											} else {
+												return undefined;
+											}
+										}
+									} else {
+										return undefined;
+									}
+								}
+							}
+							bmkptr.value[val.data.name] = val;
+							bmkptr.value[val.data.name].data.croped=false;
+						}
 					});
+					extension.storage.local.remove("croped");
 				}
 				else if (event.data.changeinfo.type=="return") {
-					extension.storage.local.get("croped",function (c) {
-						c.croped.forEach(function (val) {
-							bmkptr=bmk;
-							val.path.split("/").forEach(function (s) {
-								bmkptr=bmkptr.value[s];
-							});
-							bmkptr.value[val.data.name]=val;
-							bmkptr.value[val.data.name].data.croped=false;
+					c.croped.forEach(function (val) {
+						bmkptr=bmk;
+						val.path.split("/").forEach(function (s) {
+							bmkptr=bmkptr.value[s];
 						});
-						extension.storage.local.remove("croped");
+						bmkptr.value[val.data.name]=val;
+						bmkptr.value[val.data.name].data.croped=false;
 					});
+					extension.storage.local.remove("croped");
 				}
 				else if (event.data.changeinfo.type=="import") {
 					event.data.changeinfo.data.forEach(function (val) {
@@ -193,8 +196,8 @@ function contentonmessage(event) {
 					var Temporal_Bookmark = {};
 					var Bookmark_Folders = [];
 					var Bookmark_Links = [];
-					Object.key(bmkptr.value).forEach(function (val) {
-						if (Bookmark_Pointer.value[val].type == "folder") {
+					Object.keys(bmkptr.value).forEach(function (val) {
+						if (bmkptr.value[val].type == "folder") {
 							Bookmark_Folders.push(val);
 						} else {
 							Bookmark_Links.push(val);
@@ -203,14 +206,14 @@ function contentonmessage(event) {
 					Bookmark_Folders.sort();
 					Bookmark_Links.sort();
 					Bookmark_Folders.forEach(function (val) {
-						Temporal_Bookmark[val] = Bookmark_Pointer.value[val];
+						Temporal_Bookmark[val] = bmkptr.value[val];
+						delete bmkptr.value[val];
+						bmkptr.value[val] = Temporal_Bookmark[val];
 					});
 					Bookmark_Links.forEach(function (val) {
-						Temporal_Bookmark[val] = Bookmark_Pointer.value[val];
-					});
-					Object.key(Temporal_Bookmark).forEach(function (val) {
-						delete Bookmark_Pointer.value[val];
-						Bookmark_Pointer.value[val] = Temporal_Bookmark[val];
+						Temporal_Bookmark[val] = bmkptr.value[val];
+						delete bmkptr.value[val];
+						bmkptr.value[val] = Temporal_Bookmark[val];
 					});
 				}
 				extension.storage.local.set({"bmks":escape(JSON.stringify(bmk))});

@@ -523,29 +523,6 @@ window.Extension_Tool_Functions = {
 		name:"hitomi_Image_Sequential"
 	},
 
-	Tab_Change: {
-		f: function() {
-			window.postMessage({
-				type: "changeto",
-				id: Number(this.dataset.id),
-				des: "back"
-			}, location.href);
-		},
-		name: "Fake_Scroll_Event"
-	},
-
-	Tab_Remove: {
-		f: function() {
-			window.postMessage({
-				type: "closeto",
-				id: Number(this.dataset.id),
-				index: Number(this.dataset.index),
-				des: "back"
-			}, location.href);
-		},
-		name: "Fake_Scroll_Event"
-	},
-
 	Fake_Scroll_Event: {
 		f: function(event) {
 			if (event.altKey) {
@@ -819,7 +796,10 @@ window.Extension_Tool_Functions = {
 		f: function(event) {
 			if (event.data.type == "update") {
 				Extension_Variables.Bookmark_Original = event.data.bmk;
-				Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
+				Bookmark_User_Functions.Show_Bookmark.f(
+					document.getElementById("dir").dataset.loc,
+					document.getElementById("bmks").classList.contains("__editing")
+				);
 			}
 		},
 		name: "Drag_Event_Checker"
@@ -1129,7 +1109,7 @@ window.Extension_User_Functions = {
 window.Bookmark_User_Functions = {
 
 	Show_Bookmark: {
-		f: function(bmkpath,edit) {
+		f: function(bmkpath,edit=false) {
 			var a = document.getElementById("bmks");
 			var e = Number(a.scrollTop);
 			while (a.firstChild) {
@@ -1145,6 +1125,10 @@ window.Bookmark_User_Functions = {
 			bmkpath.split("/").forEach(function (val) {
 				Bookmark_Pointer = Bookmark_Pointer.value[val];
 			});
+			if (!Bookmark_Pointer) {
+				Bookmark_User_Functions.Show_Bookmark.f("root",edit);
+				return undefined;
+			}
 			var lists=Object.keys(Bookmark_Pointer.value);
 			lists.forEach(function (val) {
 				var c = document.createElement("div");
@@ -1309,16 +1293,14 @@ window.Bookmark_User_Functions = {
 
 	Remove_Bookmark: {
 		f: function() {
-			var b=[];
-			document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked").forEach(function (val) {
-				b.push(val.dataset.id);
-			});
 			window.postMessage({
 				type: "change",
 				changeinfo: {
 					type:"remove",
 					loc:document.getElementById("dir").dataset.loc,
-					data:b
+					data:Array.prototype.slice.call(
+						document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
+					).map(val => val.dataset.id)
 				}
 			}, location.href);
 		},
@@ -1352,7 +1334,6 @@ window.Bookmark_User_Functions = {
 		f: function() {
 			var a = {};
 			a.title = prompt("bookmark name", document.getElementsByTagName("title")[0].innerHTML);
-			a.url = prompt("bookmark path", document.location.href);
 			a.type = "folder";
 			window.postMessage({
 				type: "change",
@@ -1369,22 +1350,6 @@ window.Bookmark_User_Functions = {
 
 	Move_Bookmarks: {
 		f: function() {
-			var a = document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked");
-			var Bookmark_Pointer = Extension_Variables.Bookmark_Original;
-			document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
-				Bookmark_Pointer = Bookmark_Pointer.value[val];
-			});
-			if (!(Extension_Variables.Paste_Bookmarks)) {
-				Extension_Variables.Paste_Bookmarks = [];
-			}
-			var b=[];
-			a.forEach(function (val) {
-				b.push(val.dataset.id);
-				Bookmark_Pointer.value[val.dataset.id].data.name=val.dataset.id;
-				Bookmark_Pointer.value[val.dataset.id].path=document.getElementById("dir").dataset.loc;
-				Bookmark_Pointer.value[val.dataset.id].data.croped=true;
-				Extension_Variables.Paste_Bookmarks.push(Bookmark_Pointer.value[val.dataset.id]);
-			});
 			document.getElementById("pastebmk").classList.remove("__hided");
 			document.getElementById("bmks").classList.add("__copyactive");
 			Bookmark_User_Functions.Deactivate_Bookmark_Edit.f();
@@ -1393,8 +1358,10 @@ window.Bookmark_User_Functions = {
 				changeinfo: {
 					type:"remove",
 					loc:document.getElementById("dir").dataset.loc,
-					data:b,
-					crop:Extension_Variables.Paste_Bookmarks
+					data:Array.prototype.slice.call(
+						document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
+					).map(val => val.dataset.id),
+					crop:true
 				}
 			}, location.href);
 		},
@@ -1408,11 +1375,9 @@ window.Bookmark_User_Functions = {
 				type: "change",
 				changeinfo: {
 					type:"return",
-					loc:document.getElementById("dir").dataset.loc,
-					data:Extension_Variables.Paste_Bookmarks
+					loc:document.getElementById("dir").dataset.loc
 				}
 			}, location.href);
-			Extension_Variables.Paste_Bookmarks = [];
 		},
 
 		name: "Cancel_Paste2"
@@ -1424,11 +1389,9 @@ window.Bookmark_User_Functions = {
 				type: "change",
 				changeinfo: {
 					type:"move",
-					loc:document.getElementById("dir").dataset.loc,
-					data:Extension_Variables.Paste_Bookmarks
+					loc:document.getElementById("dir").dataset.loc
 				}
 			}, location.href);
-			Extension_Variables.Paste_Bookmarks = [];
 			document.getElementById("pastebmk").classList.add("__hided");
 			document.getElementById("bmks").classList.remove("__copyactive");
 		},

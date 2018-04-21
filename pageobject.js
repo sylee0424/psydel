@@ -1393,7 +1393,8 @@ window.Bookmark_User_Functions = {
 				changeinfo: {
 					type:"remove",
 					loc:document.getElementById("dir").dataset.loc,
-					data:b
+					data:b,
+					crop:Extension_Variables.Paste_Bookmarks
 				}
 			}, location.href);
 		},

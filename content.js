@@ -1,12 +1,5 @@
 function contentonmessage(event) {
-		if (event.data.type=="setbmk") {
-			extension.storage.local.get("bmks",function (c) {
-				console.log("setted");
-				extension.storage.local.set({"bmks":escape(JSON.stringify(event.data.bmk))});
-				extension.runtime.sendMessage(extension.runtime.id,event.data);
-			});
-		}
-		else if (event.data.type=="removebmk") {
+		if (event.data.type=="removebmk") {
 			extension.storage.local.remove("bmks");
 		}
 		else if (event.data.type=="importbmk") {
@@ -42,11 +35,22 @@ function contentonmessage(event) {
 			}
 			console.log(event.data.changeinfo);
 			extension.storage.local.get("bmks",function (c) {
-				var bmk=JSON.parse(unescape(c.bmks));
-				var bmkptr=bmk;
-				event.data.changeinfo.loc.split("/").forEach(function (val) {
-					bmkptr=bmkptr.value[val];
-				});
+				if (c.bmks) {
+					var bmk=JSON.parse(unescape(c.bmks));
+					var bmkptr=bmk;
+					event.data.changeinfo.loc.split("/").forEach(function (val) {
+						bmkptr=bmkptr.value[val];
+					});
+				}
+				else {
+					var bmk={};
+					var bmkptr=bmk;
+					event.data.changeinfo.loc.split("/").forEach(function (val) {
+						bmkptr.value={};
+						bmkptr.value[val]={};
+						bmkptr=bmkptr.value[val];
+					});
+				}
 				if (event.data.changeinfo.type=="add") {
 					event.data.changeinfo.data.forEach(function (val) {
 						if (!val.title) {
@@ -54,7 +58,7 @@ function contentonmessage(event) {
 						}
 						else if (val.title.indexOf("/")!=-1) {
 							while (val.title.indexOf("/")!=-1) {
-								val.title = prompt("/is non-usable", "")
+								val.title = prompt("/is un-usable", "")
 							}
 						}
 						else if (!bmkptr.value[val.title]) {
@@ -68,8 +72,8 @@ function contentonmessage(event) {
 							}
 						}
 						else if ((val.title = prompt("new name from " + val.title, ""))) {
-							while (bmkptr.value[val.title]) {
-								if ((val.title = prompt("new name from " + val.title, ""))) {
+							while (bmkptr.value[val.title]||(val.type=="folder"&&val.title.indexOf("/")!=-1)) {
+								if ((val.title = prompt("new name from " + val.title + "\n/ is un-usable", ""))) {
 									
 								} else {
 									return undefined;
@@ -99,67 +103,85 @@ function contentonmessage(event) {
 					event.data.changeinfo.data.forEach(function (val) {
 						delete bmkptr.value[val];
 					});
+					if (event.data.changeinfo.crop) {
+						extension.storage.local.get("croped",function (c) {
+							if (!c.croped) {
+								c.croped=[];
+							}
+							event.data.changeinfo.crop.forEach(function (val) {
+								c.croped.push(val);
+							});
+							extension.storage.local.set({"croped":c.croped});
+						});
+					}
 				}
 				else if (event.data.changeinfo.type=="update") {
 					event.data.changeinfo.data.forEach(function (val) {
-						[bmkptr.value[val.title],bmkptr.value[val.ptitle]]=[bmkptr.value[val.ptitle],bmkptr.value[val.title]];
+						//[bmkptr.value[val.title],bmkptr.value[val.ptitle]]=[bmkptr.value[val.ptitle],bmkptr.value[val.title]];
+						if (val.title!=val.ptitle) {
+							bmkptr.value[val.title]=bmkptr.value[val.ptitle];
+							delete bmkptr.value[val.ptitle];
+						}
 						if (val.type=="link") {
 							bmkptr.value[val.title].value=val.url;
-						}
-						if (val.title!=val.ptitle) {
-							delete bmkptr.value[val.ptitle];
 						}
 						var b=(new Date()).getTime();
 						bmkptr.value[val.title].data.modified = b;
 					});
 				}
 				else if (event.data.changeinfo.type=="move") {
-					event.data.changeinfo.data.forEach(function (val) {
-						if (val.type == "folder") {
-							if (!bmkptr.value[val.data.name]) {
-								bmkptr.value[val.data.name] = val;
-								bmkptr.value[val.data.name].data.croped=false;
-							} else {
-								if (bmkptr.value[val.data.name].type=="link") {
-									var a=bmkptr.value[val.data.name];
+					extension.storage.local.get("croped",function (c) {
+						c.croped.data.forEach(function (val) {
+							if (val.type == "folder") {
+								if (!bmkptr.value[val.data.name]) {
 									bmkptr.value[val.data.name] = val;
 									bmkptr.value[val.data.name].data.croped=false;
-									bmkptr.value[val.data.name].data.exx=a;
+								} else {
+									if (bmkptr.value[val.data.name].type=="link") {
+										var a=bmkptr.value[val.data.name];
+										bmkptr.value[val.data.name] = val;
+										bmkptr.value[val.data.name].data.croped=false;
+										bmkptr.value[val.data.name].data.exx=a;
+									}
+									else {
+										MergeRecursive(bmkptr.value[val.data.name].vlaue,val.value);
+									}
+									return undefined;
 								}
-								else {
-									MergeRecursive(bmkptr.value[val.data.name].vlaue,val.value);
-								}
-								continue;
-							}
-						} else {
-							if (bmkptr.value[val.data.name]) {
-								if (!confirm(val.data.name + " is already exist.\n overwrite it?")) {
-									if (!!(val.data.name = prompt("new bookmark name", ""))) {
-										while (bmkptr.value[val.data.name]) {
-											if (!!(val.data.name = prompt("new bookmark name", ""))) {
-
-											} else {
-												continue;
+							} else {
+								if (bmkptr.value[val.data.name]) {
+									if (!confirm(val.data.name + " is already exist.\n overwrite it?")) {
+										if (!!(val.data.name = prompt("new bookmark name", ""))) {
+											while (bmkptr.value[val.data.name]) {
+												if (!!(val.data.name = prompt("new bookmark name", ""))) {
+	
+												} else {
+													return undefined;
+												}
 											}
+										} else {
+											return undefined;
 										}
-									} else {
-										continue;
 									}
 								}
+								bmkptr.value[val.data.name] = val;
+								bmkptr.value[val.data.name].data.croped=false;
 							}
-							bmkptr.value[val.data.name] = val;
-							bmkptr.value[val.data.name].data.croped=false;
-						}
+						});
+						extension.storage.local.remove("croped");
 					});
 				}
 				else if (event.data.changeinfo.type=="return") {
-					event.data.changeinfo.data.forEach(function (val) {
-						bmkptr=bmk;
-						val.path.split("/").forEach(function (s) {
-							bmkptr=bmkptr.value[s];
+					extension.storage.local.get("croped",function (c) {
+						c.croped.forEach(function (val) {
+							bmkptr=bmk;
+							val.path.split("/").forEach(function (s) {
+								bmkptr=bmkptr.value[s];
+							});
+							bmkptr.value[val.data.name]=val;
+							bmkptr.value[val.data.name].data.croped=false;
 						});
-						bmkptr.value[val.data.name]=val;
-						bmkptr.value[val.data.name].data.croped=false;
+						extension.storage.local.remove("croped");
 					});
 				}
 				else if (event.data.changeinfo.type=="import") {
@@ -197,6 +219,7 @@ function contentonmessage(event) {
 			});
 		}
 		else if (event.data.type=="test") {
+			alert("test");
 			console.log(event.data);
 		}
 }

@@ -486,17 +486,36 @@ window.Extension_Sub_Functions = {
 };
 
 window.Extension_Tool_Functions = {
+	
+	Get_Bookmark_By_Tag: {
+		f: function (bmk,tag) {
+			var arr=[]
+			for (var a in bmk.value) {
+				if (bmk.value[a].type=="link") {
+					if (bmk.value[a].tags[tag]) {
+						arr.push(bmk.value[a]);
+					}
+				}
+				else if (bmk.value[a].type=="folder") {
+					arr.concat(Extension_Tool_Functions.Get_Bookmark_By_Tag.f(bmk.value[a],tag));
+				}
+			}
+			return arr;
+		},
+		name:"Get_Bookmark_By_Tag"
+	},
 
 	change_bmk: {
 		f: function (bmk,path) {
 			for (var a in bmk.value) {
 				bmk.value[a].path=path;
+				bmk.value[a].tags={"test":false};
 				if (bmk.value[a].type=="folder") {
 					Extension_Tool_Functions.change_bmk.f(bmk.value[a],bmk.value[a].path+(path?"/":"")+a);
 				}
 			}
 		},
-		name:"hitomi_Image_Sequential"
+		name:"change_bmk"
 	},
 
 	convert_bmk: {

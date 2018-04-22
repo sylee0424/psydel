@@ -57,9 +57,9 @@ function contentonmessage(event) {
 						if (!val.title) {
 							return undefined;
 						}
-						else if (val.title.indexOf("/")!=-1) {
+						else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
 							while (val.title.indexOf("/")!=-1) {
-								val.title = prompt("/is un-usable", "")
+								val.title = prompt("'/'는 사용할수 없습니다.", val.title);
 							}
 						}
 						else if (!bmkptr.value[val.title]) {
@@ -67,15 +67,17 @@ function contentonmessage(event) {
 								return undefined;
 							}
 						}
-						else if (confirm("overwrite \"" + val.title + "\" ?")) {
+						else if (val.type=="link"&&confirm("이미 '" + val.title + "'가 있습니다. 덮어쓰시겠습니까?")) {
 							if (val.type=="folder") {
 								return undefined;
 							}
 						}
-						else if ((val.title = prompt("new name from " + val.title, ""))) {
+						else if ((val.title = prompt("사용 중인 이름입니다." , val.title))) {
 							while (bmkptr.value[val.title]||(val.type=="folder"&&val.title.indexOf("/")!=-1)) {
-								if ((val.title = prompt("new name from " + val.title + "\n/ is un-usable", ""))) {
-									
+								if (bmkptr.value[val.title]) {
+									val.title = prompt("사용 중인 이름입니다.", val.title);
+								} else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
+									val.title = prompt("'/'는 사용할수 없습니다.", val.title);
 								} else {
 									return undefined;
 								}
@@ -135,6 +137,49 @@ function contentonmessage(event) {
 						bmkptr.value[val.title].data.modified = b;
 					});
 				}
+				else if (event.data.changeinfo.type=="edit") {
+					event.data.changeinfo.data.forEach(function (val) {
+						if (!val.title) {
+							return undefined;
+						}
+						else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
+							while (val.title.indexOf("/")!=-1) {
+								val.title = prompt("'/'는 사용할수 없습니다.", val.title);
+							}
+						}
+						else if (!bmkptr.value[val.title]) {
+							if (!val.title) {
+								return undefined;
+							}
+						}
+						else if (val.type=="link"&&confirm("이미 '" + val.title + "'가 있습니다. 덮어쓰시겠습니까?")) {
+							return undefined;
+						}
+						else if ((val.title = prompt("사용 중인 이름입니다." , val.title))) {
+							while (bmkptr.value[val.title]||(val.type=="folder"&&val.title.indexOf("/")!=-1)) {
+								if (bmkptr.value[val.title]) {
+									val.title = prompt("사용 중인 이름입니다.", val.title);
+								} else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
+									val.title = prompt("'/'는 사용할수 없습니다.", val.title);
+								} else {
+									return undefined;
+								}
+							}
+						}
+						else {
+							return undefined;
+						}
+						bmkptr.value[val.title]=bmkptr.value[val.ptitle];
+						if (val.title!=val.ptitle) {
+							delete bmkptr.value[val.ptitle];
+						}
+						if (val.type=="link") {
+							bmkptr.value[val.title].value=val.url;
+						}
+						var b=(new Date()).getTime();
+						bmkptr.value[val.title].data.modified = b;
+					});
+				}
 				else if (event.data.changeinfo.type=="move") {
 					c.croped.forEach(function (val) {
 						if (val.type == "folder") {
@@ -156,10 +201,10 @@ function contentonmessage(event) {
 						} else {
 							console.log(bmkptr);
 							if (bmkptr.value[val.data.name]) {
-								if (!confirm(val.data.name + " is already exist.\n overwrite it?")) {
-									if (!!(val.data.name = prompt("new bookmark name", ""))) {
+								if (confirm("이미 '" + val.data.name + "'가 있습니다. 덮어쓰시겠습니까?")) {
+									if (!!(val.data.name = prompt("새 북마크 이름", val.data.name))) {
 										while (bmkptr.value[val.data.name]) {
-											if (!!(val.data.name = prompt("new bookmark name", ""))) {
+											if (!!(val.data.name = prompt("새 북마크 이름", val.data.name))) {
 	
 											} else {
 												return undefined;

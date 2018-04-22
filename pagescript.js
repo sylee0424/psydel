@@ -22,10 +22,9 @@ if (document.querySelector("meta[name=viewport]")) {
 	+ "user-scalable=yes, maximum-scale=10.0, minimum-scale=0.0, initial-scale=1.0";
 }
 
-window.addEventListener("mousedown",Extension_Tool_Functions.Fake_Scroll_Event.f);
-window.addEventListener("mouseup",Extension_Tool_Functions.Fake_Scroll_Event_End.f);
 window.addEventListener("message",Extension_Tool_Functions.On_Message.f);
 
-setInterval(Extension_Tool_Functions.Fake_Scroll_Action.f,40);
-
 document.onmousedown=function () {};
+document.body.oncontextmenu="";
+document.body.ondragstart="";
+document.body.onselectstart="";

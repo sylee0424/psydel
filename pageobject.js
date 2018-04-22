@@ -801,6 +801,13 @@ window.Extension_Tool_Functions = {
 					document.getElementById("bmks").classList.contains("__editing")
 				);
 			}
+			else if (event.data.type == "setting") {
+				if (event.data.scroll) {
+					window.addEventListener("mousedown",Extension_Tool_Functions.Fake_Scroll_Event.f);
+					window.addEventListener("mouseup",Extension_Tool_Functions.Fake_Scroll_Event_End.f);
+					setInterval(Extension_Tool_Functions.Fake_Scroll_Action.f,40);
+				}
+			}
 		},
 		name: "Drag_Event_Checker"
 	},

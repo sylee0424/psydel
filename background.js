@@ -58,7 +58,7 @@ function importbmk() {
 		else if (rep.status == 423) {
 			//document.getElementById("getbmk").style.display="block";
 		}
-	};
+	}
 	
 }
 
@@ -68,10 +68,14 @@ function listener() {
 		if (c.bmks) {
 			var req = new XMLHttpRequest();
 			req.open('POST', "https://psydel.000webhostapp.com/",true);
+			req.onreadystatechange = function (aEvt) {
+				if (req.readyState == 4&&req.status == 200) {
+					notify(req.responseText);
+				}
+			}
 			var dats = new FormData();
 			dats.append("id",unescape(c.bmks));
 			req.send(dats);
-			notify();
 		}
 	});
 }
@@ -119,12 +123,12 @@ if (Notification.permission !== "granted") {
 	Notification.requestPermission();
 }
 
-function notify() {
+function notify(message) {
 	if (Notification.permission !== "granted") {
 		Notification.requestPermission();
 	}
 	else {
-		var notification = new Notification('bookmark exported', {
+		var notification = new Notification("export " + message, {
 			body: "remove browsing data?"
 		});
 		notification.addEventListener("click" , function () {

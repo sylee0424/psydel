@@ -275,3 +275,15 @@ window.addEventListener("message",contentonmessage);
 extension.runtime.onMessage.addListener(topagescript);
 
 addscript(["pageobject.js","pagescript.js"],true);
+
+extension.storage.local.get("setting",function (c) {
+	if (c.setting) {
+		window.postMessage(c.setting,location.href);
+	}
+	else {
+		window.postMessage({
+			type:"setting",
+			scroll:false
+		},location.href);
+	}
+});

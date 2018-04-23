@@ -12,25 +12,19 @@ if (location.href.match(/^https?\:\/\/(marumaru|wasabisyrup)\.(in|com)/i)) {
 	Extension_Sub_Functions.Marumaru_Ad_Block.f();
 }
 
-
-window.postMessage({
-	type: "gettab",
-	des: "back"
-}, location.href);
-
 window.postMessage({
 	type: "check",
 	bmk: {}
 }, location.href);
 
 if (document.querySelector("meta[name=viewport]")) {
-	document.querySelector("meta[name=viewport]").content="width=device-width, user-scalable=yes, maximum-scale=10.0, minimum-scale=0.0, initial-scale=1.0";
+	document.querySelector("meta[name=viewport]").content="width=device-width, "
+	+ "user-scalable=yes, maximum-scale=10.0, minimum-scale=0.0, initial-scale=1.0";
 }
 
-window.addEventListener("mousedown",Extension_Tool_Functions.Fake_Scroll_Event.f);
-window.addEventListener("mouseup",Extension_Tool_Functions.Fake_Scroll_Event_End.f);
 window.addEventListener("message",Extension_Tool_Functions.On_Message.f);
 
-setInterval(Extension_Tool_Functions.Fake_Scroll_Action.f,40);
-
 document.onmousedown=function () {};
+document.body.oncontextmenu="";
+document.body.ondragstart="";
+document.body.onselectstart="";

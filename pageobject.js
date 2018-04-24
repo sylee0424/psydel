@@ -495,6 +495,7 @@ window.Extension_Tool_Functions = {
 			for (var a in bmk.value) {
 				if (bmk.value[a].type=="link") {
 					if (bmk.value[a].tags[tag]) {
+						bmk.value[a].data.name=a;
 						arr.push(bmk.value[a]);
 					}
 				}

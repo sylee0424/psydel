@@ -319,7 +319,7 @@ window.addEventListener("message",contentonmessage);
 
 extension.runtime.onMessage.addListener(topagescript);
 
-addscript(["pageobject.js","pagescript.js"],true);
+addscript(["pop/pageobject.js","pop/pagescript.js"],true);
 
 extension.storage.local.get("setting",function (c) {
 	if (c.setting) {

@@ -266,7 +266,7 @@ window.Extension_Sub_Functions = {
 				Extension_Tool_Functions.Import_Nodes.f({
 					tag: "div",
 					id: "bmkmain",
-					classname: ["__hided"],
+					classname: [],
 					target: document.body
 				});
 				for (var i = 0; i < Extension_Variables.Bookmark_Interface_List.length; i++) {
@@ -301,74 +301,7 @@ window.Extension_Sub_Functions = {
 					target: document.getElementById("pastebmk")
 				});
 			}
-			if (!document.getElementById("actionbar")) {
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "actionbar",
-					classname: [],
-					target: document.body
-				});
-				for (s in Action_Bar_Function) {
-					a = {};
-					a.tag = "div";
-					a.id = s;
-					a.classname = ["__abtn"];
-					a.name = Action_Bar_Function[s].name;
-					a.events = [{
-						name: "mousedown",
-						value: Extension_Tool_Functions.Drag_Event_Checker.f
-					}, {
-						name: "mouseup",
-						value: Extension_Tool_Functions.Remove_Longtab_Event_Checker.f
-					}, {
-						name: "touchstart",
-						value: Extension_Tool_Functions.Drag_Event_Checker.f
-					}, {
-						name: "touchend",
-						value: Extension_Tool_Functions.Drag_Event_Checker_Action.f
-					}, {
-						name: "selectstart",
-						value: function(event) {
-							event.preventDefault();
-						}
-					}];
-					a.target = document.getElementById("actionbar");
-					Extension_Tool_Functions.Import_Nodes.f(a);
-				}
-			}
-			if (!document.getElementById("functionbar")) {
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "functionbar",
-					classname: ["__hided"],
-					target: document.body
-				});
-				for (var s in Extension_User_Functions) {
-					var a = {};
-					a.tag = "div";
-					a.classname = ["__btnz"];
-					if (Extension_User_Functions[s].image) {
-						a.image=Extension_User_Functions[s].image;
-					} else if (Extension_User_Functions[s].name) {
-						a.name = Extension_User_Functions[s].name;
-					} else {
-						a.name = s;
-					}
-					a.events = [{
-						name: "click",
-						value: Extension_User_Functions[s].f
-					}];
-					a.target = document.getElementById("functionbar");
-					Extension_Tool_Functions.Import_Nodes.f(a);
-				}
-				Extension_Tool_Functions.Import_Nodes.f({
-					tag: "div",
-					id: "sidebarpad",
-					classname: ["__extension"],
-					target: document.getElementById("functionbar")
-				});
-			}
-
+			
 			window.postMessage({
 				type: "gettab",
 				des: "back"

@@ -1213,10 +1213,21 @@ window.Bookmark_User_Functions = {
 		f: function(e) {
 			if (!document.getElementById("bmks").classList.contains("__editing") && e.which == 1) {
 				if (this.classList.contains("__link")) {
+					var a={};
+					a.url=this.dataset.src;
+					a.active=!document.getElementById("bactab").classList.contains("__checked");
 					if (document.getElementById("tab").classList.contains("__checked")) {
-						window.open(this.dataset.src, "_self");
+						window.postMessage({
+							type: "update",
+							des: "back",
+							prop:a
+						},location.href);
 					} else {
-						window.open(this.dataset.src, "_blank");
+						window.postMessage({
+							type: "create",
+							des: "back",
+							prop:a
+						},location.href);
 					}
 				} else if (this.classList.contains("__folder")) {
 					var s = document.getElementById("dir").dataset.loc + "/" + this.id;
@@ -1606,6 +1617,26 @@ window.Extension_Variables = {
 			name: "click",
 			value: function (event) {
 				Extension_Tool_Functions.Element_Toggle.f.call(document.getElementById("tab"),event);
+			}
+		}],
+		classname:["__extension"]
+	},
+	{
+		tag: "div",
+		id: "bactab",
+		events: [{
+			name: "click",
+			value: Extension_Tool_Functions.Element_Toggle.f
+		}],
+		classname:["__input","__extension"]
+	},
+	{
+		tag: "span",
+		name: "background tab",
+		events: [{
+			name: "click",
+			value: function (event) {
+				Extension_Tool_Functions.Element_Toggle.f.call(document.getElementById("bactab"),event);
 			}
 		}],
 		classname:["__extension"]

@@ -17,6 +17,9 @@
 		case "create":
 			extension.tabs.create(message.prop);
 			break;
+		case "update":
+			extension.tabs.update(message.prop);
+			break;
 	}
 }
 

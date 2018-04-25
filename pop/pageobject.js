@@ -1,10 +1,7 @@
 ﻿window.Extension_Sub_Functions = {
 	Add_Extension_Interface: {
 		f: function() {
-			for (var i = 0; i < Extension_Variables.Bookmark_Interface_List.length; i++) {
-				console.log(Extension_Variables.Bookmark_Interface_List[i]);
-				Extension_Tool_Functions.Import_Nodes.f(Extension_Variables.Bookmark_Interface_List[i])
-			}
+			Extension_Variables.Bookmark_Interface_List.forEach(Extension_Tool_Functions.Import_Nodes.f);
 			Extension_Tool_Functions.Import_Nodes.f({
 				tag: "div",
 				id: "pastebmk",
@@ -237,10 +234,13 @@ window.Bookmark_User_Functions = {
 		f: function(e) {
 			if (!document.getElementById("bmks").classList.contains("__editing") && e.which == 1) {
 				if (this.classList.contains("__link")) {
+					var a={};
+					a.url=this.dataset.src;
+					a.active=!document.getElementById("bactab").classList.contains("__checked");
 					if (document.getElementById("tab").classList.contains("__checked")) {
-						window.open(this.dataset.src, "_self");
+						extension.tabs.update(a);
 					} else {
-						window.open(this.dataset.src, "_blank");
+						extension.tabs.create(a);
 					}
 				} else if (this.classList.contains("__folder")) {
 					var s = document.getElementById("dir").dataset.loc + "/" + this.id;
@@ -580,6 +580,26 @@ window.Extension_Variables = {
 			name: "click",
 			value: function (event) {
 				Extension_Tool_Functions.Element_Toggle.f.call(document.getElementById("tab"),event);
+			}
+		}],
+		classname:["__extension"]
+	},
+	{
+		tag: "div",
+		id: "bactab",
+		events: [{
+			name: "click",
+			value: Extension_Tool_Functions.Element_Toggle.f
+		}],
+		classname:["__input","__extension"]
+	},
+	{
+		tag: "span",
+		name: "background tab",
+		events: [{
+			name: "click",
+			value: function (event) {
+				Extension_Tool_Functions.Element_Toggle.f.call(document.getElementById("bactab"),event);
 			}
 		}],
 		classname:["__extension"]

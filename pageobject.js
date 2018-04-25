@@ -46,7 +46,7 @@
 
 	Action_Bar_Function_3: {
 		f: function() {
-			document.getElementById("sidebar").classList.toggle("__hided");
+			document.getElementById("functionbar").classList.toggle("__hided");
 		},
 		u: function() {
 			console.log("u");

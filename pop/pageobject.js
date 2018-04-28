@@ -280,17 +280,19 @@ window.Bookmark_User_Functions = {
 				}
 			} else if (e.which == 2) {
 				e.preventDefault();
-				if (this.getAttribute("class") == "__link") {
-					Storage_Action({
-						type:"update",
-						loc:document.getElementById("dir").dataset.loc,
-						data:[{
-							type:"link",
-							title:document.title,
-							ptitle:this.id,
-							url:location.href
-						}]
-					});
+				if (this.classList.contains("__link")) {
+					convertCF(this,extension.tabs.executeScript,function (c) {
+						Storage_Action({
+							type:"update",
+							loc:document.getElementById("dir").dataset.loc,
+							data:[{
+								type:"link",
+								title:c[0].title,
+								ptitle:this.id,
+								url:c[0].url
+							}]
+						});
+					},{code:"var a={}; a.title=document.title; a.url=location.href;"});
 				}
 			}
 		},
@@ -983,4 +985,14 @@ window.MergeRecursive = function (obj1, obj2) {
 		}
 	}
 	return obj1;
+}
+
+window.convertCF = function (thist,_function,callback,...argv) {
+	if (chrome) {
+		argv.push(callback);
+		_function.apply(thist,argv);
+	}
+	else {
+		_function.apply(thist,argv).then(callback);
+	}
 }

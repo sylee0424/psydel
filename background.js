@@ -31,11 +31,9 @@ function importbmk() {
 			if (req.readyState == 4&&req.status == 200) {
 				extension.storage.local.set({"bmks":escape(req.responseText)});
 				console.log("loaded");
-				gettablist({},function (a) {
-					for (var i=0;i<a.length;i++) {
-						extension.tabs.sendMessage(a[i].id,{type:"update",bmk:JSON.parse(req.responseText)});
-					}
-				});
+				for (var i=0;i<a.length;i++) {
+					extension.tabs.sendMessage(a[i].id,{type:"update",bmk:JSON.parse(req.responseText)});
+				}
 			}
 			else if (req.status == 423) {
 				//document.getElementById("getbmk").style.display="block";

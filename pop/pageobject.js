@@ -216,15 +216,13 @@ window.Bookmark_User_Functions = {
 			if (!this||this.classList.contains("__disabled")) {
 				return undefined;
 			}
-			var a = {};
-			a.title = prompt("bookmark name", document.title);
-			a.url = prompt("bookmark path", document.location.href);
-			a.type = "link";
-			Storage_Action({
-				type:"add",
-				loc:document.getElementById("dir").dataset.loc,
-				data:[a]
-			});
+			convertCF(this,extension.tabs.executeScript,function (a) {
+				Storage_Action({
+					type:"add",
+					loc:document.getElementById("dir").dataset.loc,
+					data:a
+				});
+			},{code:"var a={}; a.title=document.title; a.url=location.href; a.type='link'; a;"});
 		},
 
 		name: "Add_Bookmark"
@@ -282,17 +280,18 @@ window.Bookmark_User_Functions = {
 				e.preventDefault();
 				if (this.classList.contains("__link")) {
 					convertCF(this,extension.tabs.executeScript,function (c) {
+						console.log(c);
 						Storage_Action({
 							type:"update",
 							loc:document.getElementById("dir").dataset.loc,
 							data:[{
 								type:"link",
 								title:c[0].title,
-								ptitle:this.id,
+								ptitle:c[0].ptitle,
 								url:c[0].url
 							}]
 						});
-					},{code:"var a={}; a.title=document.title; a.url=location.href;"});
+					},{code:"var a={}; a.title=document.title; a.url=location.href; a.ptitle='"+this.id+"'; a;"});
 				}
 			}
 		},
@@ -823,6 +822,7 @@ window.Storage_Action = function (changeinfo) {
 			}
 		}
 		else if (changeinfo.type=="update") {
+			console.log(changeinfo);
 			changeinfo.data.forEach(function (val) {
 				if (!val.title) {
 					return undefined;
@@ -848,7 +848,7 @@ window.Storage_Action = function (changeinfo) {
 						val.title = prompt("'/'는 사용할수 없습니다.", val.title);
 					}
 				}
-				else if (!bmkptr.value[val.title]) {
+				else if (!bmkptr.value[val.title]||val.title==val.ptitle) {
 					if (!val.title) {
 						return undefined;
 					}
@@ -995,4 +995,17 @@ window.convertCF = function (thist,_function,callback,...argv) {
 	else {
 		_function.apply(thist,argv).then(callback);
 	}
+}
+
+window.addall = function () {
+	convertCF(this,extension.tabs.query,function (a){
+		a.forEach(function (val) {
+			val.type="link";
+		});
+		Storage_Action({
+			type:"add",
+			loc:document.getElementById("dir").dataset.loc,
+			data:a
+		});
+	},{});
 }

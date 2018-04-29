@@ -12,6 +12,13 @@ if (location.href.match(/^https?\:\/\/(marumaru|wasabisyrup)\.(in|com)/i)) {
 	Extension_Sub_Functions.Marumaru_Ad_Block.f();
 }
 
+var aaa= document.querySelectorAll("div.g");
+aaa.forEach(function (val) {
+	if (val.getElementsByTagName("cite")[0]&&val.getElementsByTagName("cite")[0].innerText.indexOf("ilbe.com")!=-1) {
+		val.classList.add("__hided");
+    }
+});
+
 window.postMessage({
 	type: "check",
 	bmk: {}

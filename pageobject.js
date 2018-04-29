@@ -267,11 +267,17 @@ window.Extension_Sub_Functions = {
 					tag: "div",
 					id: "bmkmain",
 					classname: ["__hided"],
+					events: [{
+						name: "wheel",
+						value: function (event) {
+							event.stopPropagation();
+						}
+					}],
 					target: document.body
 				});
-				for (var i = 0; i < Extension_Variables.Bookmark_Interface_List.length; i++) {
-					Extension_Tool_Functions.Import_Nodes.f(Extension_Variables.Bookmark_Interface_List[i])
-				}
+				Extension_Variables.Bookmark_Interface_List.forEach (function (val) {
+					Extension_Tool_Functions.Import_Nodes.f(val)
+				});
 				Extension_Tool_Functions.Import_Nodes.f({
 					tag: "div",
 					id: "pastebmk",

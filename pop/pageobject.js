@@ -1004,8 +1004,24 @@ window.addall = function () {
 		});
 		Storage_Action({
 			type:"add",
-			loc:document.getElementById("dir").dataset.loc,
+			loc:"temp",
 			data:a
 		});
 	},{});
+}
+
+window.openall = function () {
+	var bmkptr=Extension_Variables.Bookmark_Original.value.temp.value;
+	var list=Object.keys(bmkptr);
+	list.forEach(function (val) {
+		var a={};
+		a.url=bmkptr[val].value;
+		a.active=false;
+		extension.tabs.create(a);
+	});
+	Storage_Action({
+		type:"remove",
+		loc:"temp",
+		data:list
+	});
 }

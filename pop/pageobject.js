@@ -30,12 +30,6 @@
 				}],
 				target: document.getElementById("pastebmk")
 			});
-		
-			
-			window.postMessage({
-				type: "gettab",
-				des: "back"
-			}, location.href);
 		},
 		name: "Drag_Event_Checker"
 	}
@@ -48,8 +42,7 @@ window.Extension_Tool_Functions = {
 			event.stopPropagation();
 			this.classList.toggle("__checked");
 			this.checked = this.classList.contains("__checked");
-		},
-		name: "Element_Toggle"
+		}
 	},
 	
 	utf8_encode : {
@@ -1025,3 +1018,31 @@ window.openall = function () {
 		data:list
 	});
 }
+
+window.keyboardaction = function (event) {
+	if (event.ctrlKey&&event.keyCode==86) {
+		if (!document.getElementById("pastebmk").classList.contains("__hided")) {
+			Storage_Action({
+				type:"move",
+				loc:document.getElementById("dir").dataset.loc
+			});
+			document.getElementById("pastebmk").classList.add("__hided");
+			document.getElementById("bmks").classList.remove("__copyactive");
+		}
+	}
+	else if (event.ctrlKey&&event.keyCode==67) {
+		document.getElementById("pastebmk").classList.remove("__hided");
+		document.getElementById("bmks").classList.add("__copyactive");
+		Bookmark_User_Functions.Deactivate_Bookmark_Edit.f();
+		Storage_Action({
+			type:"remove",
+			loc:document.getElementById("dir").dataset.loc,
+			data:Array.prototype.slice.call(
+				document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
+			).map(val => val.dataset.id),
+			crop:true
+		});
+	}
+}
+
+window.addEventListener("keydown",keyboardaction);

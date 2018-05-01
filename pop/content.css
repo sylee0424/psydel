@@ -8,6 +8,7 @@
 .__hided {display:none !important; }
 .__invisibled {visibility:hidden; !important;}
 .__innerimage {width:100%; height:100%;}
+.__selected {border-color:#aa0000; background-color:#ccffff;}
 label.__extension {width:70px; height:20px; display:inline-block;}
 #dir.__extension {height:20px;}
 #pastebmk {position:absolute; bottom:0px; left:0px; width:100px; height:25px;}

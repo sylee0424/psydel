@@ -11,7 +11,7 @@
 			Extension_Tool_Functions.Import_Nodes.f({
 				tag: "div",
 				name: "paste bmk",
-				image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD8SURBVEhL7dUxTgJBFMbx1XgPC2NJoSewtLSwQw5hhQVUFkqDx4Ab0FB4A7XVjgOQcACR/7fuSyYvM7OyErKJfskv2Rlm3stu2NmiLTnENW5xrIld5wlflSUaNznHG9awgmaKjpszK4xxgGxescAIj3iGCuj6Eoqfl0k1vkI2n1Bxyx200cfPH0Hj+3KUiRY9fF+WsUIpYTQO90bjF13AHkNMmEYNtkn7G+hl66GfoL1znCKZXAMV1+91PpCMFqQapP6yYWrX/Df4Aw38YRdmJw3suB7Av0gz/LrBGV6gO9HCmFx+cpfJ3MA3i3lHo+hz2EXs2DZDnGBfKYoNj8aK9uWSNrcAAAAASUVORK5CYII=",
+				image: dataurls.paste,
 				classname: ["__buttons"],
 				events: [{
 					name: "click",
@@ -22,7 +22,7 @@
 			Extension_Tool_Functions.Import_Nodes.f({
 				tag: "div",
 				name: "cancel",
-				image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADJSURBVEhL7dPLCQIxFIXhLNyJbrQA63AnFqAFia9arMBHB27VDmxBEXci+p/IwITRxei9m8EDHyQZJne4k4RKponFa2ifLo54xJlhapjgBm1uWqCDLbKNv3HFHnO0kcSiQN4JQyT5tUV19LCE3r1jgEIsfvIIev+MQrsUi2O6gopM48whapcKHOLMIQ2owCXOHOJewL1Fa6iAjr55xtDmunAtLVhEPe9jA22eXDQtiFJm/Im+PLnF2QOlzDhPp2WHGd7e3n8qmxCeHp1rU1t2vOAAAAAASUVORK5CYII=",
+				image: dataurls.cancel,
 				classname: ["__buttons"],
 				events: [{
 					name: "click",
@@ -153,7 +153,7 @@ window.Extension_Tool_Functions = {
 window.Bookmark_User_Functions = {
 
 	Show_Bookmark: {
-		f: function(bmkpath,edit=false) {
+		f: function(bmkpath,edit=false,bmkname) {
 			var a = document.getElementById("bmks");
 			var e = Number(a.scrollTop);
 			while (a.firstChild) {
@@ -175,19 +175,25 @@ window.Bookmark_User_Functions = {
 				return undefined;
 			}
 			var lists=Object.keys(Bookmark_Pointer.value);
-			lists.forEach(function (val) {
+			lists.forEach(function (val,index) {
 				var c = document.createElement("div");
 				var b = document.createElement("label");
 				c.dataset.id = val;
 				c.id="chk"+val;
 				c.classList.add("__input");
-				c.classList.add("__hided");
-				if (edit) {
-					c.classList.remove("__hided");
+				if (!edit) {
+					c.classList.add("__hided");
+				}
+				if (bmkname&&bmkname==val) {
+					b.classList.add("__selected");
+				}
+				else if (!bmkname&&index==0) {
+					b.classList.add("__selected");
 				}
 				b.appendChild(c);
 				b.dataset.src = Bookmark_Pointer.value[val].value;
 				b.dataset.loc = bmkpath;
+				b.dataset.index = index;
 				b.classList.add("__"+Bookmark_Pointer.value[val].type);
 				b.id = val;
 				b.appendChild(document.createTextNode(val));
@@ -345,6 +351,9 @@ window.Bookmark_User_Functions = {
 
 	Go_To_Upper_Bookmark_Folder: {
 		f: function() {
+			if (document.getElementById("go_up").classList.contains("__disabled")) {
+				return undefined;
+			}
 			var a = document.getElementById("dir").dataset.loc.split("/");
 			if (a.length == 2) {
 				document.getElementById("go_up").classList.add("__disabled")
@@ -359,7 +368,7 @@ window.Bookmark_User_Functions = {
 			}
 			document.getElementById("dir").dataset.loc = b;
 			document.getElementById("dir").innerHTML = b;
-			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc);
+			Bookmark_User_Functions.Show_Bookmark.f(document.getElementById("dir").dataset.loc,false,a[a.length-1]);
 		},
 
 		name: "Go_To_Upper_Bookmark_Folder"
@@ -392,6 +401,25 @@ window.Bookmark_User_Functions = {
 					document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
 				).map(val => val.dataset.id),
 				crop:true
+			});
+		},
+
+		name: "Move_Bookmarks"
+	},
+
+	Copy_Bookmarks: {
+		f: function() {
+			document.getElementById("pastebmk").classList.remove("__hided");
+			document.getElementById("bmks").classList.add("__copyactive");
+			Bookmark_User_Functions.Deactivate_Bookmark_Edit.f();
+			Storage_Action({
+				type:"remove",
+				loc:document.getElementById("dir").dataset.loc,
+				data:Array.prototype.slice.call(
+					document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
+				).map(val => val.dataset.id),
+				crop:true,
+				copy:true
 			});
 		},
 
@@ -517,7 +545,7 @@ window.Extension_Variables = {
 	Bookmark_Interface_List: [{
 		tag: "div",
 		name: "edit bmks",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFQSURBVEhL7dPPKwRhHMfxWcWVRBJyd+OERDnI38HfoHXh6Nd/ws1/4KokSiK5cEdCHPx4v3dNTds+9tk8k4tPvWp2dub5PvvZmew/7WYCp/jAZwSvO4H3RcWLb7CNrQg7uIX3ReUdLt5O1uF9UfFnb9YPy6nLC/MBpdRVHFBKXcUBxePYrML7gvnzAZVvofx6QAeusI8VTKETeZJU5OI+kvnje4gemCQD3LmLj2EZrzhCL0ZxjWCKj2ZowCT8bqn2KcsW8YJj9GEEweQv1xpCA7pgLW9wcbOAZ/jm93silHE4JO+32QDTDWtx5y5u5uGQMwx4olVavcl2bi0u6uJmFk84x6AnfkqxrmoT/qF2bi0OmYOZwSMuMOSJUBrrauTTMgw7txZ37uJmGg84qH1KEDu3Fnfu4mYP9/XDNLHzS7jzXfgrN5A0VmYtd2DxrPIF/Z6XYmBn5SYAAAAASUVORK5CYII=",
+		image: dataurls.edit,
 		classname: ["__buttons","__inedit"],
 		events: [{
 			name: "click",
@@ -527,7 +555,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "add bmk",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB+SURBVGhD7dgxCoAwEETRtNqIJ/DWgqfV3XbRYDCRSfgPpgmC/kIEEwAAwCuT7Qjzs+4stjPMz7pDiBpC1BCihhA1hLQ229aCbbYY4md31z7N71ndbosP1np+z+oI+TBCcoZ52UvxHVFDiBpC1BCihhA1w4QM8xMbAAD8K6UL3iPe8XBShfQAAAAASUVORK5CYII=",
+		image: dataurls.add,
 		classname: ["__buttons","__inedit"],
 		events: [{
 			name: "click",
@@ -538,7 +566,7 @@ window.Extension_Variables = {
 		tag: "div",
 		name: "sort bmk",
 		classname: ["__buttons","__inedit"],
-		image:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALqSURBVGhD7ZlL6A1RHMePdyTylrxSZIGtPBOyETuKkvKK9E+i2MjKY2WFjSXWIiWPLDzzihQbFIWFDYmV5+d7zj11mu7Mnbn3/OfOn/nUp/v73f+/e8+3uTNz5hxTU1NTmAm4BtdVVI1NY8xkBX7DPxVXY1yOqdzBD6jUKyuqxqYx3sJU3uFlV1YajVFjTaUOUjJRgwxovHaDqEGe4GFXlk7UIF/wvCtTmYVH8XjDPRiD0oNsx9/or/+fcCh2StQgn/GsK3MxBAe7smOiBtmJ811ZOlGDdJOoQU7ielemounEI3zcxGs4BtshapA8J/sSvIrXA++hgqgei+1QepDeog7SjDxB+uF0nJHiNByFw7EIpQfZh+EDUZq/cCnmpfQgE3Eb7sBdeCBFTV2KHJXSg/QWdZBm5AkyBfdj8qe0F/Vza+YWHI1ZlB6kB5ud3K1UmCzaDrIZL+JI2zmSQRbgXdRlNWQqJi+7Wepy3Yq2g2jO9BMfog8TBlEI9e9xvN7oZdoOIjahwmgSqDA+yMJGrRAzsQw6CiLCMN/xOWaF0MrlfbyB4cQxr5pwrsIkHQcRPow/MbOOhAbxAJNT+DSf4ZvAV7gBk0QJInyYMn9OIdGCCJ3guk90g6hBukkdpGr8n0GO4SlXWs7gIVdaLuFuV5r+qEUFbY2JYfgUl9nOPZe8xHm2M2Y2vsDJtjNmMeqe5GcNa1GziIG2M2YrXnGlpVCQ26gP96gOj1Y4RdEAdE9ReKH5lXo9TAkNVP1G2xmzGtXrfaH/Uz/XdsYcRPU+2GnU93kKBbmAN11p0VbXOVdaXuMJV9qlUH2RpuxCz+E/0N/MdAS0Buzv0otQA51jO3ckdV+aZDsXTPuEWmYVR/CtKy2FgmixOXz8HIH+g4UGO8iVFq1R6SfmGdd49ST75OQy/Ls+J1zz0l5M+IzSMkhf2AzV+fMRMzdDteXbF7anv2Lm9rTQIdcRCTfpq6TGVsYzT03NP4QxfwEEVaw9vxJoVgAAAABJRU5ErkJggg==",
+		image: dataurls.sort,
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Sort_Bookmark.f
@@ -547,7 +575,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "new folder",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAL0SURBVGhD7Zo5rA1RAIZfYhd7ZY8gGiERQSnREFthaUS0Yo1GKB8iEh0SnS2CoFHQEBqhoqMQBAWJXYLC7vvGPc/cefPu3Ce5c8+T+ZIv754z52bmvzPnnJkzr6OioqJphuARfI+/mvA5LsLoOIwe4A98V+AHtO1HnIpR8QZ/4oykVMwpNMwt7GdFLHhQ/tLNMgKfoN/bg6NLcjg2pLdBZCF+R79bpk9xLeZig94GkTX4EPP6UisM/dMfcC5241+DtIP96PEeSEoZ+lKQdejxHk1KGUKQweiQGqsTsTCIw++32ueY/Vr722MQ/YyPI/YZ+oM3DOKs7qmLnU5sGOS/6ux9gSpIbFRBYqMKEhtVkNiogsRGFaRsBuJknIczcSSmiT7IYryILvx5PEEXGu7gdhyG0QbxGegGhgP3uegRuvh3D9PBXKoNi4NRBXFJ5wW6/1e4A8dimkG4DG9jCBRVEM9ECHEFXb1MMwEH/PnYxVYM6wrHrMjSjiDX0f1exuz68Xz02fxQUqpnPfq9TzjFijRlB1mC7vMljrIig5eS288kpe4cR7fbX+ooO4ijk/u0T+RRFGQ8uiz0BcdYESgziNe9I5Gj0zgrcigKIlfRNquTUo0ygzjZuT+H2MACdIU96LqubW6m6nQF+nZNfJ1hG5eHuigziAft/hxOZRKGRbdm3IWyBS37yrALK8oK4lsx9+dkJ15qjk4XUnombOPKYrr+LM5GMZBt9iWlGmUG8TbDM+Dw6WSXRzN9JMzwG5NSDTue675lEWbp5UmpO0VB+qN3AraZZkXgPlp5ENOdq1WG4df7qTyKgmxGt3szWcdKbNcrhW2YJUyYp5NSPdPxLbp9qRVZ5qBnJN25WukltK94m74B0/jCaTfOSkp/McQDNMQ5K2JhE4ah19uOniZI+4SXky9EbWsfG4pR4dlwxPQAve24hnvRkJ6Vk/ga3a7nMboQASfFE5h9Okx7F+07fQLnmFW4E/3/GM+M80TdEFtPR8dvE7bxLI9A09kAAAAASUVORK5CYII=",
+		image: dataurls["new"],
 		classname: ["__buttons","__inedit"],
 		events: [{
 			name: "click",
@@ -558,7 +586,7 @@ window.Extension_Variables = {
 		tag: "div",
 		name: "go up",
 		classname: ["__buttons","__disabled","__inedit"],
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALlSURBVGhD7ZhNqE1BAMePr0IpNpLFK0IpNmQjHz31LNgjSYpIiYXEAisLeRuvXkrpLWwslC2SRBaSvY2djZJvsSD8f3POaNzmns+Zc506//plZs7MnPm579yZe5I+ffr06Wy2idviQUVuikNijhh5Vonv4qN4UZF34re4KxaKkeaIYDEbTK1a+CTOi1/ioRipzHGByJip1ctJgcwjMTKZECLkhEDmudgslgRmtshNKBFyWPC8MV9oPgnWOjQhRchycUBcEpcD8kz8FCuFN6FFYmWHYJ27TM2TrohsEazzi3gv3or7YoUw6ZoIe9Z1wWb8VTwWJl0T2W1qaW6IH2kxngib5WRGiCOMT+SaoM0khggLnxHMC5SbyrQu4kpMZYSQaVVkUGJWRgiZ1kR8EjYhZFoRyZOwaSoTXaSMhE0TmagiVSRs6spEE8mT4GDnHrspu4e9OjLRRHYKxj0RrgRHeX6XHDS1NJRp45oNYxjLHBM0FCSayHxxTzD2NA2KlaCNeW3sPVwZxtDGHMxVlKjPyAJhZXgLw0JfZnWfCNfoQ1/qjGWOMokqQlyZp2JdVvaJcI0+lKtIkOgihAXxq3CRYB7m84lwjT70rSJBWhFxUyRSN6VF6LCxAWsEKSNCX98cefAlUUokBJtEkQh93DFVKRQ5J442YK+YK4pE5gn6+ubI44ooJcJNBnfYwZdiZa4XidS9R+lnZK3gzcQeQZaJz4I39WS94CUZ/5Ltguv0I/wvM555hok0uUdpEduRPzHCZNT3m1o6gTsR7dTtTRnnzuMTaXKPaJ8I7bE/EfcehSL7BJWtoukzQj3WM2JPDGdMLc0d8SYtJslSwZu7V+KU8H1jVMH+iflEmnwzHhMfxDdxUVwVnNumxd+Mi9eCm4XCJxISJG4Jjjz/hN8Hq4VvV62CfWB9IlzzjanDYhE1Rc9IZ9KL/G+xIhcELxyAcudE2LxYtA+7eXYmbLJnB2Dn7zM8SfIHVRHsBwr8ASgAAAAASUVORK5CYII=",
+		image: dataurls.up,
 		id:"go_up",
 		events: [{
 			name: "click",
@@ -611,7 +639,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "import",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEYSURBVEhL7dWva0JRGMbxO5nVsLS0uGBY0SA2mwPDLEOWlvRP0ComDZaBYBSWjGNleWBaWhcMYnOYBhrU73suF0TmOe85acEHPnAPnHOf+/tGJI0pdgFWuIM1N0gmf3mYQ9Y9wZqk4N2M9GnhXGBNAU1kzciS0AJ1fAoeUI839dEUpNDDFt5n6iq4xCtkTtCltBVc4HDnhzb4wRLyJfjGBB8YowQTW0EbxzvWkgMzsRXIUaxxvFijDxPXPahCLkeycIERhuiiA3kfGqjhHkVkYOIqkFTwC9e8P6MpkOQxw5sZeURbILnCbbypj09BUEILniE/nrIZWRJa8P/+B5/IeXiBquAaMjHUI5yRN1E+UL4GkEf3RKJoD6oapuFu11fgAAAAAElFTkSuQmCC",
+		image: dataurls["import"],
 		classname: ["__buttons"],
 		events: [{
 			name: "click",
@@ -621,7 +649,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "export",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEUSURBVEhL7dUxS0JRGMbx2+xHsF0QtxZpq8mtXRe3mgVJaG1ocpVoj/QTiKuDCE1BOAh+gSAbqiVB/8+RGzfJc46HMzj4wA/OK+fe56L3ehMyxjLAJ87gjDZ/43kHM+i4FpzRxpf10jtVHAqsKeIaZTM5ElKwU2IVNPDvbRurYIgFmmbKJGaBziVtHMHEVXCOezyhjxEm0MP2Dj3R6YmzVGKiwVYwwObBvi5hFraCLjYP9PGBE5jBVpDHBWrQFen+v8UdOtDX94g3pCf/wu8d5SrwTfojz3GqD9LELHhFwUyZxCooIbde/k2sgq0JKahAL566mRwJKdi/98EUeih83cC74AfaHEJ/0c5coRfgAcewJElWV7ymskrVIa4AAAAASUVORK5CYII=",
+		image: dataurls["export"],
 		classname: ["__buttons"],
 		events: [{
 			name: "click",
@@ -631,7 +659,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "backup",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAE5SURBVEhL7ZWtTsRAFEY3QeF4CQTBoQghKCwej0CC5AX4MQg8hv/wDHgeAgIOEgwOSeCcdi+ZNFOYaSr5kpPe2d3eM3sz3Z38pzZzsF7JGhRnFb4GcAxFCcEuuLvT6TrdseubpH6bXoskIfBq9sB1mjvYasvmvUOweZGkRJAmBOYEXC83q570Cdx1jlTQvTeb7oc2Idc4JcY1SFCTUQSz4LOSS7Ug6mAbbP4Jj3ALHucZMIMFl3AEG2Ae4B2ewfevQck8fEC1oHuDO39qy59TdgVKfPiWoDclgh3wdZubkPhNY1y9KRHYxLHkJBfwq6REYGziWKol0dTTIVGnP3ayADZxLDnJGWQlIfgLT4uiaknNH84KGJucQ05y0KxGSE7iQXhty3GixLEocWwvcA+jRsk+uHOaTxa/Ac9Gmu9xpJJiAAAAAElFTkSuQmCC",
+		image: dataurls.backup,
 		classname: ["__buttons"],
 		events: [{
 			name: "click",
@@ -641,7 +669,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "merge",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFXSURBVEhL1dW/K0VhHMfxI4UyYCGLkJTCQBYLu8FyDWbFhs0qg8EoIn+FDAwyGkiUwoJSfidlsnp/zjenc85z7/Uc96R86lXfM9znc+6553lu8JdpRFNMA3LLNu5xE/OIDVScejzbmEgNzjCDwYx6UIUwehR3Njrpxg72MzrHKsKUK/ht2nFroxV84ggnOTlFdNMq+EAvOnMyhkTBT4+oGqOYRgF6jculDd4FfbjEIdagV/oFKisV74JWPEB3HU8XVDoRXrnxLljBso1OBqANWSzeBccYsrFo9LkOGxPxLtBO7rexaK6gxdLxLtjCvI1OtMiTjU68C3SmaBHtkXh0fh1gNrxy412gjOMV65jCIq6hHbuLWqSTqUBpxhxUsgD9LjotN7GHdEnmglL5LtE3iY5nkluBooVHbIySKKjDG1oQ/8usxDAuEGUJelvec6K7n8S/TxB8AR2GeWDyey0JAAAAAElFTkSuQmCC",
+		image: dataurls.merge,
 		classname: ["__buttons"],
 		events: [{
 			name: "click",
@@ -651,7 +679,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "expand",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACvSURBVEhL7ZLLCYRAEEQniQ3D/E8mYUKrvfCgpj9DH7ys+KAQp6qrBWc8iu9CFVkWBbIQqsiyKKDmcelzqYtlbUY7AlrOs7NEy3VJAMMPrJZkWXoCanSWVBntmfCGFux24LAz8/wH+J4lNmhF2+9txs7M0/KXP+TWn+yvlw3eek3V0HJfAFVGeyYwOuWQZekJYHTLwS+hJ4BBsFMOugQF1PSqyLIokIVQRZZFj2CMEwcelwlE5J32AAAAAElFTkSuQmCC",
+		image: dataurls.expand,
 		classname: ["__buttons"],
 		events: [{
 			name: "click",
@@ -690,7 +718,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "remove",
-		image:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACFSURBVEhL7Y5BCsMwEAP9u+ZX/Wv6kHR9E2FktKWHEDIwBwlr8Xj4F+/yODm7nzkfS42hceK1oB+ubENHVrahIyvb0Nhl7WJo7LJ2MTR2WbsYGrusXQyNXdYuhsYuaxdDY5e1i6Gxy9rF0Nhl7WJ0nNjmU9Ihci/bbOUc0kF1vnmVt2SMLxWMrm3WZuxXAAAAAElFTkSuQmCC",
+		image: dataurls.remove,
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Remove_Bookmark.f
@@ -699,8 +727,18 @@ window.Extension_Variables = {
 	},
 	{
 		tag: "div",
+		name: "copy",
+		image: dataurls.copy,
+		events: [{
+			name: "click",
+			value: Bookmark_User_Functions.Copy_Bookmarks.f
+		}],
+		classname: ["__invisibled","__buttons","__editout"]
+	},
+	{
+		tag: "div",
 		name: "move",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGESURBVEhL7dS/K0ZRHMfxg/xKfsdAShaTMhkM/gBRREpSisGg7CaDycSoGBhIPCIGhRgUq5LBrKTkRyLk1/tzn3sMt4fO5QwGn3r1nHNu93vuec651/yHFIe/3lOJCSwEPc9pwSPe0a0B31mFit8jTwNxkoX0ZDNlimCfflEDrinAHB6gAjMoRDR9UHFp14BrtFm66TSk9jKi2YSu3SJHAy7JxRuOkYkMHOEF1bDJxgU0wawGXKP/9RWHSNMAOYAKaZJtDKAEeoBm1CNWtqCCe9gJ21HP2EAvtGexUoFd2GJaQRumcRWOnWMsbOswJNAF/cXO0RtalWx+Rkd3CnbyqDvMoxXapx9lHyqmVXRgCVpFdLJr6Ig3wSn5aIBOmQpMwkbXerCOJ+i6VjOOcnwbnaZR2ButRqSKvqraj9Kg5xA9mQqeYQV2ohp4yRpUsDboGTMM9QeDnofYL2Zd0DNmBOr3Bz0P6YQK6lToxdMbfYMyeMsQLqGJTvDVBv86Oo5/McZ8ADxubY+z76C3AAAAAElFTkSuQmCC",
+		image: dataurls.move,
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Move_Bookmarks.f
@@ -710,7 +748,7 @@ window.Extension_Variables = {
 	{
 		tag: "div",
 		name: "end",
-		image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC2SURBVEhL7ZVBCoMwEEXTfYUu2oXgUbrsgbxF9z1aL+DeS7T/RwfLMAlxQqALH3wSBzMvqMRwsJcL8qgMeyS5I5/KsEcSEYyItbtcuKZYkL0pQdFa66brOmpOSLdMIy4Bm0/IM15tsPkLeSNnFoBLII1YE4lVIy4B0Q2t5sQtIL8Sqzn5X0HTR2S9UKtGXIIBmRG9W5HwE5azxyUg/TpqKLkt04hbUMouQfPDriZZQfMfzoEihC9fkncGqArhuAAAAABJRU5ErkJggg==",
+		image: dataurls.end,
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Deactivate_Bookmark_Edit.f
@@ -808,7 +846,7 @@ window.Storage_Action = function (changeinfo) {
 				});
 				extension.storage.local.set({"croped":c.croped});
 			}
-			else {
+			if (!changeinfo.copy) {
 				changeinfo.data.forEach(function (val) {
 					delete bmkptr.value[val];
 				});
@@ -1019,30 +1057,90 @@ window.openall = function () {
 	});
 }
 
+window.getlocs = function (a,b) {
+	var c={};
+	var d=a.getClientRects()[0];
+	var e=b.getClientRects()[0];
+	c.bottom=d.bottom-e.bottom;
+	c.top=d.top-e.top;
+	return c;
+}
+
 window.keyboardaction = function (event) {
+	event.preventDefault();
 	if (event.ctrlKey&&event.keyCode==86) {
 		if (!document.getElementById("pastebmk").classList.contains("__hided")) {
-			Storage_Action({
-				type:"move",
-				loc:document.getElementById("dir").dataset.loc
-			});
-			document.getElementById("pastebmk").classList.add("__hided");
-			document.getElementById("bmks").classList.remove("__copyactive");
+			Bookmark_User_Functions.Paste_Bookmark_Second.f();
 		}
 	}
 	else if (event.ctrlKey&&event.keyCode==67) {
-		document.getElementById("pastebmk").classList.remove("__hided");
-		document.getElementById("bmks").classList.add("__copyactive");
-		Bookmark_User_Functions.Deactivate_Bookmark_Edit.f();
-		Storage_Action({
-			type:"remove",
-			loc:document.getElementById("dir").dataset.loc,
-			data:Array.prototype.slice.call(
-				document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
-			).map(val => val.dataset.id),
-			crop:true
-		});
+		Bookmark_User_Functions.Copy_Bookmarks.f();
+	}
+	else if (event.ctrlKey&&event.keyCode==88) {
+		Bookmark_User_Functions.Move_Bookmarks.f();
+	}
+	else if (event.ctrlKey&&event.keyCode==90) {
+		Bookmark_User_Functions.Cancel_Paste_Second.f();
+	}
+	else if (event.keyCode==46) {
+		Bookmark_User_Functions.Remove_Bookmark.f();
+	}
+	else if (event.keyCode==37) {//l
+		Bookmark_User_Functions.Go_To_Upper_Bookmark_Folder.f();
+	}
+	else if (event.keyCode==38) {//u
+		var a=document.querySelector(".__selected");
+		var b=document.querySelector("[data-index='"+(Number(a.dataset.index)-1)+"']");
+		var c=document.querySelector("#bmks");
+		if (b) {
+			if (getlocs(a,c).bottom>0) {
+				c.scrollTop+=d.bottom;
+			}
+			a.classList.remove("__selected");
+			b.classList.add("__selected");
+			if (getlocs(b,c).top<0) {
+				c.scrollTop+=d.top;
+			}
+		}
+	}
+	else if (event.keyCode==40) {//d
+		var a=document.querySelector(".__selected");
+		var b=document.querySelector("[data-index='"+(Number(a.dataset.index)+1)+"']");
+		var c=document.querySelector("#bmks");
+		if (b) {
+			if (getlocs(a,c).top<0) {
+				c.scrollTop+=getlocs(a,c).top;
+			}
+			a.classList.remove("__selected");
+			b.classList.add("__selected");
+			if (getlocs(b,c).bottom>0) {
+				c.scrollTop+=getlocs(a,c).bottom;
+			}
+		}
+	}
+	else if (event.keyCode==39) {
+		if (document.getElementById("bmks").classList.contains("__editing")) {
+			Bookmark_User_Functions.Deactivate_Bookmark_Edit.f();
+		}
+		else {
+			Bookmark_User_Functions.Activate_Bookmark_Edit.f();
+		}
+	}
+	else if (event.keyCode==13) {//r
+		if (event.ctrlKey) {
+			Bookmark_User_Functions.Bookmark_Click_Action.f.call(document.querySelector(".__selected"),{which:3,preventDefault:(a=>a),stopPropagation:(a=>a)});
+		}
+		else if (event.altKey) {
+			Bookmark_User_Functions.Bookmark_Click_Action.f.call(document.querySelector(".__selected"),{which:2,preventDefault:(a=>a),stopPropagation:(a=>a)});
+		}
+		else {
+			Bookmark_User_Functions.Bookmark_Click_Action.f.call(document.querySelector(".__selected"),{which:1,preventDefault:(a=>a),stopPropagation:(a=>a)});
+		}
 	}
 }
 
 window.addEventListener("keydown",keyboardaction);
+
+window.Bmk = function (type,url) {
+	this.type=type;
+}

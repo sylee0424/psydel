@@ -377,7 +377,7 @@ window.Bookmark_User_Functions = {
 	Create_Bookmark_Folder: {
 		f: function() {
 			var a = {};
-			a.title = prompt("bookmark name", document.title);
+			a.title = prompt("bookmark name",document.title);
 			a.type = "folder";
 			Storage_Action({
 				type:"add",
@@ -1139,8 +1139,26 @@ window.keyboardaction = function (event) {
 	}
 }
 
-window.addEventListener("keydown",keyboardaction);
-
-window.Bmk = function (type,url) {
-	this.type=type;
+window.dialog = async function (option) {
+	if (option.title) {
+		document.querySelector("#modaltitle").innerText=option.title;
+	}
+	if (option.body) {
+		document.querySelector("#modalbody").innerText=option.body;
+	}
+	if (option.input) {
+		document.querySelector("#modalinput").value=option.input;
+	}
+	modal.style.display = "block";
+	var ret=await getinput();
+	return ret;
 }
+
+function getinput() { 
+	return new Promise(function (a,b) {
+		var c=document.querySelector("#modalinput");
+		c.addEventListener("modalcomplete",()=>a(c.value));
+		c.addEventListener("modalcancel",()=>b());
+	});
+}
+

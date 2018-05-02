@@ -1094,12 +1094,12 @@ window.keyboardaction = function (event) {
 		var c=document.querySelector("#bmks");
 		if (b) {
 			if (getlocs(a,c).bottom>0) {
-				c.scrollTop+=d.bottom;
+				c.scrollTop+=getlocs(a,c).bottom;
 			}
 			a.classList.remove("__selected");
 			b.classList.add("__selected");
 			if (getlocs(b,c).top<0) {
-				c.scrollTop+=d.top;
+				c.scrollTop+=getlocs(b,c).top;
 			}
 		}
 	}
@@ -1114,7 +1114,7 @@ window.keyboardaction = function (event) {
 			a.classList.remove("__selected");
 			b.classList.add("__selected");
 			if (getlocs(b,c).bottom>0) {
-				c.scrollTop+=getlocs(a,c).bottom;
+				c.scrollTop+=getlocs(b,c).bottom;
 			}
 		}
 	}
@@ -1161,4 +1161,6 @@ function getinput() {
 		c.addEventListener("modalcancel",()=>b());
 	});
 }
+
+window.addEventListener("keydown",keyboardaction);
 

@@ -59,6 +59,20 @@ label {display:inline-block; border:1px solid #000000; margin-bottom:10px; min-w
     height: 20px;
 }
 
+#myModal button {
+    z-index: 1; 
+    width: 60px;
+    height: 20px;
+}
+
+.left {
+	float:left;
+}
+
+.right {
+	float:right;
+}
+
 .close:hover,
 .close:focus {
     color: black;

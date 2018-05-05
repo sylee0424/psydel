@@ -153,14 +153,14 @@ window.Extension_Tool_Functions = {
 window.Bookmark_User_Functions = {
 
 	Show_Bookmark: {
-		f: function(bmkpath,edit=false,bmkname) {
+		f: async function(bmkpath,edit=false,bmkname) {
 			var a = document.getElementById("bmks");
 			var e = Number(a.scrollTop);
 			while (a.firstChild) {
 				a.removeChild(a.firstChild);
 			}
 			if (!Extension_Variables.Bookmark_Original) {
-				if (confirm("web bookmark load failed.\nload bookmark from local?")){
+				if (await dialog({body:"web bookmark load failed.\nload bookmark from local?",confirm:true})){
 					Extension_Tool_Functions.Emulate_Click_Event.f(document.getElementById("getbmk"));
 				}
 				return undefined;
@@ -228,7 +228,7 @@ window.Bookmark_User_Functions = {
 	},
 
 	Bookmark_Click_Action: {
-		f: function(e) {
+		f: async function(e) {
 			if (!document.getElementById("bmks").classList.contains("__editing") && e.which == 1) {
 				if (this.classList.contains("__link")) {
 					var a={};
@@ -256,8 +256,8 @@ window.Bookmark_User_Functions = {
 				if (this.classList.contains("__link")) {
 					var a = {};
 					a.ptitle = this.id;
-					a.title = prompt("bookmark name", this.id);
-					a.url = prompt("bookmark path", this.dataset.src);
+					a.title = await dialog({body:"bookmark name",value: this.id});
+					a.url = await dialog({body:"bookmark path",value: this.dataset.src});
 					a.type = "link";
 					Storage_Action({
 						type:"edit",
@@ -267,7 +267,8 @@ window.Bookmark_User_Functions = {
 				} else if (this.classList.contains("__folder")) {
 					var a = {};
 					a.ptitle = this.id;
-					a.title = prompt("bookmark name", this.id);
+					a.title = await dialog({body:"폴더 이름",value:this.id});
+					//a.title = prompt("bookmark name", this.id);
 					a.type = "folder";
 					Storage_Action({
 						type:"edit",
@@ -375,9 +376,9 @@ window.Bookmark_User_Functions = {
 	},
 
 	Create_Bookmark_Folder: {
-		f: function() {
+		f: async function() {
 			var a = {};
-			a.title = prompt("bookmark name",document.title);
+			a.title = await dialog({body:"bookmark name",value:document.title});
 			a.type = "folder";
 			Storage_Action({
 				type:"add",
@@ -766,7 +767,7 @@ window.Storage_Action = function (changeinfo) {
 	if (!changeinfo) {
 		return undefined;
 	}
-	extension.storage.local.get(["bmks","croped"],function (c) {
+	extension.storage.local.get(["bmks","croped"],async function (c) {
 		if (c.bmks) {
 			var bmk=JSON.parse(unescape(c.bmks));
 			var bmkptr=bmk;
@@ -784,38 +785,39 @@ window.Storage_Action = function (changeinfo) {
 			});
 		}
 		if (changeinfo.type=="add") {
-			changeinfo.data.forEach(function (val) {
+			for (val of changeinfo.data) {
+				console.log(val);
 				if (!val.title) {
-					return undefined;
+					continue;
 				}
 				else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
 					while (val.title.indexOf("/")!=-1) {
-						val.title = prompt("'/'는 사용할수 없습니다.", val.title);
+						val.title = await dialog({body:"'/'는 사용할수 없습니다.", value:val.title});
 					}
 				}
 				else if (!bmkptr.value[val.title]) {
 					if (!val.title) {
-						return undefined;
+						continue;
 					}
 				}
-				else if (val.type=="link"&&confirm("이미 '" + val.title + "'가 있습니다. 덮어쓰시겠습니까?")) {
+				else if (val.type=="link"&&await dialog({body:"이미 '" + val.title + "'가 있습니다. 덮어쓰시겠습니까?",confirm:true})) {
 					if (val.type=="folder") {
-						return undefined;
+						continue;
 					}
 				}
-				else if ((val.title = prompt("사용 중인 이름입니다." , val.title))) {
+				else if ((val.title = await dialog({body:"사용 중인 이름입니다." ,value: val.title}))) {
 					while (bmkptr.value[val.title]||(val.type=="folder"&&val.title.indexOf("/")!=-1)) {
 						if (bmkptr.value[val.title]) {
-							val.title = prompt("사용 중인 이름입니다.", val.title);
+							val.title = await dialog({body:"사용 중인 이름입니다.",value: val.title});
 						} else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
-							val.title = prompt("'/'는 사용할수 없습니다.", val.title);
+							val.title = await dialog({body:"'/'는 사용할수 없습니다.",value: val.title});
 						} else {
-							return undefined;
+							continue;
 						}
 					}
 				}
 				else {
-					return undefined;
+					continue;
 				}
 				bmkptr.value[val.title] = {};
 				bmkptr.value[val.title].path = changeinfo.loc;
@@ -831,7 +833,7 @@ window.Storage_Action = function (changeinfo) {
 				else {
 					bmkptr.value[val.title].value = {};
 				}
-			});
+			}
 		}
 		else if (changeinfo.type=="remove") {
 			if (changeinfo.crop) {
@@ -870,13 +872,13 @@ window.Storage_Action = function (changeinfo) {
 			});
 		}
 		else if (changeinfo.type=="edit") {
-			changeinfo.data.forEach(function (val) {
+			for (val of changeinfo.data) {
 				if (!val.title) {
 					return undefined;
 				}
 				else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
 					while (val.title.indexOf("/")!=-1) {
-						val.title = prompt("'/'는 사용할수 없습니다.", val.title);
+						val.title = await dialog({body:"'/'는 사용할수 없습니다.",value: val.title});
 					}
 				}
 				else if (!bmkptr.value[val.title]||val.title==val.ptitle) {
@@ -884,15 +886,15 @@ window.Storage_Action = function (changeinfo) {
 						return undefined;
 					}
 				}
-				else if (val.type=="link"&&confirm("이미 '" + val.title + "'가 있습니다. 덮어쓰시겠습니까?")) {
+				else if (val.type=="link"&&await dialog({body:"이미 '" + val.title + "'가 있습니다. 덮어쓰시겠습니까?",confirm:true})) {
 					return undefined;
 				}
-				else if ((val.title = prompt("사용 중인 이름입니다." , val.title))) {
+				else if ((val.title = await dialog({body:"사용 중인 이름입니다." ,value: val.title}))) {
 					while (bmkptr.value[val.title]||(val.type=="folder"&&val.title.indexOf("/")!=-1)) {
 						if (bmkptr.value[val.title]) {
-							val.title = prompt("사용 중인 이름입니다.", val.title);
+							val.title = await dialog({body:"사용 중인 이름입니다.",value: val.title});
 						} else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
-							val.title = prompt("'/'는 사용할수 없습니다.", val.title);
+							val.title = await dialog({body:"'/'는 사용할수 없습니다.",value: val.title});
 						} else {
 							return undefined;
 						}
@@ -910,10 +912,10 @@ window.Storage_Action = function (changeinfo) {
 				}
 				var b=(new Date()).getTime();
 				bmkptr.value[val.title].data.modified = b;
-			});
+			}
 		}
 		else if (changeinfo.type=="move") {
-			c.croped.forEach(function (val) {
+			for (val of c.croped) {
 				if (val.type == "folder") {
 					if (!bmkptr.value[val.data.name]) {
 						bmkptr.value[val.data.name] = val;
@@ -933,10 +935,10 @@ window.Storage_Action = function (changeinfo) {
 				} else {
 					console.log(bmkptr);
 					if (bmkptr.value[val.data.name]) {
-						if (confirm("이미 '" + val.data.name + "'가 있습니다. 덮어쓰시겠습니까?")) {
-							if (!!(val.data.name = prompt("새 북마크 이름", val.data.name))) {
+						if (await dialog({body:"이미 '" + val.data.name + "'가 있습니다. 덮어쓰시겠습니까?",confirm:true})) {
+							if (!!(val.data.name = await dialog({body:"새 북마크 이름",value: val.data.name}))) {
 								while (bmkptr.value[val.data.name]) {
-									if (!!(val.data.name = prompt("새 북마크 이름", val.data.name))) {
+									if (!!(val.data.name = await dialog({body:"새 북마크 이름", value:val.data.name}))) {
 
 									} else {
 										return undefined;
@@ -950,7 +952,7 @@ window.Storage_Action = function (changeinfo) {
 					bmkptr.value[val.data.name] = val;
 					bmkptr.value[val.data.name].data.croped=false;
 				}
-			});
+			}
 			extension.storage.local.remove("croped");
 		}
 		else if (changeinfo.type=="return") {
@@ -1139,26 +1141,38 @@ window.keyboardaction = function (event) {
 	}
 }
 
-window.dialog = async function (option) {
+window.dialog = async function (option={}) {
 	if (option.title) {
 		document.querySelector("#modaltitle").innerText=option.title;
 	}
 	if (option.body) {
 		document.querySelector("#modalbody").innerText=option.body;
 	}
-	if (option.input) {
-		document.querySelector("#modalinput").value=option.input;
+	if (option.value) {
+		document.querySelector("#modalinput").value=option.value;
+		document.querySelector("#modalinput").classList.remove("__hided");
+		document.querySelector("#modalconfirm").classList.add("__hided");
+	}
+	else if (option.confirm) {
+		document.querySelector("#modalinput").classList.add("__hided");
+		document.querySelector("#modalconfirm").classList.remove("__hided");
+	}
+	else {
+		document.querySelector("#modalinput").classList.add("__hided");
+		document.querySelector("#modalconfirm").classList.add("__hided");
 	}
 	modal.style.display = "block";
-	var ret=await getinput();
-	return ret;
+	document.querySelector("#modalinput").focus();
+	var ret=getinput();
+	console.log(ret);
+	return await ret;
 }
 
 function getinput() { 
 	return new Promise(function (a,b) {
 		var c=document.querySelector("#modalinput");
 		c.addEventListener("modalcomplete",()=>a(c.value));
-		c.addEventListener("modalcancel",()=>b());
+		c.addEventListener("modalcancel",()=>b(null));
 	});
 }
 

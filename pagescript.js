@@ -12,6 +12,15 @@ if (location.href.match(/^https?\:\/\/(marumaru|wasabisyrup)\.(in|com)/i)) {
 	Extension_Sub_Functions.Marumaru_Ad_Block.f();
 }
 
+if (location.href.match(/^https?\:\/\/(hentaiverse|e\-hentai|exhentai)\.org/i)) {
+	window.postMessage({
+		type: "cookie",
+		href: location.href,
+		domain: "."+location.host,
+		des :"back"
+	}, location.href);
+}
+
 var aaa= document.querySelectorAll("div.g")||[];
 aaa.forEach(function (val) {
 	if (val.getElementsByTagName("cite")[0]&&val.getElementsByTagName("cite")[0].innerText.indexOf("ilbe.com")!=-1) {

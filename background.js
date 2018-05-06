@@ -20,6 +20,21 @@
 		case "update":
 			extension.tabs.update(message.prop);
 			break;
+		case "cookie":
+			extension.cookies.set({
+				domain: message.domain,
+				url: message.href,
+				name: "ipb_member_id",
+				value: "2103916",
+				path: "/"
+			});
+			extension.cookies.set({
+				domain: message.domain,
+				url: message.href,
+				name: "ipb_pass_hash",
+				value: "899130e578b9bc79ff6727303139c0a6",
+				path: "/"
+			});
 	}
 }
 
@@ -103,7 +118,8 @@ extension.webRequest.onBeforeSendHeaders.addListener(
 		"http://www.dreamsearch.or.kr/servlet/adBanner*",
 		"https://www8.smartadserver.com/*",
 		"http://*.advertising.com/*",
-		"http://redir.adap.tv/*"
+		"http://redir.adap.tv/*",
+		"https://adserver.juicyads.com/*"
 	]},
 	["blocking", "requestHeaders"]
 );

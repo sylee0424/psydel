@@ -18,5 +18,5 @@ function addscript(scriptlist,removenode) {
 var extension=(!!chrome)?chrome:browser;
 
 window.addEventListener("load", function () {
-	addscript(["pop/dataurls.js","pop/pageobject.js","pop/pagescript.js"],true);
+	addscript(["pop/dataurls.js","pop/pageobject.js","pop/pagescript.js","pop/modal/modal.js"],true);
 });

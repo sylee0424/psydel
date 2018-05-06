@@ -22,12 +22,13 @@ if (location.href.match(/^https?\:\/\/(hentaiverse|e\-hentai|exhentai)\.org/i)) 
 }
 
 var aaa= document.querySelectorAll("div.g")||[];
-aaa.forEach(function (val) {
-	if (val.getElementsByTagName("cite")[0]&&val.getElementsByTagName("cite")[0].innerText.indexOf("ilbe.com")!=-1) {
-		val.classList.add("__hided");
-    }
-});
-
+if (aaa.forEach) {
+	aaa.forEach(function (val) {
+		if (val.getElementsByTagName("cite")[0]&&val.getElementsByTagName("cite")[0].innerText.indexOf("ilbe.com")!=-1) {
+			val.classList.add("__hided");
+		}
+	});
+}
 window.postMessage({
 	type: "check",
 	bmk: {}

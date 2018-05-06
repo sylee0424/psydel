@@ -378,7 +378,7 @@ window.Bookmark_User_Functions = {
 	Create_Bookmark_Folder: {
 		f: async function() {
 			var a = {};
-			a.title = await dialog({body:"bookmark name",value:document.title});
+			a.title = await dialog({body:"새 폴더 이름",value:"새 폴더"});
 			a.type = "folder";
 			Storage_Action({
 				type:"add",

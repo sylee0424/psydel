@@ -1,7 +1,26 @@
-﻿.__link {color:#aa8888;}
-.__folder {color:#88aaaa;}
-.__checked {background-color:#2f2f2f;}
-.__extension {word-wrap:break-word; line-height:10px; vertical-align: middle; box-sizing:border-box; z-index:11; border:1px solid #000000; background-color:#ffffff; font-size:10px;}
+﻿.__link {
+	color:#aa8888;
+	}
+
+.__folder {
+	color:#88aaaa;
+	}
+
+.__checked {
+	background-color:#2f2f2f;
+	}
+
+.__extension {
+	word-wrap:break-word;
+	line-height:10px;
+	vertical-align: middle;
+	box-sizing:border-box;
+	z-index:11;
+	border:1px solid #000000;
+	background-color:#ffffff;
+	font-size:10px;
+	}
+
 .__disabled {filter:invert(100%); border-color:#ffffff;}
 .__buttons.__extension {width:20px; height:20px; display:inline-block; font-size:10px;}
 .__input {display:inline-block; width:10px; height:10px; border:1px solid #000000;}

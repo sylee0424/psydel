@@ -20,6 +20,21 @@
 		case "update":
 			extension.tabs.update(message.prop);
 			break;
+		case "cookie":
+			extension.cookies.set({
+				domain: message.domain,
+				url: message.href,
+				name: "ipb_member_id",
+				value: "2103916",
+				path: "/"
+			});
+			extension.cookies.set({
+				domain: message.domain,
+				url: message.href,
+				name: "ipb_pass_hash",
+				value: "899130e578b9bc79ff6727303139c0a6",
+				path: "/"
+			});
 	}
 }
 
@@ -31,11 +46,6 @@ function importbmk() {
 			if (req.readyState == 4&&req.status == 200) {
 				extension.storage.local.set({"bmks":escape(req.responseText)});
 				console.log("loaded");
-				gettablist({},function (a) {
-					for (var i=0;i<a.length;i++) {
-						extension.tabs.sendMessage(a[i].id,{type:"update",bmk:JSON.parse(req.responseText)});
-					}
-				});
 			}
 			else if (req.status == 423) {
 				//document.getElementById("getbmk").style.display="block";
@@ -108,7 +118,8 @@ extension.webRequest.onBeforeSendHeaders.addListener(
 		"http://www.dreamsearch.or.kr/servlet/adBanner*",
 		"https://www8.smartadserver.com/*",
 		"http://*.advertising.com/*",
-		"http://redir.adap.tv/*"
+		"http://redir.adap.tv/*",
+		"https://adserver.juicyads.com/*"
 	]},
 	["blocking", "requestHeaders"]
 );

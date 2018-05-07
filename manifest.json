@@ -43,6 +43,7 @@
 		"notifications",
 		"browsingData",
 		"downloads",
+		"cookies",
 		"tabs"
 	],
 
